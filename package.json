@@ -1,0 +1,28 @@
+{
+  "name": "sails-model-generator",
+  "version": "1.0.0",
+  "description": "generator models with exist database ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WheelerLee/sails-model-generator.git"
+  },
+  "keywords": [
+    "sails",
+    "model",
+    "generator",
+    "sails-model-generator"
+  ],
+  "bin": {
+    "sails-model-generator": "./bin/sails-model-generator.js"
+  },
+  "author": "WheelerLee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/WheelerLee/sails-model-generator/issues"
+  },
+  "homepage": "https://github.com/WheelerLee/sails-model-generator#readme"
+}
