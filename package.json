@@ -24,5 +24,12 @@
   "bugs": {
     "url": "https://github.com/WheelerLee/sails-model-generator/issues"
   },
-  "homepage": "https://github.com/WheelerLee/sails-model-generator#readme"
+  "homepage": "https://github.com/WheelerLee/sails-model-generator#readme",
+  "dependencies": {
+    "asyncawait": "^1.0.6",
+    "ejs": "^2.5.6",
+    "mysql": "^2.13.0",
+    "unzip2": "^0.2.5",
+    "waterline": "^0.11.11"
+  }
 }

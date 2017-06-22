@@ -1,0 +1,90 @@
+/**
+ * <%= folderName %>/<%= modelName %>Controller
+ *
+ * @description :: Server-side logic for managing wladmin/<%= modelName.toLowerCase() %>
+ * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
+ */
+
+var async = require('asyncawait/async');
+var await = require('asyncawait/await');
+
+module.exports = {
+
+  /**
+   * 列表页面
+   * @param req
+   * @param res
+   */
+  index: function (req, res) {
+    res.view({layout: '<%= folderName %>/layout'});
+  },
+
+  /**
+   * 搜索功能
+   */
+  list: async(function (req, res) {
+    var queryObj = {};
+    <%_ for (var i in model['attributes']) { _%>
+    <%_ var attribute = model['attributes'][i] _%>
+    <%_ if (attribute.type.toLowerCase() === 'string' || attribute.type.toLowerCase() === 'text' || attribute.type.toLowerCase() === 'mediumtext'|| attribute.type.toLowerCase() === 'longtext') { _%>
+    if (req.param('<%= i %>') && req.param('<%= i %>').trim() !== '') {
+      queryObj['<%- i %>'] = {contains: req.param('<%- i %>').trim()};
+    }
+    <%_ } else { _%>
+    if (req.param('<%- i %>') && req.param('<%- i %>').trim() !== '') {
+      queryObj['<%- i %>'] = req.param('<%- i %>').trim();
+    }
+    <%_ } _%>
+    <%_ } _%>
+
+    var result = await(<%= modelName %>.find(queryObj).skip(parseInt(req.body.start)).limit(parseInt(req.body.length)));
+    var count = await(<%= modelName %>.count(queryObj));
+    res.json({data: result, recordsTotal: count, recordsFiltered: count});
+  }),
+
+  /**
+   * 添加功能
+   */
+  add: async(function (req, res) {
+    if (req.method.toLowerCase() === 'post') {
+      try {
+        var list = await(<%= modelName %>.create(req.body));
+        res.json({errCode: 0, msg: '添加成功'});
+      } catch (e) {
+        res.json({errCode: 101, msg: '添加失败，请重试'});
+      }
+    } else {
+      res.view({layout: '<%= folderName %>/layout'});
+    }
+  }),
+
+  /**
+   * 修改功能
+   */
+  edit: async(function (req, res) {
+    if (req.method.toLowerCase() === 'post') {
+      try {
+        var list = await(<%= modelName %>.update({<%- primaryKey %>: req.param('<%- primaryKey %>')}, req.body));
+        res.json({errCode: 0, msg: '修改成功'});
+      } catch (e) {
+        res.json({errCode: 101, msg: '修改失败，请重试'});
+      }
+    } else {
+      var <%- primaryKey %> = req.param('<%- primaryKey %>');
+      var <%- modelName.toLowerCase() %> = await(<%= modelName %>.findOne({<%- primaryKey %>: <%- primaryKey %>}));
+      res.view({layout: '<%= folderName %>/layout', <%- modelName.toLowerCase() %>: <%- modelName.toLowerCase() %>});
+    }
+  }),
+
+  /**
+   * 删除
+   */
+  del: async(function (req, res) {
+    var <%- primaryKey %> = req.param('<%- primaryKey %>');
+    // await(<%= modelName %>.update({<%- primaryKey %>: <%- primaryKey %>}, {ifDel: 1})); //逻辑删除
+    await(<%= modelName %>.destroy({<%- primaryKey %>: <%- primaryKey %>})); //物理删除
+    res.json({errCode: 0, msg: '删除成功'});
+  })
+
+};
+

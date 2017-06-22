@@ -1,0 +1,365 @@
+<script type="text/javascript" src="/adminlte/validation/js/formValidation.js"></script>
+<script type="text/javascript" src="/adminlte/validation/js/framework/bootstrap.js"></script>
+<script type="text/javascript" src="/adminlte/validation/js/language/zh_CN.js"></script>
+<link rel="stylesheet" href="/adminlte/plugins/jquery-confirm/jquery-confirm.min.css">
+<script src="/adminlte/plugins/jquery-confirm/jquery-confirm.min.js"></script>
+
+<section class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box box-warning">
+        <div class="box-header with-border">
+          <h3 class="box-title">添加User</h3>
+        </div>
+        <div class="box-body">
+          <form role="form" id="defaultForm">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>nick_name</label>
+                  <input type="text" name="nick_name" class="form-control" placeholder="nick_name">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>sex</label>
+                  <input type="text" name="sex" class="form-control" placeholder="sex">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>open_id</label>
+                  <input type="text" name="open_id" class="form-control" placeholder="open_id">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>wechat_num</label>
+                  <input type="text" name="wechat_num" class="form-control" placeholder="wechat_num">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>icon_path</label>
+                  <input type="text" name="icon_path" class="form-control" placeholder="icon_path">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>country</label>
+                  <input type="text" name="country" class="form-control" placeholder="country">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>city</label>
+                  <input type="text" name="city" class="form-control" placeholder="city">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>language</label>
+                  <input type="text" name="language" class="form-control" placeholder="language">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>subscribe</label>
+                  <input type="text" name="subscribe" class="form-control" placeholder="subscribe">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>subscribe_time</label>
+                  <input type="text" name="subscribe_time" class="form-control" placeholder="subscribe_time">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>balance</label>
+                  <input type="text" name="balance" class="form-control" placeholder="balance">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>phone</label>
+                  <input type="text" name="phone" class="form-control" placeholder="phone">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>state</label>
+                  <input type="text" name="state" class="form-control" placeholder="state">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>charm_val</label>
+                  <input type="text" name="charm_val" class="form-control" placeholder="charm_val">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>login_name</label>
+                  <input type="text" name="login_name" class="form-control" placeholder="login_name">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>password</label>
+                  <input type="text" name="password" class="form-control" placeholder="password">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="box-footer">
+          <button type="button" class="btn btn-primary pull-right" onclick="$('#defaultForm').data('formValidation').validate()">添加</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('#defaultForm')
+      .formValidation({
+        icon: {
+          valid: 'glyphicon glyphicon-ok',
+          invalid: 'glyphicon glyphicon-remove',
+          validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+          nick_name: {
+            validators: {
+
+              stringLength: {
+                max: 200,
+                message: 'nick_name的长度必须小于200'
+              },
+
+
+            }
+          },
+          sex: {
+            validators: {
+
+              stringLength: {
+                max: 32,
+                message: 'sex的长度必须小于32'
+              },
+
+
+            }
+          },
+          open_id: {
+            validators: {
+
+              stringLength: {
+                max: 200,
+                message: 'open_id的长度必须小于200'
+              },
+
+
+            }
+          },
+          wechat_num: {
+            validators: {
+
+              stringLength: {
+                max: 200,
+                message: 'wechat_num的长度必须小于200'
+              },
+
+
+            }
+          },
+          icon_path: {
+            validators: {
+
+              stringLength: {
+                max: 200,
+                message: 'icon_path的长度必须小于200'
+              },
+
+
+            }
+          },
+          country: {
+            validators: {
+
+              stringLength: {
+                max: 200,
+                message: 'country的长度必须小于200'
+              },
+
+
+            }
+          },
+          city: {
+            validators: {
+
+              stringLength: {
+                max: 200,
+                message: 'city的长度必须小于200'
+              },
+
+
+            }
+          },
+          language: {
+            validators: {
+
+              stringLength: {
+                max: 200,
+                message: 'language的长度必须小于200'
+              },
+
+
+            }
+          },
+          subscribe: {
+            validators: {
+
+              stringLength: {
+                max: 32,
+                message: 'subscribe的长度必须小于32'
+              },
+
+
+            }
+          },
+          subscribe_time: {
+            validators: {
+              date: {
+                format: 'YYYY-MM-DD HH:mm:SS',
+                message: 'subscribe_time时间格式错误'
+              },
+
+
+
+            }
+          },
+          balance: {
+            validators: {
+              numeric: {
+                message: 'balance必须是数字'
+              },
+
+
+
+            }
+          },
+          phone: {
+            validators: {
+
+              stringLength: {
+                max: 32,
+                message: 'phone的长度必须小于32'
+              },
+
+
+            }
+          },
+          state: {
+            validators: {
+              integer: {
+                message: 'state必须是整数'
+              },
+
+
+
+            }
+          },
+          charm_val: {
+            validators: {
+              integer: {
+                message: 'charm_val必须是整数'
+              },
+
+
+
+            }
+          },
+          login_name: {
+            validators: {
+
+              stringLength: {
+                max: 50,
+                message: 'login_name的长度必须小于50'
+              },
+
+
+            }
+          },
+          password: {
+            validators: {
+
+              stringLength: {
+                max: 50,
+                message: 'password的长度必须小于50'
+              },
+
+
+            }
+          },
+        }
+      })
+      .on('success.form.fv', function (e) {
+        e.preventDefault();
+        var $form = $(e.target);
+        var bv = $form.data('formValidation');
+        $.post($form.attr('action'), $form.serialize(), function (result) {
+          if (result.errCode) {
+            $.alert({
+              title: '提示',
+              content: result.msg,
+              type: 'red',
+              buttons: {
+                close: {
+                  text: '确定'
+                }
+              }
+            });
+          } else {
+            $.confirm({
+              title: '提示',
+              content: result.msg,
+              type: 'blue',
+              typeAnimated: true,
+              buttons: {
+                tryAgain: {
+                  text: '继续添加',
+                  btnClass: 'btn-blue',
+                  action: function() {
+                    $form.data('formValidation').resetForm();
+                    $form[0].reset();
+                  }
+                },
+                close: {
+                  text: '查看',
+                  action: function () {
+                    window.location.href = '/admin3/user/index';
+                  }
+                }
+              }
+            });
+          }
+        }, 'json');
+      });
+  });
+</script>

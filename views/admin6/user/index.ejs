@@ -1,0 +1,223 @@
+<link rel="stylesheet" href="/adminlte/plugins/datatables/dataTables.bootstrap.css">
+<script src="/adminlte/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="/adminlte/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" href="/adminlte/plugins/jquery-confirm/jquery-confirm.min.css">
+<script src="/adminlte/plugins/jquery-confirm/jquery-confirm.min.js"></script>
+
+<section class="content">
+  <div class="box">
+    <div class="box-header with-border">
+      <h3 class="box-title">User列表</h3>
+    </div>
+    <div class="box-body">
+      <form id="search_form">
+        <div class="row">
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">id</label>
+            <input name="id" class="form-control" placeholder="id">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">nick_name</label>
+            <input name="nick_name" class="form-control" placeholder="nick_name">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">sex</label>
+            <input name="sex" class="form-control" placeholder="sex">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">open_id</label>
+            <input name="open_id" class="form-control" placeholder="open_id">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">wechat_num</label>
+            <input name="wechat_num" class="form-control" placeholder="wechat_num">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">icon_path</label>
+            <input name="icon_path" class="form-control" placeholder="icon_path">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">country</label>
+            <input name="country" class="form-control" placeholder="country">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">city</label>
+            <input name="city" class="form-control" placeholder="city">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">language</label>
+            <input name="language" class="form-control" placeholder="language">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">subscribe</label>
+            <input name="subscribe" class="form-control" placeholder="subscribe">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">subscribe_time</label>
+            <input name="subscribe_time" class="form-control" placeholder="subscribe_time">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">balance</label>
+            <input name="balance" class="form-control" placeholder="balance">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">phone</label>
+            <input name="phone" class="form-control" placeholder="phone">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">state</label>
+            <input name="state" class="form-control" placeholder="state">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">charm_val</label>
+            <input name="charm_val" class="form-control" placeholder="charm_val">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">login_name</label>
+            <input name="login_name" class="form-control" placeholder="login_name">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="exampleInputEmail1">password</label>
+            <input name="password" class="form-control" placeholder="password">
+          </div>
+        </div>
+      </form>
+
+      <div style="margin-top: 10px; text-align: center;">
+        <button id="search_reset" type="reset" class="btn">清空</button>
+        <button id="search_submit" type="submit" class="btn btn-primary">
+          <i class="fa fa-search"></i> 搜索
+        </button>
+      </div>
+
+      <div id="example1_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+        <div class="row">
+          <div class = "col-sm-12">
+            <table id="example1" class="table table-bordered table-striped table-hover dataTable">
+
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script type="text/javascript">
+  var searchData = {};
+  var dataTable = $('#example1').DataTable({
+    "displayLength": 10,
+    "processing": true,
+    "serverSide": true,
+    "columns": [
+      { "data": "id", title: 'id', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "nick_name", title: 'nick_name', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "sex", title: 'sex', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "open_id", title: 'open_id', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "wechat_num", title: 'wechat_num', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "icon_path", title: 'icon_path', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "country", title: 'country', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "city", title: 'city', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "language", title: 'language', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "subscribe", title: 'subscribe', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "subscribe_time", title: 'subscribe_time', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "balance", title: 'balance', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "phone", title: 'phone', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "state", title: 'state', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "charm_val", title: 'charm_val', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "login_name", title: 'login_name', "sDefaultContent": "", "sClass" : "center" },
+      { "data": "password", title: 'password', "sDefaultContent": "", "sClass" : "center" },
+      { "data": 'password', title: '操作', "width": "120px",
+        render: function (data, type, row, meta) {
+          var str = "";
+          str += '<a href="/admin6/user/edit?id=' + row.id + '">编辑</a>';
+          str += '<a href="#" onclick="del(\'' + row.id + '\', event)" style="margin-left: 8px;">删除</a>';
+          return str;
+        }
+      }
+    ],
+    "ajax": {
+      "url": "/admin6/user/list",
+      'method': 'post',
+      'data': function (d) {
+        $.extend(d, searchData);
+      }
+    },
+//    "lengthMenu" : [10, 25, 50], //更改显示记录数选项
+//    "scrollY": "380",
+//    "scrollCollapse" : true,
+    "lengthChange": false,
+//    "deferRender": false,
+    'sort': false,
+    "searching": false,
+    'autoWidth': false,
+    "language": {//下面是一些汉语翻译
+      "search": "搜索:",
+      "lengthMenu": "每页显示 _MENU_ 条记录",
+      "zeroRecords": "没有检索到数据",
+      "info": "共 _TOTAL_ 条;&nbsp;&nbsp显示 _START_ 至 _END_ 条",
+      "infoFiltered": "(筛选自 _MAX_ 条数据)",
+      "infoEmpty": "",
+      "processing": "正在加载数据...",
+      "loadingRecords": "正在加载数据...",
+      "paginate":
+        {
+          "first": "首页",
+          "previous": "前一页",
+          "next": "后一页",
+          "last": "末页"
+        }
+    }
+  });
+  $(document).on('click', '#search_reset', function () {
+    $('#search_form')[0].reset();
+  });
+  $(document).on('click', '#search_submit', function () {
+    searchData = {};
+    var data = $('#search_form').serializeArray();
+    for (var i in data) {
+      var kv = data[i];
+      searchData[kv['name']] = kv['value'];
+    }
+    dataTable.ajax.reload();
+  });
+
+  function del(id, event) {
+    event.preventDefault();
+    $.confirm({
+      title: '提示',
+      content: '是否删除?',
+      type: 'red',
+      typeAnimated: true,
+      buttons: {
+        tryAgain: {
+          text: '取消'
+        },
+        close: {
+          text: '删除',
+          btnClass: 'btn-red',
+          action: function () {
+            $.post('/admin6/user/del', {id: id}, function (result) {
+              if (result.errCode === 0) {
+                dataTable.ajax.reload(null, false);
+              } else {
+                if (result.errCode) {
+                  $.alert({
+                    title: '提示',
+                    content: result.msg,
+                    type: 'red',
+                    buttons: {
+                      close: {
+                        text: '确定'
+                      }
+                    }
+                  });
+                }
+              }
+            }, 'json');
+          }
+        }
+      }
+    });
+  }
+
+</script>

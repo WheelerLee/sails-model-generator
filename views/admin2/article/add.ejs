@@ -1,0 +1,147 @@
+<script type="text/javascript" src="/adminlte/validation/js/formValidation.js"></script>
+<script type="text/javascript" src="/adminlte/validation/js/framework/bootstrap.js"></script>
+<script type="text/javascript" src="/adminlte/validation/js/language/zh_CN.js"></script>
+<link rel="stylesheet" href="/adminlte/plugins/jquery-confirm/jquery-confirm.min.css">
+<script src="/adminlte/plugins/jquery-confirm/jquery-confirm.min.js"></script>
+
+<section class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box box-warning">
+        <div class="box-header with-border">
+          <h3 class="box-title">添加文章</h3>
+        </div>
+        <div class="box-body">
+          <form role="form" id="defaultForm">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>标题</label>
+                  <input type="text" name="title" class="form-control" placeholder="标题">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>内容</label>
+                  <input type="text" name="content" class="form-control" placeholder="内容">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>type</label>
+                  <input type="text" name="type" class="form-control" placeholder="type">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="box-footer">
+          <button type="button" class="btn btn-primary pull-right" onclick="$('#defaultForm').data('formValidation').validate()">添加</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('#defaultForm')
+      .formValidation({
+        icon: {
+          valid: 'glyphicon glyphicon-ok',
+          invalid: 'glyphicon glyphicon-remove',
+          validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+          title: {
+            validators: {
+
+              stringLength: {
+                max: 255,
+                message: '标题的长度必须小于255'
+              },
+
+              notEmpty: {
+                message: '标题不能为空'
+              }
+
+            }
+          },
+          content: {
+            validators: {
+
+
+              notEmpty: {
+                message: '内容不能为空'
+              }
+
+            }
+          },
+          type: {
+            validators: {
+              integer: {
+                message: 'type必须是整数'
+              },
+              lessThan: {
+                value: 10,
+                message: 'type不能大于10'
+              },
+              greaterThan: {
+                value: 0,
+                message: 'type不能小于0'
+              },
+
+
+              notEmpty: {
+                message: 'type不能为空'
+              }
+
+            }
+          },
+        }
+      })
+      .on('success.form.fv', function (e) {
+        e.preventDefault();
+        var $form = $(e.target);
+        var bv = $form.data('formValidation');
+        $.post($form.attr('action'), $form.serialize(), function (result) {
+          if (result.errCode) {
+            $.alert({
+              title: '提示',
+              content: result.msg,
+              type: 'red',
+              buttons: {
+                close: {
+                  text: '确定'
+                }
+              }
+            });
+          } else {
+            $.confirm({
+              title: '提示',
+              content: result.msg,
+              type: 'blue',
+              typeAnimated: true,
+              buttons: {
+                tryAgain: {
+                  text: '继续添加',
+                  btnClass: 'btn-blue',
+                  action: function() {
+                    $form.data('formValidation').resetForm();
+                    $form[0].reset();
+                  }
+                },
+                close: {
+                  text: '查看',
+                  action: function () {
+                    window.location.href = '/admin2/article/index';
+                  }
+                }
+              }
+            });
+          }
+        }, 'json');
+      });
+  });
+</script>
