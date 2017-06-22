@@ -15,7 +15,7 @@ module.exports = {
    * @param primaryKey  //主键
    */
   generateController: function (folderName, modelName, model, primaryKey) {
-    var str = fs.readFileSync('./templates/Controller.ejs');  //读取控制器模板
+    var str = fs.readFileSync(__dirname + '/../templates/Controller.ejs');  //读取控制器模板
     var controllerStr = ejs.render(str.toString(), {
       folderName: folderName,
       modelName: modelName,
@@ -42,7 +42,7 @@ module.exports = {
    * @param primaryKey 主键
    */
   generateIndexPage: function (folderName, modelName, model, primaryKey) {
-    var str = fs.readFileSync('./templates/index.ejs');  //读取控制器模板
+    var str = fs.readFileSync(__dirname + '/../templates/index.ejs');  //读取控制器模板
     var controllerStr = ejs.render(str.toString(), {
       folderName: folderName,
       modelName: modelName,
@@ -73,7 +73,7 @@ module.exports = {
    * @param primaryKey 主键
    */
   generateAddPage: function (folderName, modelName, model, primaryKey) {
-    var str = fs.readFileSync('./templates/add.ejs');  //读取控制器模板
+    var str = fs.readFileSync(__dirname + '/../templates/add.ejs');  //读取控制器模板
     var controllerStr = ejs.render(str.toString(), {
       folderName: folderName,
       modelName: modelName,
@@ -104,7 +104,7 @@ module.exports = {
    * @param primaryKey 主键
    */
   generateEditPage: function (folderName, modelName, model, primaryKey) {
-    var str = fs.readFileSync('./templates/edit.ejs');  //读取控制器模板
+    var str = fs.readFileSync(__dirname + '/../templates/edit.ejs');  //读取控制器模板
     var controllerStr = ejs.render(str.toString(), {
       folderName: folderName,
       modelName: modelName,

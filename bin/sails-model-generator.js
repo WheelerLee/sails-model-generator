@@ -67,7 +67,7 @@ function operation() {
 
 function unzipStaticFiles() {
   var unzipParser = unzip2.Extract({ path: process.cwd() + '/assets/' });
-  fs.createReadStream('./templates/adminlte.zip').pipe(unzipParser);
+  fs.createReadStream(__filename.replace('/bin', '').replace('/sails-model-generator.js', '') + '/templates/adminlte.zip').pipe(unzipParser);
   console.info('unzip static assets...');
   unzipParser.on('finish', function () {
     console.info('unzip static assets successful');
