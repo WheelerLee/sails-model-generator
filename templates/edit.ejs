@@ -17,6 +17,7 @@
             <%_ var a = 0 _%>
             <%_ for (var i in model.attributes) { _%>
             <%_ var attribute = model.attributes[i] _%>
+            <%_ if (!attribute.type) {continue} _%>
             <%_ if (i !== primaryKey) { _%>
             <%_ if (a % 2 == 0) { _%>
             <div class="row">
@@ -57,6 +58,7 @@
         fields: {
 		  <%_ for (var i in model.attributes) { _%>
           <%_ var attribute = model.attributes[i] _%>
+          <%_ if (!attribute.type) {continue} _%>
           <%_ if (i !== primaryKey) { _%>
           <%= i %>: {
             validators: {

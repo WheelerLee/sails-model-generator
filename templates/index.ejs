@@ -14,6 +14,7 @@
         <div class="row">
           <%_ for (var i in model.attributes) { _%>
           <%_ var attribute = model.attributes[i] _%>
+          <%_ if (!attribute.type) {continue} _%>
           <div class="form-group col-md-3">
             <label for="exampleInputEmail1"><%- attribute.name ? attribute.name : i %></label>
             <input name="<%- i %>" class="form-control" placeholder="<%- attribute.name ? attribute.name : i %>">

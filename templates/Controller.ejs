@@ -26,6 +26,7 @@ module.exports = {
     var queryObj = {};
     <%_ for (var i in model['attributes']) { _%>
     <%_ var attribute = model['attributes'][i] _%>
+    <%_ if (!attribute.type) {continue} _%>
     <%_ if (attribute.type.toLowerCase() === 'string' || attribute.type.toLowerCase() === 'text' || attribute.type.toLowerCase() === 'mediumtext'|| attribute.type.toLowerCase() === 'longtext') { _%>
     if (req.param('<%= i %>') && req.param('<%= i %>').trim() !== '') {
       queryObj['<%- i %>'] = {contains: req.param('<%- i %>').trim()};
