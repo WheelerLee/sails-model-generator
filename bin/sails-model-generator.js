@@ -76,7 +76,8 @@ function operation() {
  * 复制基础文件到相关目录
  */
 function copyBaseFiles() {
-  var proRootPath = __filename.replace('/bin', '').replace('/sails-model-generator.js', '');
+  var proRootPath = __filename.replace('/bin/sails-model-generator.js', '')
+    .replace('\\bin\\sails-model-generator.js', '');
 
   console.info('Copy layout to views');
   fs.writeFileSync(process.cwd() + '/views/' + folderName + '/layout.ejs',
@@ -102,7 +103,8 @@ function copyBaseFiles() {
  */
 function copyAuthFiles() {
 
-  var proRootPath = __filename.replace('/bin', '').replace('/sails-model-generator.js', '');
+  var proRootPath = __filename.replace('/bin/sails-model-generator.js', '')
+    .replace('\\bin\\sails-model-generator.js', '');
 
   console.info('Copy permission controllers to controllers');
   var controllers = fs.readdirSync(proRootPath + '/templates/auth/controllers');
@@ -136,7 +138,7 @@ function copyAuthFiles() {
  */
 function unzipStaticFiles() {
   var unzipParser = unzip2.Extract({path: process.cwd() + '/assets/' });
-  fs.createReadStream(__filename.replace('/bin', '').replace('/sails-model-generator.js', '') + '/templates/assets.zip').pipe(unzipParser);
+  fs.createReadStream(__filename.replace('/bin/sails-model-generator.js', '').replace('\\bin\\sails-model-generator.js', '') + '/templates/assets.zip').pipe(unzipParser);
   console.info('unzip static assets...');
   unzipParser.on('finish', function () {
     console.info('unzip static assets successful');
