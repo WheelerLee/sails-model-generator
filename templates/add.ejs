@@ -1,242 +1,153 @@
-<script type="text/javascript" src="/adminlte/validation/js/formValidation.js"></script>
-<script type="text/javascript" src="/adminlte/validation/js/framework/bootstrap.js"></script>
-<script type="text/javascript" src="/adminlte/validation/js/language/zh_CN.js"></script>
-<link rel="stylesheet" href="/adminlte/plugins/jquery-confirm/jquery-confirm.min.css">
-<script src="/adminlte/plugins/jquery-confirm/jquery-confirm.min.js"></script>
+<style rel="stylesheet">
+  body {
+    padding: 10px;
+  }
+</style>
+<div class="container">
+  <form class="layui-form layui-form-pane" action="">
+    <%- '\<\% if (' + modelName.toLowerCase() + '.' + primaryKey + ') { \%\>' %>
+    <input type="hidden" value="<%- '\<\%= ' + modelName.toLowerCase() + '.' + primaryKey + ' \%\>' %>" name="<%= primaryKey %>">
+    <%- '\<\% } \%\>' %>
 
-<section class="content">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="box box-warning">
-        <div class="box-header with-border">
-          <h3 class="box-title">添加<%= model.name ? model.name : modelName %></h3>
-        </div>
-        <div class="box-body">
-          <form role="form" id="defaultForm">
-            <%_ var a = 0 _%>
-            <%_ for (var i in model.attributes) { _%>
-            <%_ var attribute = model.attributes[i] _%>
-            <%_ if (!attribute.type) {continue} _%>
-            <%_ if (i !== primaryKey) { _%>
-            <%_ if (a % 2 == 0) { _%>
-            <div class="row">
-            <%_ } _%>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label><%= attribute.name ? attribute.name : i %></label>
-                  <input type="text" name="<%= i %>" class="form-control" placeholder="<%= attribute.name ? attribute.name : i %>">
-                </div>
-              </div>
-            <%_ if (a % 2 == 1) { _%>
-            </div>
-            <%_ } _%>
-            <%_ a++ _%>
-            <%_ } _%>
-            <%_ } _%>
-            <%_ if (a % 2 === 1) { _%>
-            </div>
-            <%_ } _%>
-          </form>
-        </div>
-        <div class="box-footer">
-          <button type="button" class="btn btn-primary pull-right" onclick="$('#defaultForm').data('formValidation').validate()">添加</button>
-        </div>
+    <%_ for (var i in model.attributes) { _%>
+    <%_ var attribute = model.attributes[i] _%>
+    <%_ if (!attribute.type) {continue} _%>
+    <%_ if (i !== primaryKey) { _%>
+    <div class="layui-form-item">
+      <label class="layui-form-label"><%= attribute.name ? attribute.name : i %></label>
+      <div class="layui-input-block">
+        <input type="text" name="<%= i %>" lay-verify="<%= i %>"
+               value="<%- '\<\%= ' + modelName.toLowerCase() + '.' + i + ' ? ' + modelName.toLowerCase() + '.' + i + ' : \'\' \%\>' %>" placeholder="请输入<%= attribute.name ? attribute.name : i %>" autocomplete="off" class="layui-input">
       </div>
     </div>
-  </div>
-</section>
+    <%_ } _%>
+    <%_ } _%>
+    <div class="layui-form-item" style="text-align: center;">
+      <button class="layui-btn" lay-submit lay-filter="submit_btn">保存</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </form>
+</div>
+
 <script type="text/javascript">
-  $(document).ready(function () {
-    $('#defaultForm')
-      .formValidation({
-        icon: {
-          valid: 'glyphicon glyphicon-ok',
-          invalid: 'glyphicon glyphicon-remove',
-          validating: 'glyphicon glyphicon-refresh'
-        },
-        fields: {
-          <%_ for (var i in model.attributes) { _%>
-          <%_ var attribute = model.attributes[i] _%>
-          <%_ if (!attribute.type) {continue} _%>
-          <%_ if (i !== primaryKey) { _%>
-          <%= i %>: {
-            validators: {
-              <%_ if (attribute.alpha) { _%>
-              regexp: {
-                regexp: /^[a-zA-Z]+$/,
-                message: '<%= attribute.name ? attribute.name : i %>只能包含字母'
-              },
-              <%_ } _%>
-              <%_ if (attribute.alphadashed) { _%>
-              regexp: {
-                regexp: /^[a-zA-Z\-]+$/,
-                message: '<%= attribute.name ? attribute.name : i %>只能包含字母以及中划线-'
-              },
-              <%_ } _%>
-              <%_ if (attribute.alphanumeric) { _%>
-              regexp: {
-                regexp: /^[a-zA-Z0-9]+$/,
-                message: '<%= attribute.name ? attribute.name : i %>只能包含字母以及数字'
-              },
-              <%_ } _%>
-              <%_ if (attribute.alphanumericdashed) { _%>
-              regexp: {
-                regexp: /^[a-zA-Z0-9\-]+$/,
-                message: '<%= attribute.name ? attribute.name : i %>只能包含字母，数字以及中划线-'
-              },
-              <%_ } _%>
-              <%_ if (attribute.creditcard) { _%>
-              creditCard: {
-                message: '<%= attribute.name ? attribute.name : i %>信用卡格式错误'
-              },
-              <%_ } _%>
-              <%_ if (attribute.datetime || attribute.type === 'datetime') { _%>
-              date: {
-                format: 'YYYY-MM-DD HH:mm:SS',
-                message: '<%= attribute.name ? attribute.name : i %>时间格式错误'
-              },
-              <%_ } _%>
-              <%_ if (attribute.decimal || attribute.numeric || attribute.float || attribute.type === 'float') { _%>
-              numeric: {
-                message: '<%= attribute.name ? attribute.name : i %>必须是数字'
-              },
-              <%_ } _%>
-              <%_ if (attribute.email) { _%>
-              emailAddress: {
-                message: '<%= attribute.name ? attribute.name : i %>必须是邮箱'
-              },
-              <%_ } _%>
-              <%_ if (attribute.hexadecimal) { _%>
-              hex: {
-                message: '<%= attribute.name ? attribute.name : i %>必须是十六进制'
-              },
-              <%_ } _%>
-              <%_ if (attribute.hexColor) { _%>
-              color: {
-                message: '<%= attribute.name ? attribute.name : i %>必须是颜色'
-              },
-              <%_ } _%>
-              <%_ if (attribute.in) { _%>
-              color: {
-                message: '<%= attribute.name ? attribute.name : i %>必须是颜色'
-              },
-              <%_ } _%>
-              <%_ if (attribute.int || attribute.integer || attribute.type === 'integer') { _%>
-              integer: {
-                message: '<%= attribute.name ? attribute.name : i %>必须是整数'
-              },
-              <%_ } _%>
-              <%_ if (attribute.ip) { _%>
-              ip: {
-                message: '<%= attribute.name ? attribute.name : i %>必须是IPv4或IPv6地址'
-              },
-              <%_ } _%>
-              <%_ if (attribute.is || attribute.regex) { _%>
-              regexp: {
-                regexp: <%= attribute.is || attribute.regex %>,
-                  message: '<%= attribute.name ? attribute.name : i %>格式错误'
-              },
-              <%_ } _%>
-              <%_ if (attribute.lowercase) { _%>
-              stringCase: {
-                case: 'lower',
-                message: '<%= attribute.name ? attribute.name : i %>不能有大写字母'
-              },
-              <%_ } _%>
-              <%_ if (attribute.uppercase) { _%>
-              stringCase: {
-                case: 'upper',
-                message: '<%= attribute.name ? attribute.name : i %>不能有小写字母'
-              },
-              <%_ } _%>
-              <%_ if (attribute.type === 'integer' || attribute.type === 'float') { _%>
-              <%_ if (attribute.max || attribute.max === 0) { _%>
-              lessThan: {
-                value: <%= attribute.max %>,
-                message: '<%= attribute.name ? attribute.name : i %>不能大于<%= attribute.max %>'
-              },
-              <%_ } _%>
-              <%_ if (attribute.min || attribute.min === 0) { _%>
-              greaterThan: {
-                value: <%= attribute.min %>,
-                message: '<%= attribute.name ? attribute.name : i %>不能小于<%= attribute.min %>'
-              },
-              <%_ } _%>
-              <%_ } _%>
 
-              <%_ if (attribute.type === 'string') { _%>
-              <%_ if (attribute.maxLength || attribute.maxLength === 0 || attribute.minLength || attribute.minLength === 0) { _%>
-              stringLength: {
-                <%_ if (attribute.minLength || attribute.minLength === 0) { _%>
-                min: <%= attribute.minLength %>,
-                <%_ } _%>
-                <%_ if (attribute.maxLength || attribute.maxLength === 0) { _%>
-                max: <%= attribute.maxLength %>,
-                <%_ } _%>
-                <%_ if (attribute.minLength && attribute.maxLength) { _%>
-                message: '<%= attribute.name ? attribute.name : i %>的长度在<%= attribute.minLength %>和<%= attribute.maxLength %>之间'
-                <%_ } else if (attribute.minLength) { _%>
-                message: '<%= attribute.name ? attribute.name : i %>的长度必须大于<%= attribute.minLength %>'
-                <%_ } else { _%>
-                message: '<%= attribute.name ? attribute.name : i %>的长度必须小于<%= attribute.maxLength %>'
-                <%_ } _%>
-              },
-              <%_ } _%>
-              <%_ } _%>
+  layui.use('form', function(){
+    var form = layui.form, $ = layui.jquery;
 
-              <%_ if (attribute.notNull || attribute.required) { _%>
-              notEmpty: {
-                message: '<%= attribute.name ? attribute.name : i %>不能为空'
-              }
-              <%_ } _%>
-
-            }
-          },
-          <%_ } _%>
-          <%_ } _%>
+    form.verify({
+      <%_ for (var i in model.attributes) { _%>
+      <%_ var attribute = model.attributes[i] _%>
+      <%_ if (!attribute.type) {continue} _%>
+      <%_ if (i !== primaryKey) { _%>
+      <%= i %>: function (value, item) {
+        <%_ if (attribute.alpha) { _%>
+        var reg = /^[a-zA-Z]+$/;
+        if(!reg.test(value.trim())) {
+          return '<%= attribute.name ? attribute.name : i %>只能包含字母';
         }
-      })
-      .on('success.form.fv', function (e) {
-        e.preventDefault();
-        var $form = $(e.target);
-        var bv = $form.data('formValidation');
-        $.post($form.attr('action'), $form.serialize(), function (result) {
-          if (result.errCode) {
-            $.alert({
-              title: '提示',
-              content: result.msg,
-              type: 'red',
-              buttons: {
-                close: {
-                  text: '确定'
-                }
-              }
-            });
-          } else {
-            $.confirm({
-              title: '提示',
-              content: result.msg,
-              type: 'blue',
-              typeAnimated: true,
-              buttons: {
-                tryAgain: {
-                  text: '继续添加',
-                  btnClass: 'btn-blue',
-                  action: function() {
-                    $form.data('formValidation').resetForm();
-                    $form[0].reset();
-                  }
-                },
-                close: {
-                  text: '查看',
-                  action: function () {
-                    window.location.href = '/<%= folderName %>/<%= modelName.toLowerCase() %>/index';
-                  }
-                }
-              }
-            });
-          }
-        }, 'json');
+        <%_ } _%>
+        <%_ if (attribute.alphadashed) { _%>
+        var reg = /^[a-zA-Z\-]+$/;
+        if(!reg.test(value.trim())) {
+          return '<%= attribute.name ? attribute.name : i %>只能包含字母以及中划线-';
+        }
+        <%_ } _%>
+        <%_ if (attribute.alphanumeric) { _%>
+        var reg = /^[a-zA-Z0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return '<%= attribute.name ? attribute.name : i %>只能包含字母以及数字';
+        }
+        <%_ } _%>
+        <%_ if (attribute.alphanumericdashed) { _%>
+        var reg = /^[a-zA-Z0-9\-]+$/;
+        if(!reg.test(value.trim())) {
+          return '<%= attribute.name ? attribute.name : i %>只能包含字母，数字以及中划线-';
+        }
+        <%_ } _%>
+        <%_ if (attribute.decimal || attribute.numeric || attribute.float || attribute.type === 'float') { _%>
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return '<%= attribute.name ? attribute.name : i %>必须是数字';
+        }
+        <%_ } _%>
+        <%_ if (attribute.email) { _%>
+        var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+        if(!reg.test(value.trim())) {
+          return '<%= attribute.name ? attribute.name : i %>必须是邮箱';
+        }
+        <%_ } _%>
+        <%_ if (attribute.int || attribute.integer || attribute.type === 'integer') { _%>
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return '<%= attribute.name ? attribute.name : i %>必须是整数';
+        }
+        <%_ } _%>
+        <%_ if (attribute.is || attribute.regex) { _%>
+        var reg = <%= attribute.is || attribute.regex %>;
+        if(!reg.test(value.trim())) {
+          return '<%= attribute.name ? attribute.name : i %>格式错误';
+        }
+        <%_ } _%>
+        <%_ if (attribute.lowercase) { _%>
+        var reg = /^[a-z]+$/;
+        if(!reg.test(value.trim())) {
+          return '<%= attribute.name ? attribute.name : i %>只能包含小写字母';
+        }
+        <%_ } _%>
+        <%_ if (attribute.uppercase) { _%>
+        var reg = /^[A-Z]+$/;
+        if(!reg.test(value.trim())) {
+          return '<%= attribute.name ? attribute.name : i %>只能包含大写字母';
+        }
+        <%_ } _%>
+        <%_ if (attribute.int || attribute.integer || attribute.type === 'integer' || attribute.decimal || attribute.numeric || attribute.float || attribute.type === 'float') { _%>
+        <%_ if (attribute.max || attribute.max === 0) { _%>
+        if (parseFloat(value) > <%= attribute.max %>) {
+          return '<%= attribute.name ? attribute.name : i %>不能大于<%= attribute.max %>';
+        }
+        <%_ } _%>
+        <%_ if (attribute.min || attribute.min === 0) { _%>
+        if (parseFloat(value) < <%= attribute.min %>) {
+          return '<%= attribute.name ? attribute.name : i %>不能小于<%= attribute.min %>';
+        }
+        <%_ } _%>
+        <%_ } _%>
+        <%_ if (attribute.type === 'string') { _%>
+        <%_ if (attribute.minLength || attribute.minLength === 0) { _%>
+        if (value.trim().length < <%= attribute.minLength %>) {
+          return '<%= attribute.name ? attribute.name : i %>的长度必须大于<%= attribute.minLength %>';
+        }
+        <%_ } _%>
+        <%_ if (attribute.maxLength || attribute.maxLength === 0) { _%>
+        if (value.trim().length > <%= attribute.maxLength %>) {
+          return '<%= attribute.name ? attribute.name : i %>的长度必须小于<%= attribute.maxLength %>';
+        }
+        <%_ } _%>
+        <%_ } _%>
+      },
+      <%_ } _%>
+      <%_ } _%>
+    });
+
+    //监听提交
+    form.on('submit(submit_btn)', function(data) {
+      var loading = layer.load(1);
+      $.post('/<%= folderName %>/<%= modelName.toLowerCase() %>/add', data.field, function(data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
       });
+
+      return false;
+    });
   });
 </script>

@@ -1,0 +1,183 @@
+<blockquote class="layui-elem-quote">
+    <div class="layui-inline">
+        <form class="layui-form" id="roleSearchForm">
+            <div class="layui-input-inline" style="width:145px;">
+                <input type="text" name="name" value="" placeholder="角色名称" class="layui-input search_input">
+            </div>
+            <a class="layui-btn" id="search_btn">
+                <i class="layui-icon larry-icon">&#xe615;</i>查询
+            </a>
+            <a class="layui-btn layui-btn-normal" id="add_btn">
+                <i class="layui-icon larry-icon">&#xe61f;</i>新增角色
+            </a>
+        </form>
+    </div>
+</blockquote>
+<table class="layui-table" id="table" lay-filter="table">
+</table>
+
+<script type="text/javascript">
+  layui.use(['table', 'form', 'layer'], function () {
+
+    var table = layui.table, form = layui.form, $ = layui.jquery, layer = layui.layer;
+    var roleTableRender = table.render({
+      elem: '#table',
+      url: '/admin/user/index',
+      id: 'roleTableId',
+      method: 'post',
+      height: '400',
+      skin: 'row',
+      even: 'true',
+      cols: [[
+        {field: 'name', title: '角色名称', width: 120},
+        {field: 'login_name', title: '登录名', width: 120},
+        {field: 'card_num', title: '身份证', width: 120},
+        {field: 'mobile_num', title: '手机号', width: 120},
+        {field: 'office_tel_num', title: '办公电话', width: 120},
+        {field: 'work_address', title: '工作地址', width: 120},
+        {field: 'email', title: '工作邮箱', width: 120},
+        {field: 'qq', title: 'QQ号', width: 120},
+        {field: 'weixin', title: '微信', width: 120},
+        {field: 'sex', title: '性别', width: 120},
+        {field: 'birthday', title: '出生年月', width: 120},
+        {field: 'create_user', title: '创建人', width: 120},
+        {fixed: 'right', title: '操作', align: 'center', width: 280, toolbar: '#operation'},
+      ]],
+      page: true,
+      limit: 10//默认显示10条
+    });
+
+    $('body').on('click', '#search_btn', function () {
+
+      var obj = {};
+      var array = $('#roleSearchForm').serializeArray();
+      for (var i = 0; i < array.length; i++) {
+        var item = array[i];
+        obj[item.name] = item.value;
+      }
+
+      roleTableRender.reload({
+        where: obj
+      });
+
+    });
+
+    var isSuccess = false;
+    $('body').on('click', '#add_btn', function () {
+      isSuccess = true;
+      layer.open({
+        type: 2,
+        title: '新增用户',
+        maxmin: true,
+        resize: false,
+        area: ['60%', '60%'],
+        content: '/admin/user/add',
+        zIndex: layer.zIndex, //重点1
+        // success: function(layero) {
+        //   // layer.setTop(layero); //重点2
+        // }
+        cancel: function () {
+          isSuccess = false;
+        },
+        end: function () {
+          if (isSuccess) {
+            var obj = {};
+            var array = $('#roleSearchForm').serializeArray();
+            for (var i = 0; i < array.length; i++) {
+              var item = array[i];
+              obj[item.name] = item.value;
+            }
+
+            roleTableRender.reload({
+              where: obj
+            });
+          }
+        }
+      });
+
+    });
+
+    //监听工具条
+    table.on('tool(table)', function (obj) {
+
+      var isSuccess = false;
+      if (obj.event === 'edit') {
+        isSuccess = true;
+        layer.open({
+          type: 2,
+          title: '编辑用户',
+          maxmin: true,
+          resize: false,
+          area: ['60%', '60%'],
+          content: '/admin/xt_role/add?id=' + obj.data.id,
+          zIndex: layer.zIndex, //重点1
+          // success: function(layero) {
+          //   // layer.setTop(layero); //重点2
+          // }
+          cancel: function () {
+            isSuccess = false;
+          },
+          end: function () {
+            if (isSuccess) {
+              var obj = {};
+              var array = $('#roleSearchForm').serializeArray();
+              for (var i = 0; i < array.length; i++) {
+                var item = array[i];
+                obj[item.name] = item.value;
+              }
+
+              roleTableRender.reload({
+                where: obj
+              });
+            }
+          }
+        });
+      } else if (obj.event === 'delete') {
+        layer.confirm('是否确定删除？', {icon: 3, title: '提示'}, function (index) {
+          layer.close(index);
+          var loading = layer.load(1);
+          $.post('/admin/xt_role/delete', obj.data, function (data) {
+            layer.close(loading);
+            if (data.errCode === 0) {
+              layer.msg(data.msg, {
+                icon: 6,
+                time: 1000
+              }, function () {
+
+                obj.del();
+
+              });
+            } else {
+              layer.msg(data.msg, {icon: 5});
+            }
+          });
+        });
+      } else if (obj.event === 'distribution_res') {
+        layer.open({
+          type: 2,
+          title: '分配资源',
+          maxmin: true,
+          resize: false,
+          area: ['800px', '494px'],
+          content: '/admin/xt_role/distribution_resource?role_id=' + obj.data.id,
+          zIndex: layer.zIndex, //重点1
+          // success: function(layero) {
+          //   // layer.setTop(layero); //重点2
+          // }
+          cancel: function () {
+            isSuccess = false;
+          },
+          end: function () {
+
+          }
+        });
+      }
+    });
+
+  });
+</script>
+
+<script type="text/html" id="operation">
+    <a class="layui-btn layui-btn-small" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-small layui-btn-danger" lay-event="delete">删除</a>
+</script>

@@ -1,150 +1,159 @@
-<link rel="stylesheet" href="/adminlte/plugins/datatables/dataTables.bootstrap.css">
-<script src="/adminlte/plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="/adminlte/plugins/datatables/dataTables.bootstrap.min.js"></script>
-<link rel="stylesheet" href="/adminlte/plugins/jquery-confirm/jquery-confirm.min.css">
-<script src="/adminlte/plugins/jquery-confirm/jquery-confirm.min.js"></script>
-
-<section class="content">
-  <div class="box">
-    <div class="box-header with-border">
-      <h3 class="box-title"><%= model.name ? model.name : modelName %>列表</h3>
-    </div>
-    <div class="box-body">
-      <form id="search_form">
-        <div class="row">
-          <%_ for (var i in model.attributes) { _%>
-          <%_ var attribute = model.attributes[i] _%>
-          <%_ if (!attribute.type) {continue} _%>
-          <div class="form-group col-md-3">
-            <label for="exampleInputEmail1"><%- attribute.name ? attribute.name : i %></label>
-            <input name="<%- i %>" class="form-control" placeholder="<%- attribute.name ? attribute.name : i %>">
-          </div>
-          <%_ } _%>
-        </div>
-      </form>
-
-      <div style="margin-top: 10px; text-align: center;">
-        <button id="search_reset" type="reset" class="btn">清空</button>
-        <button id="search_submit" type="submit" class="btn btn-primary">
-          <i class="fa fa-search"></i> 搜索
-        </button>
-      </div>
-
-      <div id="example1_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-        <div class="row">
-          <div class = "col-sm-12">
-            <table id="example1" class="table table-bordered table-striped table-hover dataTable">
-
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<script type="text/javascript">
-  var searchData = {};
-  var dataTable = $('#example1').DataTable({
-    "displayLength": 10,
-    "processing": true,
-    "serverSide": true,
-    "columns": [
+<blockquote class="layui-elem-quote">
+  <div class="layui-inline">
+    <form class="layui-form" id="roleSearchForm">
       <%_ for (var i in model.attributes) { _%>
       <%_ var attribute = model.attributes[i] _%>
-      { "data": "<%- i %>", title: '<%- attribute.name ? attribute.name : i %>', "sDefaultContent": "", "sClass" : "center" },
+      <%_ if (!attribute.type) {continue} _%>
+      <div class="layui-input-inline" style="width:145px;">
+        <input type="text" name="<%- i %>" value="" placeholder="<%- attribute.name ? attribute.name : i %>" class="layui-input search_input">
+      </div>
       <%_ } _%>
-      { "data": 'password', title: '操作', "width": "120px",
-        render: function (data, type, row, meta) {
-          var str = "";
-          str += '<a href="/<%= folderName %>/<%= modelName.toLowerCase() %>/edit?<%= primaryKey %>=' + row.<%= primaryKey %> + '">编辑</a>';
-          str += '<a href="#" onclick="del(\'' + row.<%= primaryKey %> + '\', event)" style="margin-left: 8px;">删除</a>';
-          return str;
-        }
-      }
-    ],
-    "ajax": {
-      "url": "/<%= folderName %>/<%= modelName.toLowerCase() %>/list",
-      'method': 'post',
-      'data': function (d) {
-        $.extend(d, searchData);
-      }
-    },
-//    "lengthMenu" : [10, 25, 50], //更改显示记录数选项
-//    "scrollY": "380",
-//    "scrollCollapse" : true,
-    "lengthChange": false,
-//    "deferRender": false,
-    'sort': false,
-    "searching": false,
-    'autoWidth': false,
-    "language": {//下面是一些汉语翻译
-      "search": "搜索:",
-      "lengthMenu": "每页显示 _MENU_ 条记录",
-      "zeroRecords": "没有检索到数据",
-      "info": "共 _TOTAL_ 条;&nbsp;&nbsp显示 _START_ 至 _END_ 条",
-      "infoFiltered": "(筛选自 _MAX_ 条数据)",
-      "infoEmpty": "",
-      "processing": "正在加载数据...",
-      "loadingRecords": "正在加载数据...",
-      "paginate":
-        {
-          "first": "首页",
-          "previous": "前一页",
-          "next": "后一页",
-          "last": "末页"
-        }
-    }
-  });
-  $(document).on('click', '#search_reset', function () {
-    $('#search_form')[0].reset();
-  });
-  $(document).on('click', '#search_submit', function () {
-    searchData = {};
-    var data = $('#search_form').serializeArray();
-    for (var i in data) {
-      var kv = data[i];
-      searchData[kv['name']] = kv['value'];
-    }
-    dataTable.ajax.reload();
-  });
+      <a class="layui-btn" id="search_btn">
+        <i class="layui-icon larry-icon">&#xe615;</i>查询
+      </a>
+      <%- '\<\% if (add_permission) { \%\>' %>
+      <a class="layui-btn layui-btn-normal" id="add_btn">
+        <i class="layui-icon larry-icon">&#xe61f;</i>添加<%= modelName %>
+      </a>
+      <%- '\<\% } \%\>' %>
+    </form>
+  </div>
+</blockquote>
+<table class="layui-table" id="table" lay-filter="table">
+</table>
 
-  function del(<%= primaryKey %>, event) {
-    event.preventDefault();
-    $.confirm({
-      title: '提示',
-      content: '是否删除?',
-      type: 'red',
-      typeAnimated: true,
-      buttons: {
-        tryAgain: {
-          text: '取消'
+<script type="text/javascript">
+  layui.use(['table', 'form', 'layer'], function () {
+
+    var table = layui.table, form = layui.form, $ = layui.jquery, layer = layui.layer;
+    var roleTableRender = table.render({
+      elem: '#table',
+      url: '/<%= folderName %>/<%= modelName.toLowerCase() %>/index',
+      id:'roleTableId',
+      method: 'post',
+      height:'400',
+      skin:'row',
+      even:'true',
+      cols: [[
+        <%_ for (var i in model.attributes) { _%>
+        <%_ var attribute = model.attributes[i] _%>
+        {field:'<%- i %>', title: '<%- attribute.name ? attribute.name : i %>',width: 120 },
+        <%_ } _%>
+        {fixed:'right', title: '操作', align:'center',width: 280, toolbar: '#operation'}
+      ]],
+      page: true,
+      limit: 10//默认显示10条
+    });
+
+    $('body').on('click', '#search_btn', function () {
+
+      var obj = {};
+      var array = $('#roleSearchForm').serializeArray();
+      for (var i = 0; i < array.length; i++) {
+        var item = array[i];
+        obj[item.name] = item.value;
+      }
+
+      roleTableRender.reload({
+        where: obj
+      });
+
+    });
+
+    var isSuccess = false;
+    $('body').on('click', '#add_btn', function () {
+      isSuccess = true;
+      layer.open({
+        type: 2,
+        title: '添加<%= modelName %>',
+        maxmin: true,
+        resize: false,
+        area: ['60%', '60%'],
+        content: '/<%- folderName %>/<%- modelName.toLowerCase() %>/add',
+        zIndex: layer.zIndex,
+        cancel: function () {
+          isSuccess = false;
         },
-        close: {
-          text: '删除',
-          btnClass: 'btn-red',
-          action: function () {
-            $.post('/<%= folderName %>/<%= modelName.toLowerCase() %>/del', {<%= primaryKey %>: <%= primaryKey %>}, function (result) {
-              if (result.errCode === 0) {
-                dataTable.ajax.reload(null, false);
-              } else {
-                if (result.errCode) {
-                  $.alert({
-                    title: '提示',
-                    content: result.msg,
-                    type: 'red',
-                    buttons: {
-                      close: {
-                        text: '确定'
-                      }
-                    }
-                  });
-                }
-              }
-            }, 'json');
+        end: function () {
+          if (isSuccess) {
+            var obj = {};
+            var array = $('#roleSearchForm').serializeArray();
+            for (var i = 0; i < array.length; i++) {
+              var item = array[i];
+              obj[item.name] = item.value;
+            }
+
+            roleTableRender.reload({
+              where: {}
+            });
           }
         }
+      });
+
+    });
+
+    //监听工具条
+    table.on('tool(table)', function(obj) {
+
+      var isSuccess = false;
+      if (obj.event === 'edit') {
+        isSuccess = true;
+        layer.open({
+          type: 2,
+          title: '修改<%= modelName %>',
+          maxmin: true,
+          resize: false,
+          area: ['60%', '60%'],
+          content: '/<%- folderName %>/<%- modelName.toLowerCase() %>/add?id=' + obj.data.id,
+          zIndex: layer.zIndex,
+          cancel: function () {
+            isSuccess = false;
+          },
+          end: function () {
+            if (isSuccess) {
+              var obj = {};
+              var array = $('#roleSearchForm').serializeArray();
+              for (var i = 0; i < array.length; i++) {
+                var item = array[i];
+                obj[item.name] = item.value;
+              }
+
+              roleTableRender.reload({
+                where: {}
+              });
+            }
+          }
+        });
+      } else if (obj.event === 'delete') {
+        layer.confirm('是否确定删除？', {icon: 3, title:'提示'}, function(index) {
+          layer.close(index);
+          var loading = layer.load(1);
+          $.post('/<%= folderName %>/<%= modelName.toLowerCase() %>/delete', obj.data, function(data) {
+            layer.close(loading);
+            if (data.errCode === 0) {
+              layer.msg(data.msg, {
+                icon: 6,
+                time: 1000
+              }, function() {
+
+                obj.del();
+
+              });
+            } else {
+              layer.msg(data.msg, {icon: 5});
+            }
+          });
+        });
       }
     });
-  }
 
+  });
+</script>
+<script type="text/html" id="operation">
+  <%- '\<\% if (add_permission) { \%\>' %>
+  <a class="layui-btn layui-btn-small" lay-event="edit">编辑</a>
+  <%- '\<\% } \%\>' %>
+  <%- '\<\% if (delete_permission) { \%\>' %>
+  <a class="layui-btn layui-btn-small layui-btn-danger" lay-event="delete">删除</a>
+  <%- '\<\% } \%\>' %>
 </script>

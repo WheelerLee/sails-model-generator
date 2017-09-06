@@ -1,0 +1,124 @@
+<style rel="stylesheet">
+    body {
+        padding: 10px;
+    }
+</style>
+<form class="layui-form layui-form-pane" action="">
+    <%if (resource.id) { %>
+    <input type="hidden" name="id" value="<%= resource.id %>" name="id">
+    <% } %>
+    <div class="layui-form-item">
+        <label class="layui-form-label">资源名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="required" value="<%= resource.name ? resource.name : ""%>" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">资源别名</label>
+        <div class="layui-input-block">
+            <input type="text" name="alias_name" lay-verify="required" value="<%= resource.alias_name?resource.alias_name:""%>" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item" >
+        <label class="layui-form-label">父级资源</label>
+        <div class="layui-input-block">
+
+            <select name="parent_id" lay-filter="" <%- resource.parent_id != '-1' ? '' : 'disabled' %> >
+                <option <%-resource?"":'selected'%> value="-1">请选择</option>
+                <% if(parents && parents.length > 0){%>
+                <% parents.forEach(function(item){ %>
+                <option <%=item.id == resource.parent_id?'selected':''%> value='<%= item.id ? item.id : '' %>'><%= item.name %></option>
+                <% }) %>
+                <% } %>
+            </select>
+
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">资源类型</label>
+        <div class="layui-input-block">
+            <% if (resource_type.length) { %>
+            <select name="res_type_code"  lay-verify="select_type" lay-filter="res_type_code">
+                <% resource_type.forEach(function(item){ %>
+                <option <%=item.value == resource.res_type_code?'selected':''%> value='<%= item.value %>'><%= item.name %></option>
+                <% }) %>
+            </select>
+            <% } %>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">资源图标</label>
+        <div class="layui-input-block">
+            <a  id="choose_img" class="layui-btn  layui-btn-normal">
+                选择图标
+            </a>
+           <!-- <input class="layui-icon layui-input" type="text" name="icon_path"  value="<%= resource.icon_path?resource.icon_path:""%>" placeholder="请输入" autocomplete="off" class="layui-input">-->
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">资源路径</label>
+        <div class="layui-input-block">
+            <input type="text" name="path" value="<%= resource.path?resource.path:""%>" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">资源描述</label>
+        <div class="layui-input-block">
+            <textarea class="layui-textarea" name="description"  lay-verify="content" id="description" placeholder="资源描述" ><%= resource.description?resource.description:""%></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item" style="text-align: center;">
+        <a class="layui-btn" lay-submit="" lay-filter="demo1">保存</a>
+        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+</form>
+<script>
+
+  layui.use(['form', 'layedit', 'laydate'], function(){
+    var form = layui.form,layer = layui.layer, $ = layui.jquery;
+    //自定义验证
+    form.verify({
+      select_type:function(value,ele) {
+        if(!value||value == "-1"){
+          return "请根据页面提示进行修改！";
+        }
+      }
+    });
+
+    //监听提交
+    form.on('submit(demo1)', function(data){
+      var field = data.field;
+      $.post('/admin/resource/input', field, function (result) {
+        if(result.errCode == 0){
+          var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+          parent.layer.close(index); //再执行关闭
+          console.log("close frame"+index);
+        }else{
+          console.log("fail");
+          layer.open({
+            title: '提示',
+            content: result.msg
+          });
+        }
+
+      })
+    });
+
+    $('body').on('click','#choose_img',function (result) {
+      layer.open({
+        type: 2,
+        title: '选择图标',
+        maxmin: true,
+        resize: false,
+        area: ['75%', '60%'],
+        content: '/admin/resource/icon_index',
+        zIndex: layer.zIndex, //重点1,
+        end:function (res) {
+            console.log(res);
+        }
+      });
+    });
+
+
+  });
+</script>

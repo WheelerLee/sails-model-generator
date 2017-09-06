@@ -1,0 +1,92 @@
+<!--<script type="text/javascript">-->
+
+  <!--layui.use(['layer', 'form'], function(){-->
+    <!--var layer = layui.layer-->
+      <!--,form = layui.form;-->
+
+    <!--layer.msg('Hello World');-->
+  <!--});-->
+
+<!--</script>-->
+<style type="text/css">
+  body {
+    background-color: #eeeeee;
+  }
+  .login_page {
+    font-family: "open sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    height: 100%;
+    text-align: center;
+    padding-top: 240px;
+  }
+  .login_page h1 {
+    font-weight: 600;
+    font-size: 16px;
+    color: #676a6c;
+    margin-bottom: 20px;
+  }
+  .login_page .layui-form {
+    width: 300px;
+    display: inline-block;
+    margin: 0 auto;
+  }
+  .layui-form-item .input-custom-width {
+    width: 300px;
+  }
+</style>
+<div class="login_page">
+  <h1>欢迎使用后台管理系统</h1>
+  <form class="layui-form">
+    <div class="layui-form-item">
+      <div class="layui-input-inline input-custom-width">
+        <input type="text" name="login_name" required lay-verify="login_name" placeholder="登录名" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-inline input-custom-width">
+        <input type="password" name="password" lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-inline input-custom-width">
+        <button class="layui-btn input-custom-width" lay-submit="" lay-filter="login">立即登录</button>
+      </div>
+    </div>
+  </form>
+</div>
+<script type="text/javascript">
+  layui.use(['form', 'layedit', 'laydate'], function(){
+    var form = layui.form, jq = layui.jquery;
+//    layer.alert('测试帐号：demo <br>密码：demo123 <br>前台网址：<a target="_blank" href="http://blog.demo.lzcms.top">http://blog.demo.lzcms.top</a>');
+
+    form.verify({
+      login_name: function (value, item) {
+
+        if (value.trim().length === 0) {
+          return '登录名不能为空';
+        }
+
+      }
+    });
+
+    //监听提交
+    form.on('submit(login)', function(data) {
+      var loading = layer.load(1);
+      console.log(data);
+      var param = data.field;
+      jq.post('/admin/user/login', param, function(data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.href = '/admin/home/index';
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

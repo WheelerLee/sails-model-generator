@@ -1,12 +1,12 @@
 /**
  * <%= folderName %>/<%= modelName %>Controller
  *
- * @description :: Server-side logic for managing wladmin/<%= modelName.toLowerCase() %>
+ * @description :: Server-side logic for managing admin/roles
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
-
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
+var moment = require('moment');
 
 module.exports = {
 
@@ -15,77 +15,121 @@ module.exports = {
    * @param req
    * @param res
    */
-  index: function (req, res) {
-    res.view({layout: '<%= folderName %>/layout'});
-  },
+  index: async(function (req, res) {
+    if (req.xhr) {  //ajax请求为数据接口
 
-  /**
-   * 搜索功能
-   */
-  list: async(function (req, res) {
-    var queryObj = {};
-    <%_ for (var i in model['attributes']) { _%>
-    <%_ var attribute = model['attributes'][i] _%>
-    <%_ if (!attribute.type) {continue} _%>
-    <%_ if (attribute.type.toLowerCase() === 'string' || attribute.type.toLowerCase() === 'text' || attribute.type.toLowerCase() === 'mediumtext'|| attribute.type.toLowerCase() === 'longtext') { _%>
-    if (req.param('<%= i %>') && req.param('<%= i %>').trim() !== '') {
-      queryObj['<%- i %>'] = {contains: req.param('<%- i %>').trim()};
-    }
-    <%_ } else { _%>
-    if (req.param('<%- i %>') && req.param('<%- i %>').trim() !== '') {
-      queryObj['<%- i %>'] = req.param('<%- i %>').trim();
-    }
-    <%_ } _%>
-    <%_ } _%>
+      var page = parseInt(req.param('page', 1));
+      var limit = parseInt(req.param('limit', 30));
+      var queryObj = {};
+      <%_ for (var i in model['attributes']) { _%>
+      <%_ var attribute = model['attributes'][i] _%>
+      <%_ if (!attribute.type) {continue} _%>
+      <%_ if (attribute.type.toLowerCase() === 'string' || attribute.type.toLowerCase() === 'text' || attribute.type.toLowerCase() === 'mediumtext'|| attribute.type.toLowerCase() === 'longtext') { _%>
+      if (req.param('<%= i %>') && req.param('<%= i %>').trim() !== '') {
+        queryObj['<%- i %>'] = {contains: req.param('<%- i %>').trim()};
+      }
+      <%_ } else { _%>
+      if (req.param('<%- i %>') && req.param('<%- i %>').trim() !== '') {
+        queryObj['<%- i %>'] = req.param('<%- i %>').trim();
+      }
+      <%_ } _%>
+      <%_ } _%>
 
-    var result = await(<%= modelName %>.find(queryObj).skip(parseInt(req.body.start)).limit(parseInt(req.body.length)));
-    var count = await(<%= modelName %>.count(queryObj));
-    res.json({data: result, recordsTotal: count, recordsFiltered: count});
+      var result = await(<%= modelName %>.find({where: queryObj, limit: limit, skip: (page - 1) * limit}));
+      var count = await(<%= modelName %>.count(queryObj));
+
+      var obj = {
+        code: 0,
+        msg: '',
+        count: count,
+        data: result
+      };
+
+      return res.json(obj);
+
+    } else {
+
+      try {
+
+        var add_permission = await(PermissionService.valid(req.session.admin.id, '/<%= folderName %>/<%= modelName.toLowerCase() %>/add'));
+        var delete_permission = await(PermissionService.valid(req.session.admin.id, '/<%= folderName %>/<%= modelName.toLowerCase() %>/delete'));
+        res.view({layout: 'admin/layout', add_permission: add_permission, delete_permission: delete_permission});
+
+      } catch (e) {
+
+        res.serverError(e);
+
+      }
+    }
+
   }),
 
   /**
-   * 添加功能
+   * 新增<%= modelName %>
+   * @param req
+   * @param res
    */
   add: async(function (req, res) {
-    if (req.method.toLowerCase() === 'post') {
-      try {
-        var list = await(<%= modelName %>.create(req.body));
-        res.json({errCode: 0, msg: '添加成功'});
-      } catch (e) {
-        res.json({errCode: 101, msg: '添加失败，请重试'});
-      }
-    } else {
-      res.view({layout: '<%= folderName %>/layout'});
-    }
-  }),
+    if (req.method.toLowerCase() === 'get') {
 
-  /**
-   * 修改功能
-   */
-  edit: async(function (req, res) {
-    if (req.method.toLowerCase() === 'post') {
-      try {
-        var list = await(<%= modelName %>.update({<%- primaryKey %>: req.param('<%- primaryKey %>')}, req.body));
-        res.json({errCode: 0, msg: '修改成功'});
-      } catch (e) {
-        res.json({errCode: 101, msg: '修改失败，请重试'});
-      }
-    } else {
       var <%- primaryKey %> = req.param('<%- primaryKey %>');
-      var <%- modelName.toLowerCase() %> = await(<%= modelName %>.findOne({<%- primaryKey %>: <%- primaryKey %>}));
-      res.view({layout: '<%= folderName %>/layout', <%- modelName.toLowerCase() %>: <%- modelName.toLowerCase() %>});
+      var <%- modelName.toLowerCase() %> = {};
+      if (<%- primaryKey %>) {
+        <%- modelName.toLowerCase() %> = await(<%- modelName %>.findOne({<%- primaryKey %>: <%- primaryKey %>}));
+      }
+
+      return res.view({layout: '<%- folderName %>/layout', <%- modelName.toLowerCase() %>: <%- modelName.toLowerCase() %>});
+    }
+    try {
+      var <%- primaryKey %> = req.param('<%- primaryKey %>');
+
+      if (<%- primaryKey %>) {
+        var result = await(<%- modelName %>.update({<%- primaryKey %>: <%- primaryKey %>}, req.body));
+        res.json({
+          errCode: 0,
+          msg: '修改成功',
+          data: result
+        });
+      } else {
+        var obj = req.body || {};
+        obj.create_user = req.session.admin.id;
+        var result = await(<%- modelName %>.create(obj));
+        res.json({
+          errCode: 0,
+          msg: '新增成功',
+          data: result
+        });
+      }
+    } catch (e) {
+      res.json({
+        errCode: 1,
+        msg: '操作失败,请重试!'
+      });
     }
   }),
 
   /**
-   * 删除
+   * 删除角色信息
+   * @param req
+   * @param res
    */
-  del: async(function (req, res) {
-    var <%- primaryKey %> = req.param('<%- primaryKey %>');
-    // await(<%= modelName %>.update({<%- primaryKey %>: <%- primaryKey %>}, {ifDel: 1})); //逻辑删除
-    await(<%= modelName %>.destroy({<%- primaryKey %>: <%- primaryKey %>})); //物理删除
-    res.json({errCode: 0, msg: '删除成功'});
+  delete: async(function (req, res) {
+    try {
+      var <%- primaryKey %> = req.param('<%- primaryKey %>');
+      var result = await(<%- modelName %>.destroy({<%- primaryKey %>: <%- primaryKey %>}));
+      res.json({
+        errCode: 0,
+        msg: '删除成功',
+        data: result
+      });
+    } catch (e) {
+      res.json({
+        errCode: 1,
+        msg: '删除失败，请重试!'
+      });
+    }
   })
 
 };
+
 

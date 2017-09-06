@@ -1,0 +1,89 @@
+<style rel="stylesheet">
+  body {
+    padding: 10px;
+  }
+</style>
+<div class="container">
+  <form class="layui-form layui-form-pane" action="">
+    <div class="layui-form-item">
+      <label class="layui-form-label">旧密码</label>
+      <div class="layui-input-inline">
+        <input type="password" name="old_password" required lay-verify="old_password" placeholder="请输入旧密码" autocomplete="off" class="layui-input">
+      </div>
+      <div class="layui-form-mid layui-word-aux">密码长度为6-18位</div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">新密码</label>
+      <div class="layui-input-block">
+        <input type="password" name="new_password" required lay-verify="new_password" placeholder="请输入新密码" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">确认新密码</label>
+      <div class="layui-input-block">
+        <input type="password" name="confirm_password" required lay-verify="confirm_password" placeholder="确认新密码" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+
+   <!-- <div class="layui-form-item">
+      <div class="layui-input-block">
+        <button type="button" class="layui-btn" id="test1">
+          <i class="layui-icon">&#xe67c;</i>上传头像
+        </button>
+      </div>
+    </div>-->
+    <div class="layui-form-item" style="text-align: center;">
+      <button class="layui-btn" lay-submit lay-filter="submit_btn">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </form>
+</div>
+
+<script>
+
+  layui.use('form', function(){
+    var form = layui.form, $ = layui.jquery;
+
+    form.verify({
+      old_password: function (value, item) {
+        if (value.length < 6 || value.length > 18) {
+          return '旧密码长度为6-18位';
+        }
+      },
+      new_password: function (value, item) {
+        if (value.length < 6 || value.length > 18) {
+          return '新密码长度为6-18位';
+        }
+      },
+      confirm_password: function (value, item) {
+//        if (value.length < 6 || value.length > 18) {
+//          return '新密码长度为6-18位';
+//        }
+        if ($('input[name=new_password]').val() !== value) {
+          return '重复密码与新密码不一致';
+        }
+      }
+    });
+    //监听提交
+    form.on('submit(submit_btn)', function(data){
+      var loading = layer.load(1);
+      $.post('/admin/user/change_pwd', data.field, function(data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+//            window.location.href = '/admin/home/index';
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+
+      return false;
+    });
+  });
+</script>
