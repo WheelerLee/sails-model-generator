@@ -12,12 +12,12 @@ var Generator = require('./Generator');
 
 process.stdin.setEncoding('utf8');
 
-if (!fs.existsSync(process.cwd() + '/views/') || !fs.existsSync(process.cwd() + '/api/')
-  || !fs.existsSync(process.cwd() + '/api/controllers/') || !fs.existsSync(process.cwd() + '/api/models/')
-  || !fs.existsSync(process.cwd() + '/assets/') || !fs.existsSync(process.cwd() + '/config/')) {
-  console.log('Please run in sails project folder');
-  return;
-}
+// if (!fs.existsSync(process.cwd() + '/views/') || !fs.existsSync(process.cwd() + '/api/')
+//   || !fs.existsSync(process.cwd() + '/api/controllers/') || !fs.existsSync(process.cwd() + '/api/models/')
+//   || !fs.existsSync(process.cwd() + '/assets/') || !fs.existsSync(process.cwd() + '/config/')) {
+//   console.log('Please run in sails project folder');
+//   return;
+// }
 
 var folderName = 'wladmin';
 var args = process.argv;
@@ -137,13 +137,49 @@ function copyAuthFiles() {
  * 解压静态资源文件
  */
 function unzipStaticFiles() {
-  var unzipParser = unzip2.Extract({path: process.cwd() + '/assets/' });
-  fs.createReadStream(__filename.replace('/bin/sails-model-generator.js', '').replace('\\bin\\sails-model-generator.js', '') + '/templates/assets.zip').pipe(unzipParser);
-  console.info('unzip static assets...');
-  unzipParser.on('finish', function () {
-    console.info('unzip static assets successful');
-    process.exit(0);
-  });
+  // var unzipParser = unzip2.Extract({path: process.cwd() + '/assets/' });
+  // fs.createReadStream(__filename.replace('/bin/sails-model-generator.js', '').replace('\\bin\\sails-model-generator.js', '') + '/templates/assets.zip').pipe(unzipParser);
+  // console.info('unzip static assets...');
+  // unzipParser.on('finish', function () {
+  //   console.info('unzip static assets successful');
+  //   process.exit(0);
+  // });
+
+  // console.log(__filename.replace('/bin/sails-model-generator.js', '')
+  //     .replace('\\bin\\sails-model-generator.js', '') + '/templates/assets');
+  // console.log(process.cwd() + '/assets/');
+
+  console.info('copy static assets...');
+  copyDir(process.cwd() + '/assets/', __filename.replace('/bin/sails-model-generator.js', '')
+      .replace('\\bin\\sails-model-generator.js', '') + '/templates/assets');
+
+}
+
+/**
+ * 复制文件夹到指定目录
+ * @param dst 指定目录
+ * @param src 源文件夹
+ */
+function copyDir(dst, src) {
+
+  var files = fs.readdirSync(src);
+  for (var i in files) {
+
+    var file = files[i];
+    if (fs.statSync(src + '/' + file).isDirectory()) { //文件夹
+
+      var path = dst + '/' + file;
+      if (!fs.existsSync(path)) {
+        fs.mkdirSync(path);
+      }
+      copyDir(path, src + '/' + file);
+
+    } else { //普通文件，直接复制过来
+      fs.writeFileSync(dst + '/' + file, fs.readFileSync(src + '/' + file));
+    }
+
+  }
+
 }
 
 //创建readline接口实例
