@@ -4,7 +4,6 @@ var async = require('asyncawait/async');
 var await = require('asyncawait/await');
 var ejs = require('ejs');
 var fs = require('fs');
-var unzip2 = require('unzip2');
 var readline = require('readline');
 var Generator = require('./Generator');
 
@@ -193,7 +192,7 @@ if (args.length === 0) {
 
     operation();
     copyBaseFiles();
-    copyAuthFiles();
+    // copyAuthFiles();
     unzipStaticFiles();
 
     rl.close();
@@ -202,7 +201,7 @@ if (args.length === 0) {
   folderName = args[0].toLowerCase();
   operation();
   copyBaseFiles();
-  copyAuthFiles();
+  // copyAuthFiles();
   unzipStaticFiles();
 
   rl.close();
