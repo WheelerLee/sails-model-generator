@@ -192,7 +192,7 @@ if (args.length === 0) {
 
     operation();
     copyBaseFiles();
-    // copyAuthFiles();
+    copyAuthFiles();
     unzipStaticFiles();
 
     rl.close();
@@ -201,7 +201,7 @@ if (args.length === 0) {
   folderName = args[0].toLowerCase();
   operation();
   copyBaseFiles();
-  // copyAuthFiles();
+  copyAuthFiles();
   unzipStaticFiles();
 
   rl.close();
