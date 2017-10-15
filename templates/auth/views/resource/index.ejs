@@ -37,6 +37,7 @@
             <a id="search_btn" class="layui-btn roleSearchList_btn layui-btn-normal">
                 <i class="layui-icon larry-icon">&#xe615;</i>查询
             </a>
+            <button type="reset" id="reset_btn" class="layui-btn layui-btn-normal"> <i class="layui-icon larry-icon">&#x1002;</i>重置</button>
             <a id="add_btn" class="layui-btn roleSearchList_btn layui-btn-normal">
                 <i class="layui-icon larry-icon">&#xe61f;</i>新增资源
             </a>
@@ -65,6 +66,7 @@
         {field:'alias_name', title: '资源别名',width: 130},
         {field:'parent_id', title: '父级资源',width: 200, templet: '#parent_name'},
         {field:'path', title: '资源路径',width: 200},
+        {field:'sorted_num', title: '排序号',width: 100},
         {fixed:'right', title: '操作', align:'center',width: 195, toolbar: '#operation'}
       ]],
       page: true,
@@ -99,6 +101,13 @@
           delete obj[item.name];
       }
       resourceTableRender.reload({
+        where: obj
+      });
+    });
+
+    $('body').on('click', '#reset_btn', function () {
+      var obj = {};
+        resourceTableRender.reload({
         where: obj
       });
     });

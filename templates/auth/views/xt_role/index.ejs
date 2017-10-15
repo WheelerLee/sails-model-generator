@@ -4,9 +4,10 @@
       <div class="layui-input-inline" style="width:145px;">
         <input type="text" name="name" value="" placeholder="角色名称" class="layui-input search_input">
       </div>
-      <a class="layui-btn" id="search_btn">
+      <a class="layui-btn layui-btn-normal" id="search_btn">
         <i class="layui-icon larry-icon">&#xe615;</i>查询
       </a>
+      <button type="reset" id="reset_btn" class="layui-btn layui-btn-normal"> <i class="layui-icon larry-icon">&#x1002;</i>重置</button>
       <% if (add_permission) { %>
       <a class="layui-btn layui-btn-normal" id="add_btn">
         <i class="layui-icon larry-icon">&#xe61f;</i>新增角色
@@ -33,6 +34,7 @@
       cols: [[
         {checkbox: true, fixed:'left',},
         {field:'name', title: '角色名称',width: 120 },
+        {field:'sorted_num', title: '排序',width: 120 },
         {field:'updatedAt', title: '更新时间',width: 200, templet: '#updated_time'},
         {fixed:'right', title: '操作', align:'center',width: 280, toolbar: '#operation'}
 
@@ -54,6 +56,13 @@
         where: obj
       });
 
+    });
+
+    $('body').on('click', '#reset_btn', function () {
+      var obj = {};
+      roleTableRender.reload({
+        where: obj
+      });
     });
 
     var isSuccess = false;
@@ -137,8 +146,17 @@
                 icon: 6,
                 time: 1000
               }, function() {
+                var objs = {};
+                var array = $('#roleSearchForm').serializeArray();
+                for (var i = 0; i < array.length; i++) {
+                  var item = array[i];
+                  objs[item.name] = item.value;
+                }
 
-                obj.del();
+                roleTableRender.reload({
+                  where: objs
+                });
+//                obj.del();
 
               });
             } else {

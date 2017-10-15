@@ -29,8 +29,7 @@ module.exports = {
           parents: parents.reverse(),
           resource: resource
         });
-      }
-      else if (req.method == "POST") {
+      } else if (req.method == "POST") {
         var id = req.param('id', '');
         var name = req.param('name', '');
         var alias_name = req.param('alias_name', '');
@@ -38,7 +37,7 @@ module.exports = {
         var icon_path = req.param('icon_path', '');
         var path = req.param('path', '');
         var description = req.param('description', '');
-        var sorted_num = req.param('sorted_num', '');
+        var sorted_num = req.param('sorted_num', 0);
         var create_user = req.session.admin.id;
         var parent_id = req.param('parent_id', '');
         if (parent_id === '-1' || parent_id.length === 32 || !parent_id) {
@@ -52,33 +51,35 @@ module.exports = {
             sorted_num: sorted_num,
             create_user: create_user,
             parent_id: parent_id
-          }
+          };
+
           if (id && id != '' && id != null) {//编辑
             obj_.id = id;
             var result = await(Xt_resources.update({id: id},obj_));
-            res.json({
+            return res.json({
               errCode: 0,
               msg: '修改成功',
               result: result
             });
-          }else{//添加
+          } else {//添加
             var result = await(Xt_resources.create(obj_));
-            res.json({
+            return res.json({
               errCode: 0,
               msg: '保存成功',
               result: result
             });
           }
         } else {
-          res.json({
+          return res.json({
             errCode: 1,
             msg: '父级资源选择有误,请检查无误后重试',
             result: result
           });
         }
       }
-    }catch(err) {
-      res.json({
+    } catch (err) {
+      console.log(err);
+      return res.json({
         errCode: 1,
         msg: '保存失败,请重试'
       });
@@ -100,10 +101,12 @@ module.exports = {
       var name = req.param('name', '');
       var parent_id = req.param('parent_id','');
       var obj = {};
-      if (name) obj.name = name;
-      if(parent_id && parent_id != '-1') obj.parent_id = parent_id;
-
-      var roles = await(Xt_resources.find({where: obj, limit: limit, skip: (page - 1) * limit}).populate("parent_id"));
+      if (name && name != "")
+        obj.name =  {'like': '%'+name+'%'};
+      if(parent_id && parent_id != '-1')
+        obj.parent_id = parent_id;
+      console.log(obj);
+      var roles = await(Xt_resources.find({where:obj,limit:limit,skip:limit*(page - 1),sort:'sorted_num DESC'}).populate("parent_id"));
       var count = await(Xt_resources.count(obj));
 
       res.json({

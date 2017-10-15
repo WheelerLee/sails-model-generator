@@ -25,7 +25,12 @@ module.exports = {
       var obj = {};
       if (name) obj.name = {contains: name};
 
-      var roles = await(Xt_role.find({where: obj, limit: limit, skip: (page - 1) * limit}));
+      var roles = await(Xt_role.find({
+        where: obj,
+        limit: limit,
+        skip: (page - 1) * limit,
+        sort: 'sorted_num'
+      }));
       var count = await(Xt_role.count(obj));
 
       var obj = {

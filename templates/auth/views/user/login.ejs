@@ -34,8 +34,11 @@
   }
 </style>
 <div class="login_page">
-  <h1>欢迎使用后台管理系统</h1>
-  <form class="layui-form">
+  <div style="margin-bottom: 20px">
+    <img  src="/images/head.png">
+  </div>
+  <h1>欢迎使用觅食后台管理系统</h1>
+  <form class="layui-form" method="post">
     <div class="layui-form-item">
       <div class="layui-input-inline input-custom-width">
         <input type="text" name="login_name" required lay-verify="login_name" placeholder="登录名" autocomplete="off" class="layui-input">
@@ -48,7 +51,7 @@
     </div>
     <div class="layui-form-item">
       <div class="layui-input-inline input-custom-width">
-        <button class="layui-btn input-custom-width" lay-submit="" lay-filter="login">立即登录</button>
+        <button style="background-color: #F39700" class="layui-btn input-custom-width" lay-submit="" lay-filter="login">立即登录</button>
       </div>
     </div>
   </form>
@@ -78,7 +81,7 @@
         if (data.errCode === 0) {
           layer.msg(data.msg, {
             icon: 6,
-            time: 2000
+            time: 500
           }, function() {
             window.location.href = '/admin/home/index';
           });

@@ -10,9 +10,10 @@
       <div class="layui-input-inline" style="width:145px;">
         <input type="text" name="login_name" value="" placeholder="登录名" class="layui-input search_input">
       </div>
-      <a class="layui-btn" id="search_btn">
+      <a class="layui-btn layui-btn-normal" id="search_btn">
         <i class="layui-icon larry-icon">&#xe615;</i>查询
       </a>
+      <button type="reset" id="reset_btn" class="layui-btn layui-btn-normal"> <i class="layui-icon larry-icon">&#x1002;</i>重置</button>
       <a class="layui-btn layui-btn-normal" id="add_btn">
         <i class="layui-icon larry-icon">&#xe61f;</i>添加管理员
       </a>
@@ -59,6 +60,13 @@
         where: obj
       });
 
+    });
+
+    $('body').on('click', '#reset_btn', function () {
+      var obj = {};
+      roleTableRender.reload({
+        where: obj
+      });
     });
 
     var isSuccess = false;
@@ -143,8 +151,17 @@
                 time: 1000
               }, function() {
 
-                obj.del();
+//                obj.del();
+                var objs = {};
+                var array = $('#roleSearchForm').serializeArray();
+                for (var i = 0; i < array.length; i++) {
+                  var item = array[i];
+                  objs[item.name] = item.value;
+                }
 
+                roleTableRender.reload({
+                  where: objs
+                });
               });
             } else {
               layer.msg(data.msg, {icon: 5});

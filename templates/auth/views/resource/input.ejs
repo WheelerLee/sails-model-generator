@@ -2,6 +2,9 @@
     body {
         padding: 10px;
     }
+    .mydiv{
+        position:absolute;display:none;border:1px solid silver;
+    }
 </style>
 <form class="layui-form layui-form-pane" action="">
     <%if (resource.id) { %>
@@ -22,7 +25,6 @@
     <div class="layui-form-item" >
         <label class="layui-form-label">父级资源</label>
         <div class="layui-input-block">
-
             <select name="parent_id" lay-filter="" <%- resource.parent_id != '-1' ? '' : 'disabled' %> >
                 <option <%-resource?"":'selected'%> value="-1">请选择</option>
                 <% if(parents && parents.length > 0){%>
@@ -47,18 +49,47 @@
         </div>
     </div>
     <div class="layui-form-item">
+    <div id="popDiv" class="mydiv">
+        <div align="left" style="padding:2px;z-index:2000;font-size:12px;cursor:pointer;" >
+            <ul class="site-doc-icon" style="overflow: hidden;width: 600px">
+                <li style="width: 100px;float: left">
+                    <i class="layui-icon">&#xe68e;</i>
+                    <div class="name">主页</div>
+                    <div class="code">&amp;#xe68e;</div>
+                </li>
+                <li style="width: 100px;float: left">
+                    <i class="layui-icon">&#xe6c6;</i>
+                    <div class="name">赞</div>
+                    <div class="code">&amp;#xe6c6;</div>
+                </li>
+                <li style="width: 100px;float: left">
+                    <i class="layui-icon">&#xe6c5;</i>
+                    <div class="name">踩</div>
+                    <div class="code">&amp;#xe6c5;</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">资源图标</label>
         <div class="layui-input-block">
             <a  id="choose_img" class="layui-btn  layui-btn-normal">
                 选择图标
             </a>
-           <!-- <input class="layui-icon layui-input" type="text" name="icon_path"  value="<%= resource.icon_path?resource.icon_path:""%>" placeholder="请输入" autocomplete="off" class="layui-input">-->
+            <i class="layui-icon" id="icon_path" name="icon_path"  ><%= resource.icon_path?resource.icon_path:""%></i>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">资源路径</label>
         <div class="layui-input-block">
             <input type="text" name="path" value="<%= resource.path?resource.path:""%>" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序号</label>
+        <div class="layui-input-block">
+            <input type="number" name="sorted_num"  lay-verify="sorted_num" value="<%= resource.sorted_num?resource.sorted_num:""%>" placeholder="请输入" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item layui-form-text">
@@ -82,8 +113,21 @@
         if(!value||value == "-1"){
           return "请根据页面提示进行修改！";
         }
-      }
+      },
+        sorted_num:function(value ,ele){
+            if(value == ""){
+                return "请填写排序号";
+            }
+        }
+
     });
+    //选择图标
+    $("li").each(function () {
+      $(this).click(function () {
+        $("#icon_path").html($(this).children(".code").text());
+        $("#popDiv").hide();
+      })
+    })
 
     //监听提交
     form.on('submit(demo1)', function(data){
@@ -105,20 +149,9 @@
     });
 
     $('body').on('click','#choose_img',function (result) {
-      layer.open({
-        type: 2,
-        title: '选择图标',
-        maxmin: true,
-        resize: false,
-        area: ['75%', '60%'],
-        content: '/admin/resource/icon_index',
-        zIndex: layer.zIndex, //重点1,
-        end:function (res) {
-            console.log(res);
-        }
-      });
+      $(this).css("left", event.clientX);
+      $(this).css("top", event.clientY + 10);
+      $("#popDiv").toggle();
     });
-
-
   });
 </script>

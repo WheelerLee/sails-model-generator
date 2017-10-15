@@ -26,7 +26,7 @@ module.exports = {
     Xt_resources.query('select xt_resources.* from xt_resources LEFT JOIN xt_role_resources on ' +
       'xt_resources.id=xt_role_resources.resources_id LEFT JOIN xt_user_role on ' +
       'xt_role_resources.role_id=xt_user_role.role_id where xt_user_role.user_id=? ' +
-      'and xt_resources.res_type_code=? order by xt_resources.parent_id asc', [id, 'page_type'], function (err, results) {
+      'and xt_resources.res_type_code=? order by xt_resources.parent_id,sorted_num asc', [id, 'page_type'], function (err, results) {
 
       if (err) res.serverError(err);
 
