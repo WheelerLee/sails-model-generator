@@ -286,18 +286,18 @@ if (args.length === 0) {
     }
 
     operation();
-    // copyBaseFiles();
-    // copyAuthFiles();
-    // unzipStaticFiles();
+    copyBaseFiles();
+    copyAuthFiles();
+    unzipStaticFiles();
 
     rl.close();
   });
 } else {
   folderName = args[0].toLowerCase();
   operation();
-  // copyBaseFiles();
-  // copyAuthFiles();
-  // unzipStaticFiles();
+  copyBaseFiles();
+  copyAuthFiles();
+  unzipStaticFiles();
 
   rl.close();
 }

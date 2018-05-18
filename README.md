@@ -1,2 +1,2 @@
 # sails-model-generator
-Don't use, test project.
+## Don't use, test project.
