@@ -18,7 +18,7 @@ process.stdin.setEncoding('utf8');
 //   return;
 // }
 
-var folderName = 'wladmin';
+var folderName = 'admin';
 var args = process.argv;
 args.splice(0, 2);
 
@@ -27,6 +27,30 @@ var generate = function (fileName) {
   // var fileName = '/Article.js';
   var model = require(process.cwd() + '/api/models/' + fileName);
   var modelName = fileName.replace('.js', '');
+
+  var common_attr = {
+    id: {
+      type: 'number',
+      autoIncrement: true,
+      primaryKey: true
+    },
+    deleted: {   //逻辑删除 0 正常  其他是已删除
+      type: 'number',
+      defaultsTo: 0,
+      columnType: 'integer'
+    },
+    create_user: {    //创建人
+      type: 'string',
+      maxLength: 250,
+      columnType: 'varchar(250)'
+    },
+    sorted_num: {   //排序号
+      type: 'number',
+      defaultsTo: 1,
+      columnType: 'integer'
+    }
+  };  //通用字段
+  model.attributes = Object.assign(model.attributes, common_attr);
 
   //得到主键的字段
   var primaryKey = null;
@@ -39,11 +63,12 @@ var generate = function (fileName) {
   }
 
   if (!primaryKey) {
-    console.log('model ' + modelName + ' has no primaryKey. Abandon');
+    console.log('\x1B[31m%s', 'model ' + modelName + ' has no primaryKey. Abandon');
   } else {
 
-    if (['Xt_user', 'Xt_resources', 'Xt_role', 'Xt_role_resources', 'Xt_user_resources', 'Xt_user_role'].indexOf(modelName) < 0) {  //权限相关的直接生产权限系统
-      console.log('generate the files for model ' + modelName);
+    // if ([].indexOf(modelName) < 0) {
+    if (['Xt_user', 'Xt_resource', 'Xt_role', 'Xt_dict', 'Xt_role_resource', 'Xt_user_resource', 'Xt_user_role'].indexOf(modelName) < 0) {  //权限相关的直接生产权限系统
+      console.log('\x1B[34m%s', 'generate the files for model ' + modelName);
       Generator.generateController(folderName, modelName, model, primaryKey);
       Generator.generateIndexPage(folderName, modelName, model, primaryKey);
       Generator.generateAddPage(folderName, modelName, model, primaryKey);
@@ -55,19 +80,28 @@ var generate = function (fileName) {
 };
 
 /**
- * 生成model的增删改查s
+ * 生成model的增删改查
  */
 function operation() {
   if (fs.existsSync(process.cwd() + '/views/' + folderName + '/') || fs.existsSync(process.cwd() + '/api/controllers/' + folderName + '/')) {
-    console.log('Please check the controllers folder or the views folder, the ' + folderName + ' folder has exists');
+    console.log('\x1B[31m%s', 'Please check the controllers folder or the views folder, the ' + folderName + ' folder has exists');
   } else {
     var files = fs.readdirSync(process.cwd() + '/api/models/');
+    var models = [];
     for (var i in files) {
       var file = files[i];
       if (file.endsWith('.js')) {
-        generate(file);
+        // generate(file);
+        var modelName = file.replace('.js', '');
+        if (['Xt_user', 'Xt_resource', 'Xt_role', 'Xt_dict', 'Xt_role_resource', 'Xt_user_resource', 'Xt_user_role'].indexOf(modelName) < 0) {
+          models.push(modelName);
+        }
       }
     }
+
+    generateMockController(models);
+    addPolicies(models);
+
   }
 }
 
@@ -83,18 +117,26 @@ function copyBaseFiles() {
     fs.readFileSync(proRootPath + '/templates/layout.ejs'));                    //复制layout.ejs
 
   console.info('Copy policy to policies');
-  fs.writeFileSync(process.cwd() + '/api/policies/adminAuth.js',
-    fs.readFileSync(proRootPath + '/templates/policies/adminAuth.js'));         //复制adminAuth.js
-  fs.writeFileSync(process.cwd() + '/api/policies/permissionsAuth.js',
-    fs.readFileSync(proRootPath + '/templates/policies/permissionsAuth.js'));   //复制permissionsAuth.js
+  var policies = fs.readdirSync(proRootPath + '/templates/policies');
+  for (var i in policies) {
+    var folder = policies[i];
+    if (folder.startsWith('.')) {
+      continue;
+    }
+    fs.writeFileSync(process.cwd() + '/api/policies/' + folder,
+      fs.readFileSync(proRootPath + '/templates/policies/' + folder));
+  }
 
   console.info('Copy service to services');
-  fs.writeFileSync(process.cwd() + '/api/services/DigestService.js',
-    fs.readFileSync(proRootPath + '/templates/services/DigestService.js'));     //DigestService.js
-  fs.writeFileSync(process.cwd() + '/api/services/PasswordService.js',
-    fs.readFileSync(proRootPath + '/templates/services/PasswordService.js'));   //PasswordService.js
-  fs.writeFileSync(process.cwd() + '/api/services/PermissionService.js',
-    fs.readFileSync(proRootPath + '/templates/services/PermissionService.js')); //PermissionService.js
+  var services = fs.readdirSync(proRootPath + '/templates/services');
+  for (var i in services) {
+    var folder = services[i];
+    if (folder.startsWith('.')) {
+      continue;
+    }
+    fs.writeFileSync(process.cwd() + '/api/services/' + folder,
+      fs.readFileSync(proRootPath + '/templates/services/' + folder));
+  }
 }
 
 /**
@@ -117,8 +159,12 @@ function copyAuthFiles() {
   var views = fs.readdirSync(proRootPath + '/templates/auth/views');
   for (var i in views) {
     var folder = views[i];
+    if (folder.startsWith('.')) {
+      continue;
+    }
     var path = process.cwd() + '/views/' + folderName + '/' + folder;
-    if (fs.existsSync(path)) {}
+    if (fs.existsSync(path)) {
+    }
     else {
       fs.mkdirSync(path);
     }
@@ -181,32 +227,82 @@ function copyDir(dst, src) {
 
 }
 
+/**
+ * 生成添加默认数据的控制器
+ */
+function generateMockController(models) {
+
+  var str = fs.readFileSync(__dirname + '/../templates/MockController.ejs');  //读取控制器模板
+  var controllerStr = ejs.render(str.toString(), {
+    folderName: folderName,
+    models: models
+  });
+
+  var path = process.cwd() + '/api/controllers/';
+  if (fs.existsSync(path)) {
+  }
+  else {
+    fs.mkdirSync(path);
+  }
+  fs.writeFileSync(path + 'MockController.js',
+    new Buffer(controllerStr), {flag: 'w', encoding: 'utf8'});
+  console.log('\x1B[32m%s', 'create MockController successful');
+
+}
+
+/**
+ * 往policies.js文件添加相应的policies
+ * @param models
+ */
+function addPolicies(models) {
+  var str = fs.readFileSync(__dirname + '/../templates/policies.ejs');  //读取控制器模板
+  var policiesStr = ejs.render(str.toString(), {
+    folderName: folderName,
+    models: models
+  });
+  var file_path = process.cwd() + '/config/policies.js';
+
+  var data = fs.readFileSync(file_path, 'utf8');
+
+  var index = data.lastIndexOf('};');
+  data = data.substr(0, index);
+
+  data += policiesStr;
+  data += '};';
+
+  fs.writeFileSync(file_path, new Buffer(data), {flag: 'w', encoding: 'utf8'});
+
+  console.log('\x1B[32m%s', 'append policies successful');
+
+}
+
 //创建readline接口实例
 var rl = readline.createInterface({input: process.stdin, output: process.stdout});
 
 if (args.length === 0) {
-  rl.question('Please input the prefix(wladmin): ', function(answer) {
+  rl.question('Please input the prefix(admin): ', function (answer) {
     if (answer) {
       folderName = answer.toLowerCase();
     }
 
     operation();
-    copyBaseFiles();
-    copyAuthFiles();
-    unzipStaticFiles();
+    // copyBaseFiles();
+    // copyAuthFiles();
+    // unzipStaticFiles();
 
     rl.close();
   });
 } else {
   folderName = args[0].toLowerCase();
   operation();
-  copyBaseFiles();
-  copyAuthFiles();
-  unzipStaticFiles();
+  // copyBaseFiles();
+  // copyAuthFiles();
+  // unzipStaticFiles();
 
   rl.close();
 }
 
-rl.on('close', function() {});
+rl.on('close', function () {
+});
 
 return;

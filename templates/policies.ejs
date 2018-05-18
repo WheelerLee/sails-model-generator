@@ -1,0 +1,26 @@
+  '<%- folderName %>/UserController': {
+    '*': ['adminSessionAuth'],
+    'login': true
+  },
+  '<%- folderName %>/HomeController': {
+    '*': ['adminSessionAuth']
+  },
+  '<%- folderName %>/Xt_userController': {
+    '*': ['adminSessionAuth', 'permissionsAuth']
+  },
+  '<%- folderName %>/Xt_dictController': {
+    '*': ['adminSessionAuth', 'permissionsAuth']
+  },
+  '<%- folderName %>/Xt_resourceController': {
+    '*': ['adminSessionAuth', 'permissionsAuth']
+  },
+  '<%- folderName %>/Xt_roleController': {
+    '*': ['adminSessionAuth', 'permissionsAuth']
+  },
+  <%_ for (var i = 0; i < models.length; i++) { _%>
+  <%_ var model = models[i] _%>
+  '<%- folderName %>/<%- model %>Controller': {
+    '*': ['adminSessionAuth', 'permissionsAuth']
+  },
+  <%_ } _%>
+

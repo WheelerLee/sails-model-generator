@@ -1,88 +1,92 @@
-<style rel="stylesheet">
-  body {
-    padding: 10px;
-  }
-</style>
-<div class="container">
-  <form class="layui-form layui-form-pane" action="">
-    <div class="layui-form-item">
-      <label class="layui-form-label">旧密码</label>
-      <div class="layui-input-block">
-        <input type="password" name="old_password" required lay-verify="old_password" placeholder="请输入旧密码" autocomplete="off" class="layui-input">
-      </div>
-      <!--<div class="layui-form-mid layui-word-aux">密码长度为6-18位</div>-->
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <div class="layui-form-item">
+          <label class="layui-form-label">旧密码</label>
+          <div class="layui-input-block">
+            <input
+              type="password" name="old_pwd" lay-verify="old_pwd"
+              placeholder="请输入旧密码" autocomplete="off"
+              class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">新密码</label>
+          <div class="layui-input-block">
+            <input
+              type="password" name="new_pwd" lay-verify="new_pwd"
+              placeholder="请输入新密码" autocomplete="off"
+              class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">重复新密码</label>
+          <div class="layui-input-block">
+            <input
+              type="password" name="new_pwd2" lay-verify="new_pwd2"
+              placeholder="重复新密码" autocomplete="off"
+              class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">保存</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label">新密码</label>
-      <div class="layui-input-block">
-        <input type="password" name="new_password" required lay-verify="new_password" placeholder="请输入新密码" autocomplete="off" class="layui-input">
-      </div>
-    </div>
-    <div class="layui-form-item">
-      <label class="layui-form-label">确认新密码</label>
-      <div class="layui-input-block">
-        <input type="password" name="confirm_password" required lay-verify="confirm_password" placeholder="确认新密码" autocomplete="off" class="layui-input">
-      </div>
-    </div>
-
-   <!-- <div class="layui-form-item">
-      <div class="layui-input-block">
-        <button type="button" class="layui-btn" id="test1">
-          <i class="layui-icon">&#xe67c;</i>上传头像
-        </button>
-      </div>
-    </div>-->
-    <div class="layui-form-item" style="text-align: center;">
-      <button class="layui-btn" lay-submit lay-filter="submit_btn">立即提交</button>
-      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-    </div>
-  </form>
+  </div>
 </div>
-
 <script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
 
-  layui.use('form', function(){
-    var form = layui.form, $ = layui.jquery;
-
+    /* 自定义验证规则 */
     form.verify({
-      old_password: function (value, item) {
-        if (value.length < 6 || value.length > 18) {
-          return '旧密码长度为6-18位';
+      old_pwd: function (value, item) {
+        if (value.length < 6 || value.length > 28) {
+          return '密码为6-28位';
         }
       },
-      new_password: function (value, item) {
-        if (value.length < 6 || value.length > 18) {
-          return '新密码长度为6-18位';
+      new_pwd: function (value, item) {
+        if (value.length < 6 || value.length > 28) {
+          return '密码为6-28位';
         }
       },
-      confirm_password: function (value, item) {
-//        if (value.length < 6 || value.length > 18) {
-//          return '新密码长度为6-18位';
-//        }
-        if ($('input[name=new_password]').val() !== value) {
-          return '重复密码与新密码不一致';
+      new_pwd2: function (value, item) {
+        if (value.length < 6 || value.length > 28) {
+          return '密码为6-28位';
         }
       }
     });
-    //监听提交
-    form.on('submit(submit_btn)', function(data){
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
       var loading = layer.load(1);
-      $.post('/admin/user/change_pwd', data.field, function(data) {
+      var fields = data.field;
+      for (var i in fields) {
+        if (!fields[i]) {
+          delete fields[i];
+        }
+      }
+      console.log(data.field);
+      $.post('', data.field, function (data) {
         layer.close(loading);
         if (data.errCode === 0) {
           layer.msg(data.msg, {
             icon: 6,
             time: 2000
-          }, function() {
-            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-            parent.layer.close(index); //再执行关闭
-            window.parent.location.href = '/admin/user/logout';
+          }, function () {
+            window.location.reload();
           });
         } else {
           layer.msg(data.msg, {icon: 5});
         }
       });
-
       return false;
     });
   });

@@ -1,0 +1,128 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <%- '\<\% if (' + modelName.toLowerCase() + '.' + primaryKey + ') { \%\>' %>
+        <input type="hidden" value="<%- '\<\%= ' + modelName.toLowerCase() + '.' + primaryKey + ' \%\>' %>" name="<%= primaryKey %>">
+        <%- '\<\% } \%\>' %>
+
+        <%_ for (var i in model.attributes) { _%>
+        <%_ var attribute = model.attributes[i] _%>
+        <%_ if (!attribute.type && !attribute.model) {continue} _%>
+        <%_ if (i !== primaryKey && i !== 'deleted' && i !== 'create_user') { _%>
+        <div class="layui-form-item">
+          <label class="layui-form-label"><%= attribute.name ? attribute.name : i %></label>
+          <div class="layui-input-block">
+            <input type="text" name="<%= i %>" lay-verify="<%= i %>"
+                   value="<%- '\<\%= ' + modelName.toLowerCase() + '.' + i + ' ? ' + modelName.toLowerCase() + '.' + i + ' : \'\' \%\>' %>" placeholder="请输入<%= attribute.name ? attribute.name : i %>" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <%_ } _%>
+        <%_ } _%>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      <%_ for (var i in model.attributes) { _%>
+      <%_ var attribute = model.attributes[i] _%>
+      <%_ if (!attribute.type) {continue} _%>
+      <%_ if (i !== primaryKey) { _%>
+      <%= i %>: function (value, item) {
+        <%_ if (attribute.required) { _%>
+        if (!value.trim()) {
+          return '<%= attribute.name ? attribute.name : i %>不能为空';
+        }
+        <%_ } _%>
+        <%_ if (attribute.isNumber) { _%>
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return '<%= attribute.name ? attribute.name : i %>必须是数字';
+        }
+        <%_ } _%>
+        <%_ if (attribute.isEmail) { _%>
+        var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+        if(!reg.test(value.trim())) {
+          return '<%= attribute.name ? attribute.name : i %>必须是邮箱';
+        }
+        <%_ } _%>
+        <%_ if (attribute.isInteger) { _%>
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return '<%= attribute.name ? attribute.name : i %>必须是整数';
+        }
+        <%_ } _%>
+        <%_ if (attribute.is || attribute.regex) { _%>
+        var reg = <%= attribute.is || attribute.regex %>;
+        if(!reg.test(value.trim())) {
+          return '<%= attribute.name ? attribute.name : i %>格式错误';
+        }
+        <%_ } _%>
+        <%_ if (attribute.isNumber || attribute.isInteger) { _%>
+        <%_ if (attribute.max || attribute.max === 0) { _%>
+        if (parseFloat(value) > <%= attribute.max %>) {
+          return '<%= attribute.name ? attribute.name : i %>不能大于<%= attribute.max %>';
+        }
+        <%_ } _%>
+        <%_ if (attribute.min || attribute.min === 0) { _%>
+        if (parseFloat(value) < <%= attribute.min %>) {
+          return '<%= attribute.name ? attribute.name : i %>不能小于<%= attribute.min %>';
+        }
+        <%_ } _%>
+        <%_ } _%>
+        <%_ if (attribute.isString) { _%>
+        <%_ if (attribute.minLength || attribute.minLength === 0) { _%>
+        if (value.trim().length < <%= attribute.minLength %>) {
+          return '<%= attribute.name ? attribute.name : i %>的长度必须大于<%= attribute.minLength %>';
+        }
+        <%_ } _%>
+        <%_ if (attribute.maxLength || attribute.maxLength === 0) { _%>
+        if (value.trim().length > <%= attribute.maxLength %>) {
+          return '<%= attribute.name ? attribute.name : i %>的长度必须小于<%= attribute.maxLength %>';
+        }
+        <%_ } _%>
+        <%_ } _%>
+      },
+      <%_ } _%>
+      <%_ } _%>
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      var fields = data.field;
+      for (var i in fields) {
+        if (!fields[i]) {
+          delete fields[i];
+        }
+      }
+      $.post('/<%= folderName %>/<%= modelName.toLowerCase() %>/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

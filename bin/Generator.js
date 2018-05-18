@@ -31,7 +31,7 @@ module.exports = {
     }
     fs.writeFileSync(path + modelName + 'Controller.js',
       new Buffer(controllerStr), {flag: 'w', encoding: 'utf8'});
-    console.log('create ' + path + ' successful');
+    console.log('\x1B[32m%s', 'create ' + path + ' successful');
   },
 
   /**
@@ -62,7 +62,7 @@ module.exports = {
     }
     fs.writeFileSync(path + '/index.ejs',
       new Buffer(controllerStr), {flag: 'w', encoding: 'utf8'});
-    console.log('create ' + path + ' successful');
+    console.log('\x1B[32m%s', 'create ' + path + ' successful');
   },
 
   /**
@@ -73,7 +73,7 @@ module.exports = {
    * @param primaryKey 主键
    */
   generateAddPage: function (folderName, modelName, model, primaryKey) {
-    var str = fs.readFileSync(__dirname + '/../templates/add.ejs');  //读取控制器模板
+    var str = fs.readFileSync(__dirname + '/../templates/modify.ejs');  //读取控制器模板
     var controllerStr = ejs.render(str.toString(), {
       folderName: folderName,
       modelName: modelName,
@@ -91,9 +91,9 @@ module.exports = {
     else {
       fs.mkdirSync(path);
     }
-    fs.writeFileSync(path + '/add.ejs',
+    fs.writeFileSync(path + '/modify.ejs',
       new Buffer(controllerStr), {flag: 'w', encoding: 'utf8'});
-    console.log('create ' + path + ' successful');
+    console.log('\x1B[32m%s', 'create ' + path + ' successful');
   },
 
   /**
@@ -124,7 +124,7 @@ module.exports = {
     }
     fs.writeFileSync(path + '/edit.ejs',
       new Buffer(controllerStr), {flag: 'w', encoding: 'utf8'});
-    console.log('create ' + path + ' successful');
+    console.log('\x1B[32m%s', 'create ' + path + ' successful');
   }
 
 };

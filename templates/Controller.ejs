@@ -1,122 +1,98 @@
 /**
+ * Created by WheelerLee.
  * <%= folderName %>/<%= modelName %>Controller
- *
- * @description :: Server-side logic for managing admin/roles
- * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
+ * Copyright 2018 https://github.com/WheelerLee
  */
-var async = require('asyncawait/async');
-var await = require('asyncawait/await');
-var moment = require('moment');
 
 module.exports = {
 
-  /**
-   * 列表页面
-   * @param req
-   * @param res
-   */
-  index: async(function (req, res) {
-    if (req.xhr) {  //ajax请求为数据接口
-
-      var page = parseInt(req.param('page', 1));
-      var limit = parseInt(req.param('limit', 30));
-      var queryObj = {};
-      <%_ for (var i in model['attributes']) { _%>
-      <%_ var attribute = model['attributes'][i] _%>
-      <%_ if (!attribute.type) {continue} _%>
-      <%_ if (attribute.type.toLowerCase() === 'string' || attribute.type.toLowerCase() === 'text' || attribute.type.toLowerCase() === 'mediumtext'|| attribute.type.toLowerCase() === 'longtext') { _%>
-      if (req.param('<%= i %>') && req.param('<%= i %>').trim() !== '') {
-        queryObj['<%- i %>'] = {contains: req.param('<%- i %>').trim()};
-      }
-      <%_ } else { _%>
-      if (req.param('<%- i %>') && req.param('<%- i %>').trim() !== '') {
-        queryObj['<%- i %>'] = req.param('<%- i %>').trim();
-      }
-      <%_ } _%>
-      <%_ } _%>
-
-      var result = await(<%= modelName %>.find({where: queryObj, limit: limit, skip: (page - 1) * limit}));
-      var count = await(<%= modelName %>.count(queryObj));
-
-      var obj = {
-        code: 0,
-        msg: '',
-        count: count,
-        data: result
-      };
-
-      return res.json(obj);
-
+  index: async function (req, res) {
+    if (req.method.toLowerCase() === 'get') {
+      var modify_permission = await PermissionService.valid(req.session.admin.id, '/<%= folderName %>/<%= modelName %>/modify');
+      var delete_permission = await PermissionService.valid(req.session.admin.id, '/<%= folderName %>/<%= modelName %>/delete');
+      return res.view({layout: '<%= folderName %>/layout', modify_permission: modify_permission, delete_permission: delete_permission});
     } else {
+      try {
+        var page = parseInt(req.param('page', 1));
+        var limit = parseInt(req.param('limit', 10));
+        var obj = {};
+        <%_ for (var i in model['attributes']) { _%>
+        <%_ var attribute = model['attributes'][i] _%>
+        <%_ if (!attribute.type) {continue} _%>
+        <%_ if (attribute.type.toLowerCase() === 'string') { _%>
+        if (req.param('<%= i %>') && req.param('<%= i %>').trim() !== '') {
+          obj['<%- i %>'] = {contains: req.param('<%- i %>').trim()};
+        }
+        <%_ } else { _%>
+        if (req.param('<%- i %>') && req.param('<%- i %>').trim() !== '') {
+          obj['<%- i %>'] = req.param('<%- i %>').trim();
+        }
+        <%_ } _%>
+        <%_ } _%>
+
+        let data = await <%= modelName %>.find({
+          where: obj,
+          limit: limit,
+          skip: (page - 1) * limit,
+          sort: 'sorted_num desc'
+        });
+        var count = await <%= modelName %>.count(obj);
+        res.json({
+          code: 0,
+          msg: '',
+          count: count,
+          data: data
+        });
+      } catch (e) {
+        res.json({
+          code: 1,
+          msg: '获取失败'
+        });
+      }
+    }
+  },
+
+  modify: async function (req, res) {
+
+    if (req.method.toLowerCase() === 'get') {
+      var <%- primaryKey %> = req.param('<%- primaryKey %>');
+      let <%- modelName.toLowerCase() %> = {};
+      if (<%- primaryKey %>) {
+        <%- modelName.toLowerCase() %> = await <%- modelName %>.findOne({<%- primaryKey %>: <%- primaryKey %>});
+      }
+      return res.view({layout: '<%- folderName %>/layout', <%- modelName.toLowerCase() %>: <%- modelName.toLowerCase() %>});
+    } else {
+      var <%- primaryKey %> = req.param('<%- primaryKey %>');
+      var obj = req.body || {};
 
       try {
+        let result;
+        if (<%- primaryKey %>) {
+          result = await <%- modelName %>.update({<%- primaryKey %>: <%- primaryKey %>}, obj);
+        } else {
+          obj.create_user = req.session.admin.id;
+          result = await <%- modelName %>.create(obj);
+        }
 
-        var add_permission = await(PermissionService.valid(req.session.admin.id, '/<%= folderName %>/<%= modelName.toLowerCase() %>/add'));
-        var delete_permission = await(PermissionService.valid(req.session.admin.id, '/<%= folderName %>/<%= modelName.toLowerCase() %>/delete'));
-        res.view({layout: 'admin/layout', add_permission: add_permission, delete_permission: delete_permission});
-
+        res.json({
+          errCode: 0,
+          msg: <%- primaryKey %> ? '修改成功' : '添加成功',
+          data: result
+        });
       } catch (e) {
-
-        res.serverError(e);
-
-      }
-    }
-
-  }),
-
-  /**
-   * 新增<%= modelName %>
-   * @param req
-   * @param res
-   */
-  add: async(function (req, res) {
-    if (req.method.toLowerCase() === 'get') {
-
-      var <%- primaryKey %> = req.param('<%- primaryKey %>');
-      var <%- modelName.toLowerCase() %> = {};
-      if (<%- primaryKey %>) {
-        <%- modelName.toLowerCase() %> = await(<%- modelName %>.findOne({<%- primaryKey %>: <%- primaryKey %>}));
-      }
-
-      return res.view({layout: '<%- folderName %>/layout', <%- modelName.toLowerCase() %>: <%- modelName.toLowerCase() %>});
-    }
-    try {
-      var <%- primaryKey %> = req.param('<%- primaryKey %>');
-
-      if (<%- primaryKey %>) {
-        var result = await(<%- modelName %>.update({<%- primaryKey %>: <%- primaryKey %>}, req.body));
         res.json({
-          errCode: 0,
-          msg: '修改成功',
-          data: result
-        });
-      } else {
-        var obj = req.body || {};
-        obj.create_user = req.session.admin.id;
-        var result = await(<%- modelName %>.create(obj));
-        res.json({
-          errCode: 0,
-          msg: '新增成功',
-          data: result
+          errCode: 1,
+          msg: '服务异常，请重试'
         });
       }
-    } catch (e) {
-      res.json({
-        errCode: 1,
-        msg: '操作失败,请重试!'
-      });
     }
-  }),
 
-  /**
-   * 删除角色信息
-   * @param req
-   * @param res
-   */
-  delete: async(function (req, res) {
+  },
+
+  delete: async function (req, res) {
     try {
       var <%- primaryKey %> = req.param('<%- primaryKey %>');
-      var result = await(<%- modelName %>.destroy({<%- primaryKey %>: <%- primaryKey %>}));
+      var result = await <%- modelName %>.update({<%- primaryKey %>: <%- primaryKey %>}, {deleted: 1});
       res.json({
         errCode: 0,
         msg: '删除成功',
@@ -128,8 +104,6 @@ module.exports = {
         msg: '删除失败，请重试!'
       });
     }
-  })
+  }
 
 };
-
-

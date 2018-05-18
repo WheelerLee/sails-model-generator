@@ -1,0 +1,283 @@
+<link rel="stylesheet" href="/layui/lib/menu.css">
+
+<div class="layui-card layadmin-header">
+
+</div>
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md3">
+      <div class="layui-card">
+        <div class="layui-card-body" id="LAY_menu">
+          <ul id="dict" style="min-height: 100px;"></ul>
+        </div>
+      </div>
+    </div>
+    <div class="layui-col-md9">
+      <div class="layui-card">
+        <div class="layui-card-body">
+          <table style="margin-top: 20px;" class="layui-hide" id="test-table-form" lay-filter="table"></table>
+          <script type="text/html" id="operation">
+            <% if (modify_permission) { %>
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <% } %>
+            <% if (delete_permission) { %>
+            {{#  if(d.deleted === 0){ }}
+            <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+            {{#  } else { }}
+            {{#  } }}
+            <% } %>
+          </script>
+          <script type="text/html" id="deleted">
+            {{#  if(d.deleted === 0){ }}
+            正常
+            {{#  } else { }}
+            <span style="color: #F581B1;">已删除</span>
+            {{#  } }}
+          </script>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+
+  var table;
+  var form;
+  var $;
+  var menu;
+  var menu_data;
+  var tableRender;
+
+  layui.extend({
+    menu: '/layui/lib/menu'
+  }).use(['table', 'form', 'tree', 'menu'], function (m) {
+
+    table = layui.table;
+    form = layui.form;
+    $ = layui.$;
+    menu = layui.menu;
+
+    tableRender = table.render({
+      elem: '#test-table-form',
+      url: '/admin/xt_dict/index',
+      method: 'post',
+      cellMinWidth: 80,
+      cols: [[
+        {field: 'code', title: '编号'},
+        {field: 'name', title: '名称'},
+        {field: 'name_en', title: '英文名称'},
+        {field: 'vals', title: '值'},
+        {field: 'remarks', title: '备注'},
+        {fixed: 'right', title: '操作', align: 'center', toolbar: '#operation'}
+      ]],
+      page: true
+    });
+
+    table.on('tool(table)', function (obj) {
+      if (obj.event === 'edit') {
+        //标签页打开编辑页面
+        layer.open({
+          type: 2,
+          title: '编辑',
+          maxmin: true,
+          resize: false,
+          area: ['70%', '80%'],
+          content: '/admin/xt_dict/modify?dict=1&id=' + obj.data.id,
+          zIndex: layer.zIndex, //重点1
+        });
+      } else if (obj.event === 'delete') {
+        layer.confirm('删除后将无法恢复，是否确定删除？', {icon: 3, title: '提示'}, function (index) {
+          layer.close(index);
+          var loading = layer.load(1);
+          $.post('/admin/xt_dict/delete', {id: obj.data.id}, function (data) {
+            layer.close(loading);
+            if (data.errCode === 0) {
+              layer.msg(data.msg, {
+                icon: 6,
+                time: 1000
+              }, function () {
+                tableRender.reload();
+              });
+            }
+            else {
+              layer.msg(data.msg, {icon: 5});
+            }
+          });
+        });
+      }
+    });
+
+    get_menu();
+
+  });
+
+
+  var init_menu = function () {
+    menu.init({
+      menu: [
+        {
+          id: 1,
+          ele: '#dict>li',
+          items: [
+            <% if (modify_permission) { %>
+            {text: '添加子分类', name: 'add_small_type', icon: '&#xe654;', group: 'g1'},
+            {text: '编辑', name: 'update_big_type', icon: '&#xe642;', group: 'g2'},
+            <% } %>
+            <% if (delete_permission) { %>
+            {text: '删除', name: 'delete_big_type', icon: '&#xe640;', group: 'g2'}
+            <% } %>
+          ]
+        },
+        {
+          id: 2,
+          ele: '#dict>li>ul>li',
+          items: [
+            <% if (modify_permission) { %>
+            {text: '添加字典', name: 'add_dict', icon: '&#xe654;', group: 'g1'},
+            {text: '编辑', name: 'update_small_type', icon: '&#xe642;', group: 'g2'},
+            <% } %>
+            <% if (delete_permission) { %>
+            {text: '删除', name: 'delete_small_type', icon: 'ဇ', group: 'g2'}
+            <% } %>
+          ]
+        },
+        {
+          id: 3,
+          ele: '#LAY_menu',
+          items: [
+            <% if (modify_permission) { %>
+            {text: '添加大分类', name: 'add_big_type', icon: '&#xe654;', group: 'g1'}
+            <% } %>
+          ]
+        }
+      ]
+    });
+    menu.on('menuclick', function (name, othis) {
+      if (name === 'add_big_type') { // 新增大分类
+        layer.open({
+          type: 2,
+          title: '添加大分类',
+          maxmin: true,
+          resize: false,
+          area: ['70%', '80%'],
+          content: '/admin/xt_dict/modify',
+          zIndex: layer.zIndex, //重点1
+        });
+      } else if (name === 'add_small_type') { // 添加小分类
+        var md = menu_data[$(othis).index()];
+        layer.open({
+          type: 2,
+          title: '添加子分类',
+          maxmin: true,
+          resize: false,
+          area: ['70%', '80%'],
+          content: '/admin/xt_dict/modify?parent_id=' + md.id,
+          zIndex: layer.zIndex, //重点1
+        });
+      } else if (name === 'add_dict') { // 添加字典
+        var md = menu_data[$(othis).parent().parent().index()].children[$(othis).index()];
+        layer.open({
+          type: 2,
+          title: '添加字典',
+          maxmin: true,
+          resize: false,
+          area: ['70%', '80%'],
+          content: '/admin/xt_dict/modify?parent_id=' + md.id,
+          zIndex: layer.zIndex, //重点1
+        });
+      } else if (name === 'update_big_type') { // 修改大分类
+        var md = menu_data[$(othis).index()];
+        layer.open({
+          type: 2,
+          title: '编辑',
+          maxmin: true,
+          resize: false,
+          area: ['70%', '80%'],
+          content: '/admin/xt_dict/modify?id=' + md.id,
+          zIndex: layer.zIndex, //重点1
+        });
+      } else if (name === 'update_small_type') { // 修改小分类
+        var md = menu_data[$(othis).parent().parent().index()].children[$(othis).index()];
+        layer.open({
+          type: 2,
+          title: '编辑',
+          maxmin: true,
+          resize: false,
+          area: ['70%', '80%'],
+          content: '/admin/xt_dict/modify?id=' + md.id,
+          zIndex: layer.zIndex, //重点1
+        });
+      } else if (name === 'delete_big_type') { // 删除大分类
+        var md = menu_data[$(othis).index()];
+        layer.confirm('删除后将无法恢复，是否确定删除？', {icon: 3, title: '提示'}, function (index) {
+          layer.close(index);
+          var loading = layer.load(1);
+          $.post('/admin/xt_dict/delete', {id: md.id}, function (data) {
+            layer.close(loading);
+            if (data.errCode === 0) {
+              layer.msg(data.msg, {
+                icon: 6,
+                time: 1000
+              }, function () {
+                get_menu();
+              });
+            }
+            else {
+              layer.msg(data.msg, {icon: 5});
+            }
+          });
+        });
+      } else if (name === 'delete_small_type') { // 删除小分类
+        var md = menu_data[$(othis).parent().parent().index()].children[$(othis).index()];
+        layer.confirm('删除后将无法恢复，是否确定删除？', {icon: 3, title: '提示'}, function (index) {
+          layer.close(index);
+          var loading = layer.load(1);
+          $.post('/admin/xt_dict/delete', {id: md.id}, function (data) {
+            layer.close(loading);
+            if (data.errCode === 0) {
+              layer.msg(data.msg, {
+                icon: 6,
+                time: 1000
+              }, function () {
+                get_menu();
+              });
+            }
+            else {
+              layer.msg(data.msg, {icon: 5});
+            }
+          });
+        });
+      }
+    });
+  };
+
+  var get_menu = function () {
+    $.post('/admin/xt_dict/index', {action: 'menu'}, function (result) {
+      if (result.code === 0) {
+        $('#dict').empty();
+        var data = result.data;
+        menu_data = data;
+        layui.tree({
+          elem: '#dict', //传入元素选择器
+          nodes: data,
+          click: function (node) {
+            console.log(node);
+            if (!node.children) {
+              tableRender.reload({
+                where: {
+                  id: node.id
+                }
+              });
+            }
+          }
+        });
+        init_menu();
+      }
+    });
+  }
+
+  var reloadTable = function () {
+    tableRender.reload();
+  }
+
+</script>

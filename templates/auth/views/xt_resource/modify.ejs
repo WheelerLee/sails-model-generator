@@ -1,0 +1,135 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (xt_resource.id) { %>
+        <input type="hidden" value="<%= xt_resource.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">名称</label>
+          <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="name"
+                   value="<%= xt_resource.name ? xt_resource.name : '' %>" placeholder="请输入名称" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">类型</label>
+          <div class="layui-input-block">
+            <select name="res_type_code" lay-verify="res_type_code">
+              <% _.each(types, function (t, i) { %>
+              <option value="<%= t.id %>" <%= xt_resource.res_type_code === t.id ? 'selected' : '' %>><%= t.name %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">图标</label>
+          <div class="layui-input-block">
+            <input type="text" name="icon_path" lay-verify="icon_path"
+                   value="<%= xt_resource.icon_path ? xt_resource.icon_path : '' %>" placeholder="请输入图标" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">路径</label>
+          <div class="layui-input-block">
+            <input type="text" name="path" lay-verify="path"
+                   value="<%= xt_resource.path ? xt_resource.path : '' %>" placeholder="请输入路径" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">简介</label>
+          <div class="layui-input-block">
+            <input type="text" name="description" lay-verify="description"
+                   value="<%= xt_resource.description ? xt_resource.description : '' %>" placeholder="请输入简介" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">父级</label>
+          <div class="layui-input-block">
+            <select name="parent_id" lay-verify="parent_id">
+              <option value="" selected>无父级</option>
+              <% _.each(resources, function (r, i) { %>
+              <option value="<%= r.id %>" <%= xt_resource.parent_id === r.id ? 'selected' : '' %> ><%= r.name %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">排序号</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= xt_resource.sorted_num ? xt_resource.sorted_num : '' %>" placeholder="请输入排序号" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      name: function (value, item) {
+        if (!value.trim()) {
+          return 'name不能为空';
+        }
+      },
+      res_type_code: function (value, item) {
+        if (!value.trim()) {
+          return 'res_type_code不能为空';
+        }
+      },
+      icon_path: function (value, item) {
+      },
+      path: function (value, item) {
+//        if (!value.trim()) {
+//          return 'path不能为空';
+//        }
+      },
+      description: function (value, item) {
+      },
+      deleted: function (value, item) {
+      },
+      create_user: function (value, item) {
+      },
+      sorted_num: function (value, item) {
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      var fields = data.field;
+      for (var i in fields) {
+        if (!fields[i]) {
+          delete fields[i];
+        }
+      }
+      $.post('/admin/xt_resource/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

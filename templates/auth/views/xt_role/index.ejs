@@ -1,204 +1,134 @@
-<blockquote class="layui-elem-quote">
-  <div class="layui-inline">
-    <form class="layui-form" id="roleSearchForm">
-      <div class="layui-input-inline" style="width:145px;">
-        <input type="text" name="name" value="" placeholder="角色名称" class="layui-input search_input">
+<div class="layui-card layadmin-header">
+
+</div>
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-body">
+          <form class="layui-form" id="searchForm" style="margin-bottom: 20px;">
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="name" value="" placeholder="名称" class="layui-input search_input">
+            </div>
+            <a class="layui-btn layui-btn-normal" style="margin: 8px 0 0 0" id="search_btn">
+              <i class="layui-icon larry-icon">&#xe615;</i>查询
+            </a>
+            <button type="reset" id="reset_btn" class="layui-btn" style="margin: 8px 0 0 0"><i class="layui-icon larry-icon">&#x1002;</i>
+              重置
+            </button>
+            <% if (modify_permission) { %>
+            <a class="layui-btn layui-btn-primary" id="add_btn" style="margin: 8px 0 0 0">
+              <i class="layui-icon larry-icon">&#xe654;</i>添加
+            </a>
+            <% } %>
+          </form>
+          <table style="margin-top: 20px;" class="layui-hide" id="test-table-form" lay-filter="table"></table>
+          <script type="text/html" id="operation">
+            <% if (distribution_resource_permission) { %>
+            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="distribution_resource">分配资源</a>
+            <% } %>
+            <% if (modify_permission) { %>
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <% } %>
+            <% if (delete_permission) { %>
+            {{#  if(d.deleted === 0){ }}
+            <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+            {{#  } else { }}
+            {{#  } }}
+            <% } %>
+          </script>
+          <script type="text/html" id="deleted">
+            {{#  if(d.deleted === 0){ }}
+            正常
+            {{#  } else { }}
+            <span style="color: #F581B1;">已删除</span>
+            {{#  } }}
+          </script>
+        </div>
       </div>
-      <a class="layui-btn layui-btn-normal" id="search_btn">
-        <i class="layui-icon larry-icon">&#xe615;</i>查询
-      </a>
-      <button type="reset" id="reset_btn" class="layui-btn layui-btn-normal"> <i class="layui-icon larry-icon">&#x1002;</i>重置</button>
-      <% if (add_permission) { %>
-      <a class="layui-btn layui-btn-normal" id="add_btn">
-        <i class="layui-icon larry-icon">&#xe61f;</i>新增角色
-      </a>
-      <% } %>
-    </form>
+    </div>
   </div>
-</blockquote>
-<table class="layui-table" id="table" lay-filter="table">
-</table>
-
+</div>
 <script type="text/javascript">
-  layui.use(['table', 'form', 'layer'], function () {
-
-    var table = layui.table, form = layui.form, $ = layui.jquery, layer = layui.layer;
-    var roleTableRender = table.render({
-      elem: '#table',
+  layui.use(['table', 'form'], function () {
+    var table = layui.table, form = layui.form, $ = layui.$;
+    var tableRender = table.render({
+      elem: '#test-table-form',
       url: '/admin/xt_role/index',
-      id:'roleTableId',
       method: 'post',
-      height:'400',
-      skin:'row',
-      even:'true',
+      cellMinWidth: 80,
       cols: [[
-        {checkbox: true, fixed:'left',},
-        {field:'name', title: '角色名称',width: 120 },
-        {field:'sorted_num', title: '排序',width: 120 },
-        {field:'updatedAt', title: '更新时间',width: 200, templet: '#updated_time'},
-        {fixed:'right', title: '操作', align:'center',width: 280, toolbar: '#operation'}
-
+        {field:'name', title: '名称'},
+        {field: 'deleted', title: '是否删除', templet: "#deleted"},
+        {fixed: 'right', title: '操作', align: 'center', toolbar: '#operation'}
       ]],
-      page: true,
-      limit: 10//默认显示10条
+      page: true
     });
 
-    $('body').on('click', '#search_btn', function () {
+    $('#add_btn').on('click', function () {
+      parent.window.addTab({
+        title: '添加角色',
+        href: '/admin/xt_role/modify'
+      });
+    });
 
+    $('#search_btn').on('click', function () {
       var obj = {};
-      var array = $('#roleSearchForm').serializeArray();
+      var array = $('#searchForm').serializeArray();
       for (var i = 0; i < array.length; i++) {
         var item = array[i];
         obj[item.name] = item.value;
       }
 
-      roleTableRender.reload({
-        where: obj
-      });
-
-    });
-
-    $('body').on('click', '#reset_btn', function () {
-      var obj = {};
-      roleTableRender.reload({
+      tableRender.reload({
         where: obj
       });
     });
 
-    var isSuccess = false;
-    $('body').on('click', '#add_btn', function () {
-      isSuccess = true;
-      layer.open({
-        type: 2,
-        title: '新增角色',
-        maxmin: true,
-        resize: false,
-        area: ['485px', '230px'],
-        content: '/admin/xt_role/add',
-        zIndex: layer.zIndex, //重点1
-        // success: function(layero) {
-        //   // layer.setTop(layero); //重点2
-        // }
-        cancel: function () {
-          isSuccess = false;
-        },
-        end: function () {
-          if (isSuccess) {
-            var obj = {};
-            var array = $('#roleSearchForm').serializeArray();
-            for (var i = 0; i < array.length; i++) {
-              var item = array[i];
-              obj[item.name] = item.value;
-            }
-
-            roleTableRender.reload({
-              where: {}
-            });
-          }
-        }
-      });
-
-    });
-
-    //监听工具条
     table.on('tool(table)', function(obj) {
-
-      var isSuccess = false;
       if (obj.event === 'edit') {
-        isSuccess = true;
-        layer.open({
-          type: 2,
-          title: '修改角色',
-          maxmin: true,
-          resize: false,
-          area: ['485px', '230px'],
-          content: '/admin/xt_role/add?id=' + obj.data.id,
-          zIndex: layer.zIndex, //重点1
-          // success: function(layero) {
-          //   // layer.setTop(layero); //重点2
-          // }
-          cancel: function () {
-            isSuccess = false;
-          },
-          end: function () {
-            if (isSuccess) {
-              var obj = {};
-              var array = $('#roleSearchForm').serializeArray();
-              for (var i = 0; i < array.length; i++) {
-                var item = array[i];
-                obj[item.name] = item.value;
-              }
-
-              roleTableRender.reload({
-                where: {}
-              });
-            }
-          }
+        //标签页打开编辑页面
+        parent.window.addTab({
+          title: '编辑角色',
+          href: '/admin/xt_role/modify?id=' + obj.data.id
         });
       } else if (obj.event === 'delete') {
-        layer.confirm('是否确定删除？', {icon: 3, title:'提示'}, function(index) {
+        layer.confirm('是否确定删除？', {icon: 3, title: '提示'}, function (index) {
           layer.close(index);
           var loading = layer.load(1);
-          $.post('/admin/xt_role/delete', obj.data, function(data) {
+          $.post('/admin/xt_role/delete', obj.data, function (data) {
             layer.close(loading);
             if (data.errCode === 0) {
               layer.msg(data.msg, {
                 icon: 6,
                 time: 1000
-              }, function() {
-                var objs = {};
-                var array = $('#roleSearchForm').serializeArray();
+              }, function () {
+
+                var obj = {};
+                var array = $('#searchForm').serializeArray();
+
                 for (var i = 0; i < array.length; i++) {
                   var item = array[i];
-                  objs[item.name] = item.value;
+                  obj[item.name] = item.value;
                 }
-
-                roleTableRender.reload({
-                  where: objs
+                tableRender.reload({
+                  where: obj
                 });
-//                obj.del();
 
               });
-            } else {
+            }
+            else {
               layer.msg(data.msg, {icon: 5});
             }
           });
         });
-      } else if (obj.event === 'distribution_res') {
-        layer.open({
-          type: 2,
+      } else if (obj.event === 'distribution_resource') {
+        parent.window.addTab({
           title: '分配资源',
-          maxmin: true,
-          resize: false,
-          area: ['800px', '494px'],
-          content: '/admin/xt_role/distribution_resource?role_id=' + obj.data.id,
-          zIndex: layer.zIndex, //重点1
-          // success: function(layero) {
-          //   // layer.setTop(layero); //重点2
-          // }
-          cancel: function () {
-            isSuccess = false;
-          },
-          end: function () {
-
-          }
+          href: '/admin/xt_role/distribution_resource?role_id=' + obj.data.id
         });
       }
     });
 
   });
-</script>
-<script type="text/html" id="updated_time">
-  {{d.updatedAt}}
-</script>
-<script type="text/html" id="operation">
-  <% if (distribution_permission) { %>
-  <a class="layui-btn layui-btn-small layui-btn-normal" lay-event="distribution_res"><i class="layui-icon" style="font-size: 14px;">&#xe857;</i>分配资源</a>
-  <% } %>
-  <% if (add_permission) { %>
-  <a class="layui-btn layui-btn-small" lay-event="edit">编辑</a>
-  <% } %>
-  <% if(delete_permission) { %>
-  <a class="layui-btn layui-btn-small layui-btn-danger" lay-event="delete">删除</a>
-  <% } %>
 </script>
