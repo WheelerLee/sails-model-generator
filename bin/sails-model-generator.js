@@ -91,7 +91,7 @@ function operation() {
     for (var i in files) {
       var file = files[i];
       if (file.endsWith('.js')) {
-        // generate(file);
+        generate(file);
         var modelName = file.replace('.js', '');
         if (['Xt_user', 'Xt_resource', 'Xt_role', 'Xt_dict', 'Xt_role_resource', 'Xt_user_resource', 'Xt_user_role'].indexOf(modelName) < 0) {
           models.push(modelName);
