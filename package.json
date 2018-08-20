@@ -1,6 +1,6 @@
 {
   "name": "sails-model-generator",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "generator models with exist database ",
   "main": "index.js",
   "scripts": {

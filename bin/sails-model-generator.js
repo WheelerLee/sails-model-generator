@@ -294,10 +294,15 @@ if (args.length === 0) {
   });
 } else {
   folderName = args[0].toLowerCase();
-  operation();
-  copyBaseFiles();
-  copyAuthFiles();
-  unzipStaticFiles();
+
+  if (folderName === '--version' || folderName === '-v') {
+    console.log('3.0.4');
+  } else {
+    operation();
+    copyBaseFiles();
+    copyAuthFiles();
+    unzipStaticFiles();
+  }
 
   rl.close();
 }
