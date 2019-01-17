@@ -1,0 +1,142 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (xt_user.id) { %>
+        <input type="hidden" value="<%= xt_user.id %>" name="id">
+        <% } %>
+        <div class="layui-form-item">
+          <label class="layui-form-label">昵称</label>
+          <div class="layui-input-block">
+            <input type="text" name="nick_name" lay-verify="nick_name"
+                   value="<%= xt_user.nick_name ? xt_user.nick_name : '' %>" placeholder="请输入昵称" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">登录名</label>
+          <div class="layui-input-block">
+            <input type="text" name="login_name" lay-verify="login_name"
+                   value="<%= xt_user.login_name ? xt_user.login_name : '' %>" placeholder="请输入登录名" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">密码</label>
+          <div class="layui-input-block">
+            <input type="text" name="password" lay-verify="password"
+                   value="" placeholder="请输入密码<%= xt_user.id ? '(为空表示不修改密码)' : '' %>" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <!--<div class="layui-form-item">-->
+          <!--<label class="layui-form-label">头像</label>-->
+          <!--<div class="layui-input-block">-->
+            <!--<input type="text" name="head_icon" lay-verify="head_icon"-->
+                   <!--value="<%= xt_user.head_icon ? xt_user.head_icon : '' %>" placeholder="请输入头像" autocomplete="off" class="layui-input">-->
+          <!--</div>-->
+        <!--</div>-->
+        <div class="layui-form-item">
+          <label class="layui-form-label">性别</label>
+          <div class="layui-input-block">
+            <select name="sex" lay-verify="sex">
+              <% _.each(sex, function (s) { %>
+              <option value="<%= s.id %>" <%= xt_user.sex === s.id ? 'selected' : '' %>><%= s.name %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">角色</label>
+          <div class="layui-input-block">
+            <select name="role" lay-verify="role">
+              <% _.each(roles, function (r) { %>
+              <option value="<%= r.id %>" <%= xt_user.role == r.id ? 'selected' : '' %>><%= r.name %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">排序号</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= xt_user.sorted_num ? xt_user.sorted_num : '' %>" placeholder="请输入排序号" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">描述</label>
+          <div class="layui-input-block">
+            <textarea name="descriptions" lay-verify="descriptions" placeholder="请输入描述" class="layui-textarea"><%= xt_user.descriptions ? xt_user.descriptions : '' %></textarea>
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      name: function (value, item) {
+      },
+      nick_name: function (value, item) {
+      },
+      login_name: function (value, item) {
+        if (!value.trim()) {
+          return 'login_name不能为空';
+        }
+      },
+      password: function (value, item) {
+//        if (!value.trim()) {
+//          return 'password不能为空';
+//        }
+      },
+      head_icon: function (value, item) {
+      },
+      descriptions: function (value, item) {
+      },
+      sex: function (value, item) {
+      },
+      user_state: function (value, item) {
+      },
+      deleted: function (value, item) {
+      },
+      create_user: function (value, item) {
+      },
+      sorted_num: function (value, item) {
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      var fields = data.field;
+      for (var i in fields) {
+        if (!fields[i]) {
+          delete fields[i];
+        }
+      }
+      $.post('/admin/xt_user/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

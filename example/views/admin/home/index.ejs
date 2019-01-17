@@ -1,0 +1,95 @@
+<div id="LAY_app">
+  <div class="layui-layout layui-layout-admin">
+    <!--头部-->
+    <div class="layui-header">
+      <!-- 头部区域 -->
+      <ul class="layui-nav layui-layout-left">
+        <li class="layui-nav-item layadmin-flexible" lay-unselect="">
+          <a href="javascript:;" id="flexible" title="侧边伸缩">
+            <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
+          </a>
+        </li>
+        <li class="layui-nav-item layui-hide-xs" lay-unselect="">
+          <a href="/" target="_blank" title="前台">
+            <i class="layui-icon layui-icon-website"></i>
+          </a>
+        </li>
+        <li class="layui-nav-item" lay-unselect="">
+          <a href="javascript:;" id="LAY_btn_refresh" title="刷新">
+            <i class="layui-icon layui-icon-refresh-3"></i>
+          </a>
+        </li>
+      </ul>
+      <ul class="layui-nav layui-layout-right" style="margin-right: 20px;" lay-filter="">
+        <li class="layui-nav-item">
+          <a href="javascript:;"><%= user.nick_name %><span class="layui-nav-more"></span></a>
+          <dl class="layui-nav-child layui-anim layui-anim-upbit">
+            <dd><a href="javascript:void(0)" id="btn_info">基本资料</a></dd>
+            <dd><a href="javascript:void(0)" id="btn_change_pwd">修改密码</a></dd>
+            <dd><a href="../user/logout">退出登录</a></dd>
+          </dl>
+        </li>
+      </ul>
+    </div>
+    <!--左侧菜单-->
+    <div class="layui-side layui-side-menu">
+      <div class="layui-side-scroll">
+        <div class="layui-logo">
+          <span>后台管理</span>
+        </div>
+        <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+          <% _.each(resources, function (resource) { %>
+          <li class="layui-nav-item">
+            <a href="javascript:;" lay-tips="<%= resource.name %>" lay-direction="2">
+              <!--<i class="layui-icon layui-icon-home"></i>-->
+              <% if (resource.icon_path) { %>
+              <i class="layui-icon"><%- resource.icon_path %></i>
+              <% } %>
+              <cite><%= resource.name %></cite>
+              <span class="layui-nav-more"></span></a>
+            <dl class="layui-nav-child">
+              <% _.each(resource.sub_resources, function (sr) { %>
+              <dd data-name="console" class="">
+                <a lay-href="<%= sr.path %>"><i class="layui-icon"><%- sr.icon_path %></i><%= sr.name %></a>
+              </dd>
+              <% }) %>
+            </dl>
+          </li>
+          <% }) %>
+        </ul>
+      </div>
+    </div>
+    <!--页面标签-->
+    <div class="layadmin-pagetabs" id="LAY_app_tabs">
+      <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+      <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+      <div class="layui-icon layadmin-tabs-control layui-icon-down">
+        <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+          <li class="layui-nav-item" lay-unselect="">
+            <a href="javascript:;"><span class="layui-nav-more"></span></a>
+            <dl class="layui-nav-child layui-anim-fadein layui-anim layui-anim-upbit">
+              <dd><a href="javascript:;" id="LAY_close_current_btn">关闭当前标签页</a></dd>
+              <dd><a href="javascript:;" id="LAY_close_others_btn">关闭其它标签页</a></dd>
+              <dd class="layui-this"><a href="javascript:;" id="LAY_close_all_btn">关闭全部标签页</a></dd>
+            </dl>
+          </li>
+        </ul>
+      </div>
+      <div class="layui-tab" lay-unauto="" lay-allowclose="true" lay-filter="layadmin-layout-tabs">
+        <ul class="layui-tab-title" id="LAY_app_tabsheader">
+          <li lay-id="/admin/home/splash" class="layui-this"><i class="layui-icon layui-icon-home"></i><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></li>
+        </ul>
+      </div>
+    </div>
+    <!-- 主体内容 -->
+    <div class="layui-body" id="LAY_app_body">
+      <div class="layadmin-tabsbody-item layui-show">
+        <iframe src="/admin/home/splash" frameborder="0" class="layadmin-iframe"></iframe>
+      </div>
+    </div>
+    <!-- 辅助元素，一般用于移动设备下遮罩 -->
+    <div class="layadmin-body-shade"></div>
+
+  </div>
+</div>
+<script src="/admin/js/index.js" type="text/javascript"></script>

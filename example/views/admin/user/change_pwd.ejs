@@ -1,0 +1,93 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <div class="layui-form-item">
+          <label class="layui-form-label">旧密码</label>
+          <div class="layui-input-block">
+            <input
+              type="password" name="old_pwd" lay-verify="old_pwd"
+              placeholder="请输入旧密码" autocomplete="off"
+              class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">新密码</label>
+          <div class="layui-input-block">
+            <input
+              type="password" name="new_pwd" lay-verify="new_pwd"
+              placeholder="请输入新密码" autocomplete="off"
+              class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">重复新密码</label>
+          <div class="layui-input-block">
+            <input
+              type="password" name="new_pwd2" lay-verify="new_pwd2"
+              placeholder="重复新密码" autocomplete="off"
+              class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">保存</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      old_pwd: function (value, item) {
+        if (value.length < 6 || value.length > 28) {
+          return '密码为6-28位';
+        }
+      },
+      new_pwd: function (value, item) {
+        if (value.length < 6 || value.length > 28) {
+          return '密码为6-28位';
+        }
+      },
+      new_pwd2: function (value, item) {
+        if (value.length < 6 || value.length > 28) {
+          return '密码为6-28位';
+        }
+      }
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      var fields = data.field;
+      for (var i in fields) {
+        if (!fields[i]) {
+          delete fields[i];
+        }
+      }
+      console.log(data.field);
+      $.post('', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function () {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

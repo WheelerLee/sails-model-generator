@@ -1,0 +1,60 @@
+<link rel="stylesheet" href="/admin/css/login.css" media="all">
+
+<div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+
+  <div class="layadmin-user-login-main">
+    <div class="layadmin-user-login-box layadmin-user-login-header">
+      <h2>后台管理系统</h2>
+      <p>后台管理系统</p>
+    </div>
+    <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+      <div class="layui-form-item">
+        <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-username"></label>
+        <input type="text" name="username" id="LAY-user-login-username" lay-verify="required" placeholder="用户名"
+               class="layui-input">
+      </div>
+      <div class="layui-form-item">
+        <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"></label>
+        <input type="password" name="password" id="LAY-user-login-password" lay-verify="required" placeholder="密码"
+               class="layui-input">
+      </div>
+      <div class="layui-form-item">
+        <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-user-login-submit">登 录</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  layui.use(['form'], function () {
+    var $ = layui.$, form = layui.form;
+    form.render();
+    //提交
+    form.on('submit(LAY-user-login-submit)', function (obj) {
+      console.log(obj);
+      if (!obj.field.username) {
+        layer.msg('用户名不能为空', {icon: 5});
+      }
+      if (!obj.field.username) {
+        layer.msg('密码不能为空', {icon: 5});
+      }
+      var loading = layer.load(1);
+      var param = obj.field;
+      $.post('/admin/user/login', param, function(data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 500
+          }, function() {
+            window.location.href = '/admin/home/index';
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

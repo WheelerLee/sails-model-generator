@@ -2,8 +2,9 @@
  * Created by liwei on 2017/6/20.
  */
 
-var fs = require('fs');
-var ejs = require('ejs');
+const colors = require('colors');
+const fs = require('fs-extra');
+const ejs = require('ejs');
 
 module.exports = {
 
@@ -24,14 +25,10 @@ module.exports = {
     });
 
     var path = process.cwd() + '/api/controllers/' + folderName + '/';
-    if (fs.existsSync(path)) {
-    }
-    else {
-      fs.mkdirSync(path);
-    }
+    fs.ensureDirSync(path);
     fs.writeFileSync(path + modelName + 'Controller.js',
       new Buffer(controllerStr), {flag: 'w', encoding: 'utf8'});
-    console.log('\x1B[32m%s', 'create ' + path + ' successful');
+    console.log(colors.info('创建 ' + path + modelName + 'Controller.js'));
   },
 
   /**
@@ -50,19 +47,11 @@ module.exports = {
       primaryKey: primaryKey
     });
 
-    var path = process.cwd() + '/views/' + folderName + '/';
-    if (fs.existsSync(path)) {}
-    else {
-      fs.mkdirSync(path);
-    }
-    path = path + modelName.toLowerCase() + '/';
-    if (fs.existsSync(path)) {}
-    else {
-      fs.mkdirSync(path);
-    }
-    fs.writeFileSync(path + '/index.ejs',
+    var path = process.cwd() + '/views/' + folderName + '/' + modelName.toLowerCase() + '/';
+    fs.ensureDirSync(path);
+    fs.writeFileSync(path + 'index.ejs',
       new Buffer(controllerStr), {flag: 'w', encoding: 'utf8'});
-    console.log('\x1B[32m%s', 'create ' + path + ' successful');
+    console.log(colors.info('创建 ' + path + 'index.ejs'));
   },
 
   /**
@@ -81,19 +70,11 @@ module.exports = {
       primaryKey: primaryKey
     });
 
-    var path = process.cwd() + '/views/' + folderName + '/';
-    if (fs.existsSync(path)) {}
-    else {
-      fs.mkdirSync(path);
-    }
-    path = path + modelName.toLowerCase() + '/';
-    if (fs.existsSync(path)) {}
-    else {
-      fs.mkdirSync(path);
-    }
-    fs.writeFileSync(path + '/modify.ejs',
+    var path = process.cwd() + '/views/' + folderName + '/' + modelName.toLowerCase() + '/';
+    fs.ensureDirSync(path);
+    fs.writeFileSync(path + 'modify.ejs',
       new Buffer(controllerStr), {flag: 'w', encoding: 'utf8'});
-    console.log('\x1B[32m%s', 'create ' + path + ' successful');
+    console.log(colors.info('创建 ' + path + 'modify.ejs'));
   },
 
   /**
@@ -112,19 +93,11 @@ module.exports = {
       primaryKey: primaryKey
     });
 
-    var path = process.cwd() + '/views/' + folderName + '/';
-    if (fs.existsSync(path)) {}
-    else {
-      fs.mkdirSync(path);
-    }
-    path = path + modelName.toLowerCase() + '/';
-    if (fs.existsSync(path)) {}
-    else {
-      fs.mkdirSync(path);
-    }
+    var path = process.cwd() + '/views/' + folderName + '/' + modelName.toLowerCase() + '/';
+    fs.ensureDirSync(path);
     fs.writeFileSync(path + '/edit.ejs',
       new Buffer(controllerStr), {flag: 'w', encoding: 'utf8'});
-    console.log('\x1B[32m%s', 'create ' + path + ' successful');
+    console.log(colors.info('create ' + path + ' successful'));
   }
 
 };
