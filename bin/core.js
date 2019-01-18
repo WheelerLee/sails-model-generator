@@ -9,13 +9,13 @@ var ejs = require('ejs');
 module.exports = function(folderName) {
 
   //开发环境移除测试项目的路径
-  fs.removeSync(process.cwd() + '/api/controllers/' + folderName + '/');
-  fs.removeSync(process.cwd() + '/api/controllers/MockController.js');
-  fs.removeSync(process.cwd() + '/api/policies/');
-  fs.removeSync(process.cwd() + '/api/services/');
-  fs.removeSync(process.cwd() + '/assets/admin/');
-  fs.removeSync(process.cwd() + '/assets/layui/');
-  fs.removeSync(process.cwd() + '/views/' + folderName + '/');
+  // fs.removeSync(process.cwd() + '/api/controllers/' + folderName + '/');
+  // fs.removeSync(process.cwd() + '/api/controllers/MockController.js');
+  // fs.removeSync(process.cwd() + '/api/policies/');
+  // fs.removeSync(process.cwd() + '/api/services/');
+  // fs.removeSync(process.cwd() + '/assets/admin/');
+  // fs.removeSync(process.cwd() + '/assets/layui/');
+  // fs.removeSync(process.cwd() + '/views/' + folderName + '/');
 
   if (fs.existsSync(process.cwd() + '/views/' + folderName + '/') || fs.existsSync(process.cwd() + '/api/controllers/' + folderName + '/')) {
     console.log(colors.error('请检查controllers或views文件夹,' + folderName + '文件夹已经存在'));
@@ -28,6 +28,7 @@ module.exports = function(folderName) {
   for (let model of models) {
     generate(folderName, model);
   }
+  mvAdminModel();
   generateMockController(folderName, models);
   addPolicies(folderName, models);
 
@@ -64,6 +65,29 @@ function getModels() {
     }
   }
   return models;
+}
+
+/**
+ * 移动后台账号，权限等model到项目
+ */
+function mvAdminModel() {
+  var proRootPath = __dirname.replace('/bin', '')
+    .replace('\\bin', '');
+
+  var controllers = fs.readdirSync(proRootPath + '/templates/models');
+  for (var i in controllers) {
+    var controller = controllers[i];
+    if (controller.endsWith('.js')) {
+      if (!fs.existsSync(process.cwd() + '/api/models/' + controller)) {
+        console.log(colors.info('复制' + controller + '到models下'));
+        let ps = proRootPath + '/templates/models/' + controller;
+        fs.writeFileSync(process.cwd() + '/api/models/' + controller,
+          fs.readFileSync(ps));
+      } else {
+        console.log(colors.warn('models下已经存在' + controller));
+      }
+    }
+  }
 }
 
 /**

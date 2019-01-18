@@ -45,7 +45,7 @@ if (args.length === 0) {
   folderName = args[0].toLowerCase();
 
   if (folderName === '--version' || folderName === '-v') {
-    console.log(colors.info('3.0.4'));
+    console.log(colors.info('3.1.0'));
   } else {
     core(folderName);
   }

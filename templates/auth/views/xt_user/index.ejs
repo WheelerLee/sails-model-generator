@@ -68,7 +68,24 @@
         {field: 'deleted', title: '是否删除', templet: "#deleted"},
         {fixed: 'right', title: '操作', align: 'center', toolbar: '#operation'}
       ]],
-      page: true
+      page: true,
+      done: function(res, curr, count) {
+        if (curr > 1 && res.data.length === 0) { //不是第一页并且没有数据的时候，跳转到前一页
+          var obj = {};
+          var array = $('#searchForm').serializeArray();
+          for (var i = 0; i < array.length; i++) {
+            var item = array[i];
+            obj[item.name] = item.value;
+          }
+
+          tableRender.reload({
+            where: obj,
+            page: {
+              curr: curr - 1 //跳转到前一页
+            }
+          });
+        }
+      }
     });
 
     $('#add_btn').on('click', function () {
@@ -87,7 +104,10 @@
       }
 
       tableRender.reload({
-        where: obj
+        where: obj,
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
       });
     });
 

@@ -13,7 +13,8 @@ module.exports = {
    * @returns {*|string}
    */
   pwd: function (str) {
-    return DigestService.rsa_sha256(str, fs.readFileSync(path.resolve(__dirname, '../../ssl/rsa_private_key.pem')));
+    return str;
+    // return DigestService.rsa_sha256(str, fs.readFileSync(path.resolve(__dirname, '../../ssl/rsa_private_key.pem')));
   }
 
 };
