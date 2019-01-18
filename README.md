@@ -1,2 +1,2 @@
 # sails-model-generator
-## Don't use, test project.
+## 伟哥的无聊项目
