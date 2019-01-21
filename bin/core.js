@@ -9,13 +9,14 @@ var ejs = require('ejs');
 module.exports = function(folderName) {
 
   //开发环境移除测试项目的路径
-  // fs.removeSync(process.cwd() + '/api/controllers/' + folderName + '/');
-  // fs.removeSync(process.cwd() + '/api/controllers/MockController.js');
-  // fs.removeSync(process.cwd() + '/api/policies/');
-  // fs.removeSync(process.cwd() + '/api/services/');
-  // fs.removeSync(process.cwd() + '/assets/admin/');
-  // fs.removeSync(process.cwd() + '/assets/layui/');
-  // fs.removeSync(process.cwd() + '/views/' + folderName + '/');
+  fs.removeSync(process.cwd() + '/api/controllers/' + folderName + '/');
+  fs.removeSync(process.cwd() + '/api/controllers/MockController.js');
+  fs.removeSync(process.cwd() + '/api/controllers/StaticController.js');
+  fs.removeSync(process.cwd() + '/api/policies/');
+  fs.removeSync(process.cwd() + '/api/services/');
+  fs.removeSync(process.cwd() + '/assets/admin/');
+  fs.removeSync(process.cwd() + '/assets/layui/');
+  fs.removeSync(process.cwd() + '/views/' + folderName + '/');
 
   if (fs.existsSync(process.cwd() + '/views/' + folderName + '/') || fs.existsSync(process.cwd() + '/api/controllers/' + folderName + '/')) {
     console.log(colors.error('请检查controllers或views文件夹,' + folderName + '文件夹已经存在'));
@@ -35,6 +36,7 @@ module.exports = function(folderName) {
   copyBaseFiles(folderName);
   copyAuthFiles(folderName);
   unzipStaticFiles();
+  updateConfigFile(folderName);
 
 };
 
@@ -138,7 +140,7 @@ function generate (folderName, fileName) {
   if (!primaryKey) {
     console.log(colors.warn('model' + modelName + '没有设置主键，已忽略'));
   } else {
-    if (['Xt_user', 'Xt_resource', 'Xt_role', 'Xt_dict', 'Xt_role_resource', 'Xt_user_resource', 'Xt_user_role'].indexOf(modelName) < 0) {  //权限相关的直接生产权限系统
+    if (['Xt_user', 'Xt_resource', 'Xt_role', 'Xt_dict', 'Xt_role_resource', 'Xt_user_resource', 'Xt_user_role', 'Attach'].indexOf(modelName) < 0) {  //权限相关的直接生产权限系统
       // console.log(colors.progress('Generate the files for model ' + modelName + '...'));
       Generator.generateController(folderName, modelName, model, primaryKey);
       Generator.generateIndexPage(folderName, modelName, model, primaryKey);
@@ -243,6 +245,9 @@ function copyAuthFiles(folderName) {
       fs.readFileSync(proRootPath + '/templates/auth/controllers/' + controller));
   }
 
+  fs.writeFileSync(process.cwd() + '/api/controllers/StaticController.js',
+      fs.readFileSync(proRootPath + '/templates/others/StaticController.js'));
+
   var views = fs.readdirSync(proRootPath + '/templates/auth/views');
   for (var i in views) {
     var folder = views[i];
@@ -275,4 +280,21 @@ function unzipStaticFiles() {
   fs.copySync(__dirname.replace('/bin', '').replace('\\bin', '') + '/templates/assets', process.cwd() + '/assets/');
   console.log(colors.success('解压静态资源成功...'));
 
+}
+
+/**
+ * 替换配置文件
+ * @param {String} folderName 文件夹名
+ */
+function updateConfigFile(folderName) {
+  console.log(colors.progress('正在替换配置文件...'));
+  
+  let proRootPath = __dirname.replace('/bin', '')
+    .replace('\\bin', ''); 
+  let pp = proRootPath + '/templates/configs/';
+  let op = process.cwd() + '/config/';
+
+  fs.writeFileSync(op + 'routes.js', fs.readFileSync(pp + 'routes.js'));   //复制layout.ejs
+
+  console.log(colors.success('替换配置文件成功...'));
 }
