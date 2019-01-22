@@ -184,15 +184,15 @@ function addPolicies(folderName, models) {
   });
   var file_path = process.cwd() + '/config/policies.js';
 
-  var data = fs.readFileSync(file_path, 'utf8');
+  // var data = fs.readFileSync(file_path, 'utf8');
 
-  var index = data.lastIndexOf('};');
-  data = data.substr(0, index);
+  // var index = data.lastIndexOf('};');
+  // data = data.substr(0, index);
 
-  data += policiesStr;
-  data += '};';
+  // data += policiesStr;
+  // data += '};';
 
-  fs.writeFileSync(file_path, new Buffer(data), {flag: 'w', encoding: 'utf8'});
+  fs.writeFileSync(file_path, new Buffer(policiesStr), {flag: 'w', encoding: 'utf8'});
 
   console.log(colors.info('插入policies成功'));
 
@@ -295,7 +295,14 @@ function updateConfigFile(folderName) {
   let pp = proRootPath + '/templates/configs/';
   let op = process.cwd() + '/config/';
 
-  fs.writeFileSync(op + 'routes.js', fs.readFileSync(pp + 'routes.js'));   //复制layout.ejs
+  var files = fs.readdirSync(pp);
+  
+  for (var i in files) {
+    var file = files[i];
+    if (file.endsWith('.js')) {
+      fs.writeFileSync(op + file, fs.readFileSync(pp + file));
+    }
+  }
 
   console.log(colors.success('替换配置文件成功'));
 }
