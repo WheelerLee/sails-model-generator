@@ -5,7 +5,7 @@
  */
 
 var jquery;
-var element;
+var element,layer;
 
 /**
  * 添加标签页
@@ -24,20 +24,81 @@ function addTab(obj) {
     $('.layadmin-tabsbody-item').removeClass('layui-show');
     $('#LAY_app_body').append(body_str);
   }
+  let elements = $(".layui-this");
+  if(elements){
+    elements[0].scrollIntoView(true);
+  }
   element.tabChange('layadmin-layout-tabs', obj.href);
+}
+
+/**
+ * 弹出窗口
+ * @param obj
+ */
+function openLayer(obj) {
+  layer.open({
+    title: obj.title,
+    type:2,
+    content: obj.href,
+    maxmin: true,
+    resize: false,
+    area: ['67%', '80%'],
+    end:function () {
+      if(typeof obj.end == "function"){
+        obj.end();
+      }
+    }
+  });
+}
+
+/**
+ * 关闭选项卡
+ * @param index
+ */
+function closeTab(id){
+  element.tabDelete("layadmin-layout-tabs",id);
+}
+
+/**
+ * 关闭当前选项卡
+ * @param index
+ */
+function closeCurrentTab(){
+  let id =jquery(".layadmin-pagetabs li.layui-this",window.top.document).attr("lay-id");
+  element.tabDelete("layadmin-layout-tabs",id);
 }
 
 layui.use(['element', 'layer'], function () {
 
   element = layui.element;
+  layer = layui.layer;
   var $ = layui.jquery;
   jquery = $;
 
   $('body').addClass('layui-layout-body');
 
   element.on('tab(layadmin-layout-tabs)', function (obj) {
+
     $('#LAY_app_body .layui-show').removeClass('layui-show');
     $("#LAY_app_body .layadmin-tabsbody-item:eq(" + obj.index + ")").addClass('layui-show');
+
+    var li = $("#LAY_app_tabsheader li:eq(" + obj.index + ")");
+    var tabs_width = obj.elem.width();  //整个tabbar的实际宽度
+    var li_left = li.position().left;  //当前选中的tab距离左边的位置
+    var tabs_scroll = obj.elem.scrollLeft();   //tabbar滚动的距离
+    if (li_left < tabs_scroll) {  //显示在左边
+      var left = $('#LAY_app_tabsheader').scrollLeft() - (tabs_scroll - li_left);
+      $('#LAY_app_tabsheader').animate({
+        scrollLeft: left
+      }, 200);
+    }
+    if (li_left + li.outerWidth() > tabs_width + tabs_scroll) {//显示在右边
+      let left = $('#LAY_app_tabsheader').scrollLeft() + li_left + li.outerWidth() - (tabs_width + tabs_scroll);
+      $('#LAY_app_tabsheader').animate({
+        scrollLeft: left
+      }, 200);
+    }
+
   });
 
   element.on('tabDelete(layadmin-layout-tabs)', function (data) {

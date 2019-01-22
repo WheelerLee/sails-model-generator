@@ -37,6 +37,7 @@ module.exports = function(folderName) {
   copyAuthFiles(folderName);
   unzipStaticFiles();
   updateConfigFile(folderName);
+  exec();
 
 };
 
@@ -296,5 +297,19 @@ function updateConfigFile(folderName) {
 
   fs.writeFileSync(op + 'routes.js', fs.readFileSync(pp + 'routes.js'));   //复制layout.ejs
 
-  console.log(colors.success('替换配置文件成功...'));
+  console.log(colors.success('替换配置文件成功'));
+}
+
+/**
+ * 执行shell脚本添加依赖
+ */
+function exec() {
+  console.log(colors.progress('添加项目依赖...'));
+  let process = require('child_process');
+  process.execSync('npm i axios --save');
+  process.execSync('npm i gm --save');
+  process.execSync('npm i moment --save');
+  process.execSync('npm i nodemailer --save');
+  process.execSync('npm i uuid --save');
+  console.log(colors.success('添加项目依赖成功'));
 }

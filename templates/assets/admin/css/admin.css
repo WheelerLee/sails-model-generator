@@ -1101,6 +1101,15 @@ html {
   display: inline-block
 }
 
+#LAY_app_tabsheader {
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+
+#LAY_app_tabsheader::-webkit-scrollbar {
+  display: none;
+}
+
 @media screen and (max-width: 768px) {
   .layadmin-panel-selection {
     margin:0;
