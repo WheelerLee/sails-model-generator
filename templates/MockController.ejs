@@ -12,6 +12,13 @@ module.exports = {
     let a = await sails.getDatastore().transaction(async function (db, proceed) {
       try {
 
+        await Xt_setting.destroy({});
+        await Xt_dict.destroy({});
+        await Xt_resource.destroy({});
+        await Xt_role_resource.destroy({});
+        await Xt_role.destroy({});
+        await Xt_user.destroy({});
+
         //创建基本的字典
         await Xt_dict.create({id: 'user', code: 'user', name: '用户', name_en: 'User'}).usingConnection(db);
         await Xt_dict.create({
@@ -207,6 +214,54 @@ module.exports = {
           path: '/<%- folderName %>/xt_dict/delete',
           parent_id: resource_system.id
         }).usingConnection(db);
+        await Xt_resource.create({
+          name: '站点管理',
+          res_type_code: 'resource_page',
+          sorted_num: 1,
+          path: '/<%- folderName %>/system/site',
+          parent_id: resource_system.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: '邮件服务器',
+          res_type_code: 'resource_page',
+          sorted_num: 1,
+          path: '/<%- folderName %>/system/email',
+          parent_id: resource_system.id
+        }).usingConnection(db);
+
+        let settings = [
+          {
+            id: 'system_settings',
+            value: [
+              {id: 'site_name',value: '后台管理系统'},
+              {id: 'maximum_upload_size', value: '10240'}
+            ]
+          },
+          {
+            id: 'email_settings',
+            value: [
+              {id: 'email_host', value: ''},
+              {id: 'email_port', value: ''},
+              {id: 'email_user', value: ''},
+              {id: 'email_password', value: ''},
+              {id: 'email_secure', value: '0'},
+              {id: 'email_sender', value: ''}
+            ]
+          }
+        ];
+        for (let setting of settings) {
+          let big = await Xt_setting.create({
+            id: setting.id,
+            value: null
+          }).fetch().usingConnection(db);
+          for (let s of setting.value) {
+            await Xt_setting.create({
+              id: s.id,
+              value: s.value,
+              parent: big.id
+            }).usingConnection(db);
+          }
+        }
 
         <%_ for (var i = 0; i < models.length; i++) { _%>
         <%_ var model = models[i] _%>

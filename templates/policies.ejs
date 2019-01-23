@@ -25,6 +25,9 @@ module.exports.policies = {
   '<%- folderName %>/HomeController': {
     '*': ['adminSessionAuth']
   },
+  '<%- folderName %>/SystemController': {
+    '*': ['adminSessionAuth', 'permissionsAuth']
+  },
   '<%- folderName %>/Xt_userController': {
     '*': ['adminSessionAuth', 'permissionsAuth']
   },

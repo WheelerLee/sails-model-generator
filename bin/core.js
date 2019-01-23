@@ -6,6 +6,9 @@ const fs = require('fs-extra');
 const Generator = require('./Generator');
 var ejs = require('ejs');
 
+const omit_models = ['Attach', 'Xt_user', 'Xt_resource', 'Xt_role', 'Xt_dict', 'Xt_role_resource', 
+  'Xt_user_resource', 'Xt_user_role', 'Xt_setting'];
+
 module.exports = function(folderName) {
 
   //开发环境移除测试项目的路径
@@ -37,7 +40,7 @@ module.exports = function(folderName) {
   copyAuthFiles(folderName);
   unzipStaticFiles();
   updateConfigFile(folderName);
-  exec();
+  // exec();
 
 };
 
@@ -62,7 +65,7 @@ function getModels() {
     var file = files[i];
     if (file.endsWith('.js')) {
       var modelName = file.replace('.js', '');
-      if (['Xt_user', 'Xt_resource', 'Xt_role', 'Xt_dict', 'Xt_role_resource', 'Xt_user_resource', 'Xt_user_role'].indexOf(modelName) < 0) {
+      if (omit_models.indexOf(modelName) < 0) {
         models.push(modelName);
       }
     }
@@ -141,7 +144,7 @@ function generate (folderName, fileName) {
   if (!primaryKey) {
     console.log(colors.warn('model' + modelName + '没有设置主键，已忽略'));
   } else {
-    if (['Xt_user', 'Xt_resource', 'Xt_role', 'Xt_dict', 'Xt_role_resource', 'Xt_user_resource', 'Xt_user_role', 'Attach'].indexOf(modelName) < 0) {  //权限相关的直接生产权限系统
+    if (omit_models.indexOf(modelName) < 0) {  //权限相关的直接生产权限系统
       // console.log(colors.progress('Generate the files for model ' + modelName + '...'));
       Generator.generateController(folderName, modelName, model, primaryKey);
       Generator.generateIndexPage(folderName, modelName, model, primaryKey);

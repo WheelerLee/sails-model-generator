@@ -85,6 +85,20 @@ module.exports = {
     });
   },
 
+  beforeCreate: function (valuesToSet, proceed) {
+    if (valuesToSet.path) {
+      valuesToSet.path = valuesToSet.path.toLowerCase();
+    }
+    return proceed();
+  },
+
+  beforeUpdate: function (valuesToSet, proceed) {
+    if (valuesToSet.path) {
+      valuesToSet.path = valuesToSet.path.toLowerCase();
+    }
+    return proceed();
+  },
+
   /**
    * 验证用户是否有某个权限
    * @param adminId 用户id
@@ -98,7 +112,7 @@ module.exports = {
         'xt_resource.id=xt_role_resource.resource_id LEFT JOIN xt_user_role on ' +
         'xt_role_resource.role_id=xt_user_role.role_id where xt_user_role.user_id=$1 ' +
         'and xt_resource.deleted=0 and xt_role_resource.deleted=0 and xt_user_role.deleted=0 ' +
-        'and xt_resource.path=$2', [adminId, permission], function (err, results) {
+        'and xt_resource.path=$2', [adminId, permission.toLowerCase()], function (err, results) {
 
         if (err) reject(err);
         else {

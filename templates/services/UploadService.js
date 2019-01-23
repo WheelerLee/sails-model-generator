@@ -20,7 +20,7 @@ module.exports = {
       try {
         var foldName = moment().utc().utcOffset(480).format('YYYYMMDD');
         req.upload({
-          maxBytes: 104857600,
+          maxBytes: parseInt(sails.settings.system_settings.maximum_upload_size) * 1024,
           dirname: "../../upload/" + mid_dir + foldName
         }, function whenDone(err, uploadedFiles) {
           if (err)
