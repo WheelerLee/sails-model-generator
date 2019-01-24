@@ -30,17 +30,28 @@ module.exports = {
   },
 
   email: async function (req, res) {
+
+    if (req.param('type') === 'test') {
+      let body = req.body;
+      body.email_secure = (body.email_secure === 'on' ? '1' : '0');
+      let b = await EmailService.send(body.email_user, '测试邮件', '<b>恭喜，邮件配置成功</b>', body);
+      if (b) {
+        return res.json({
+          errCode: 0,
+          msg: '发送成功'
+        });
+      } else {
+        return res.json({
+          errCode: 1,
+          msg: '发送失败'
+        });
+      }
+    }
+
     if (req.method.toLowerCase() === 'get') {
       let email_settings = sails.settings.email_settings;
       return res.view({layout: 'admin/layout', email_settings: email_settings});
     } else {
-
-      // {id: 'email_host', value: ''},
-      // {id: 'email_port', value: ''},
-      // {id: 'email_user', value: ''},
-      // {id: 'email_password', value: ''},
-      // {id: 'email_secure', value: '0'},
-      // {id: 'email_sender', value: ''}
 
       let email_host = req.param('email_host');
       let email_port = req.param('email_port');
@@ -49,7 +60,6 @@ module.exports = {
       let email_secure = req.param('email_secure') === 'on' ? '1' : '0';
       let email_sender = req.param('email_sender');
 
-      // let email_settings = sails.settings.email_settings;
       let email_settings = {
         email_host: email_host,
         email_port: email_port,

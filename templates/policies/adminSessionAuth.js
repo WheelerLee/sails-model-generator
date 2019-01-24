@@ -10,6 +10,10 @@ module.exports = function(req, res, next) {
   if (req.session.admin) {
     next();
   } else {
-    return res.redirect('/admin/user/login');
+    if (req.xhr) {
+      return res.json({errCode: 3, msg: '请先登录！'});
+    } else {
+      return res.redirect('/admin/user/login');
+    }
   }
 };
