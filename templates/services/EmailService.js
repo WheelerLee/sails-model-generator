@@ -38,13 +38,11 @@ module.exports = {
     
         // send mail with defined transport object
         let info = await transporter.sendMail(mailOptions);
-        sails.log.info(info);
 
         return true;
 
       }
     } catch (e) {
-      sails.log.info(e);
       return false;
     }
 
