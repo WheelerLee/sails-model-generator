@@ -11,15 +11,15 @@ const omit_models = ['Attach', 'Xt_user', 'Xt_resource', 'Xt_role', 'Xt_dict', '
 
 module.exports = function(folderName) {
 
-  //开发环境移除测试项目的路径
-  fs.removeSync(process.cwd() + '/api/controllers/' + folderName + '/');
-  fs.removeSync(process.cwd() + '/api/controllers/MockController.js');
-  fs.removeSync(process.cwd() + '/api/controllers/StaticController.js');
-  fs.removeSync(process.cwd() + '/api/policies/');
-  fs.removeSync(process.cwd() + '/api/services/');
-  fs.removeSync(process.cwd() + '/assets/admin/');
-  fs.removeSync(process.cwd() + '/assets/layui/');
-  fs.removeSync(process.cwd() + '/views/' + folderName + '/');
+  // //开发环境移除测试项目的路径
+  // fs.removeSync(process.cwd() + '/api/controllers/' + folderName + '/');
+  // fs.removeSync(process.cwd() + '/api/controllers/MockController.js');
+  // fs.removeSync(process.cwd() + '/api/controllers/StaticController.js');
+  // fs.removeSync(process.cwd() + '/api/policies/');
+  // fs.removeSync(process.cwd() + '/api/services/');
+  // fs.removeSync(process.cwd() + '/assets/admin/');
+  // fs.removeSync(process.cwd() + '/assets/layui/');
+  // fs.removeSync(process.cwd() + '/views/' + folderName + '/');
 
   if (fs.existsSync(process.cwd() + '/views/' + folderName + '/') || fs.existsSync(process.cwd() + '/api/controllers/' + folderName + '/')) {
     console.log(colors.error('请检查controllers或views文件夹,' + folderName + '文件夹已经存在'));
