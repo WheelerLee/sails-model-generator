@@ -81,6 +81,41 @@ module.exports = {
         msg: '修改成功'
       });
     }
+  },
+
+  preview: async function (req, res) {
+    if (req.method.toLowerCase() === 'get') {
+      let settings = sails.settings;
+      return res.view({layout: 'admin/layout', settings: settings});
+    } else {
+      // { email_settings: 
+      //   { email_host: 'smtp.sina.com',
+      //     email_password: 'aaa',
+      //     email_port: '465',
+      //     email_secure: '1',
+      //     email_sender: '蓝源科技',
+      //     email_user: 'oyliwei@sina.com' },
+      //  system_settings: { maximum_upload_size: '10240', site_name: 'tuex管理系统' } }
+      let json = req.allParams();
+
+      let b = await SystemService.reset(json);
+      
+      let settings = await SystemService.getSettings(null);
+      sails.settings = settings;
+
+      if (b) {
+        return res.json({
+          errCode: 0,
+          msg: '保存成功'
+        });
+      } else {
+        return res.json({
+          errCode: 1,
+          msg: '保存成功'
+        });
+      }
+
+    }
   }
 
 };

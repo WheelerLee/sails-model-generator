@@ -1,0 +1,66 @@
+<link href="/jsoneditor/jsoneditor.min.css" rel="stylesheet" type="text/css">
+<script src="/jsoneditor/jsoneditor.min.js"></script>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <div id="jsoneditor"></div>
+      <div class="layui-text layui-word-aux" style="margin-top: 15px;">
+        系统环境变量设置总览，正式环境请移除该页面
+      </div>
+      <div class="layui-form-item layui-layout-admin">
+        <div class="layui-input-block">
+          <div class="layui-footer" style="left: 0;">
+            <button id="save" class="layui-btn" lay-filter="component-form-submit" style="background-color: #84b349">保存</button>
+            <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['form', 'laydate'], function () {
+
+    var $ = layui.$, layer = layui.layer, form = layui.form, laydate = layui.laydate;
+
+    var container = document.getElementById("jsoneditor");
+    var options = {
+      mainMenuBar: false
+    };
+    var editor = new JSONEditor(container, options);
+
+    var json = <%- JSON.stringify(settings) %>;
+    editor.set(json);
+
+
+    $('#save').click(function() {
+      console.log(editor.get());
+      var loading = layer.load(1);
+      $.post('/admin/system/preview', editor.get(), function(data) {
+        console.log(data);
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function () {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+
+    });
+
+
+  });
+  
+
+  function save() {
+    var json = editor.get();
+    console.log(json);
+  }
+
+</script>
