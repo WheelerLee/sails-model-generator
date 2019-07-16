@@ -321,5 +321,7 @@ function exec() {
   process.execSync('npm i moment --save');
   process.execSync('npm i nodemailer --save');
   process.execSync('npm i uuid --save');
+  process.execSync('npm i fs-extra --save');
+  process.execSync('npm i sails-mysql --save');
   console.log(colors.success('添加项目依赖成功'));
 }

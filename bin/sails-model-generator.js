@@ -15,13 +15,13 @@ colors.setTheme({
 
 process.stdin.setEncoding('utf8');
 
-program.version('4.0.0', '-v, --version')
+program.version('4.0.1', '-v, --version')
   .option('-f, --folder <folder>', '指定生成的文件夹，默认是admin');
 program.parse(process.argv);
 
 let folder = 'admin';
 if (program.folder) {
-  folder = program.folder
+  folder = program.folder;
 }
 
 if (!fs.existsSync(process.cwd() + '/views/') || !fs.existsSync(process.cwd() + '/api/')
