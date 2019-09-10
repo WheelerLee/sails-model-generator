@@ -252,7 +252,7 @@ module.exports = {
         for (let setting of settings) {
           let big = await Xt_setting.create({
             id: setting.id,
-            value: setting.value instanceof Array ? 'array' : 'object'
+            value: 'object'
           }).fetch().usingConnection(db);
           for (let s of setting.value) {
             await Xt_setting.create({

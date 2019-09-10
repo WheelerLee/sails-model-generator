@@ -160,7 +160,7 @@ export default class Generator {
    * 移动基础的model到项目中
    */
   private cpAdminModel() {
-    const proRootPath = __dirname.replace('/lib', '').replace('\\lib', '');
+    const proRootPath = __dirname + '/..';
     const controllers = fs.readdirSync(proRootPath + '/templates/models');
     for (let controller of controllers) {
       if (controller.endsWith('.js')) {
@@ -211,7 +211,7 @@ export default class Generator {
    */
   private copyBaseFiles() {
     console.log(colors.progress('正在复制基础文件到项目...'));
-    let proRootPath = __dirname.replace('/lib', '').replace('\\lib', '');
+    let proRootPath = __dirname + '/..';
     fs.writeFileSync(`${process.cwd()}/views/${this.folderName}/layout.ejs`,
       fs.readFileSync(`${proRootPath}/templates/layout.ejs`));                    //复制layout.ejs
 
@@ -242,8 +242,7 @@ export default class Generator {
    */
   private copyAuthFiles() {
     console.log(colors.progress('正在复制权限文件到项目...'));
-    let proRootPath = __dirname.replace('/lib', '')
-      .replace('\\lib', '');
+    let proRootPath = __dirname + '/..';
 
     let controllers = fs.readdirSync(proRootPath + '/templates/auth/controllers');
     for (let i in controllers) {
@@ -282,7 +281,7 @@ export default class Generator {
    */
   private unzipStaticFiles() {
     console.log(colors.progress('正在解压静态资源...'));
-    fs.copySync(__dirname.replace('/lib', '').replace('\\lib', '') + '/templates/assets', process.cwd() + '/assets/');
+    fs.copySync(__dirname + '/..' + '/templates/assets', process.cwd() + '/assets/');
     console.log(colors.success('解压静态资源成功...'));
   }
 
@@ -292,8 +291,7 @@ export default class Generator {
    */
   private updateConfigFile() {
     console.log(colors.progress('正在替换配置文件...'));
-    let proRootPath = __dirname.replace('/lib', '')
-      .replace('\\lib', ''); 
+    let proRootPath = __dirname + '/..'; 
     let pp = proRootPath + '/templates/configs/';
     let op = process.cwd() + '/config/';
     let files = fs.readdirSync(pp);
