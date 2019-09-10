@@ -294,8 +294,6 @@ module.exports = {
 
 
         <%_ } _%>
-
-        //FIXME: 添加默认的setting配置
         proceed(null, {msg: '创建成功'});
 
       } catch (e) {
@@ -303,6 +301,9 @@ module.exports = {
       }
 
     });
+
+    let settings = await SystemService.getSettings(null);
+    sails.settings = settings;
 
     return res.json(a);
 
