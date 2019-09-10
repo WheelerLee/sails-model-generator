@@ -1,0 +1,121 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (tuex_report.id) { %>
+        <input type="hidden" value="<%= tuex_report.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">member_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="member_id" lay-verify="member_id"
+                   value="<%= tuex_report.member_id ? tuex_report.member_id : '' %>" placeholder="请输入member_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">question_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="question_id" lay-verify="question_id"
+                   value="<%= tuex_report.question_id ? tuex_report.question_id : '' %>" placeholder="请输入question_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">answer_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="answer_id" lay-verify="answer_id"
+                   value="<%= tuex_report.answer_id ? tuex_report.answer_id : '' %>" placeholder="请输入answer_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">report_type</label>
+          <div class="layui-input-block">
+            <input type="text" name="report_type" lay-verify="report_type"
+                   value="<%= tuex_report.report_type ? tuex_report.report_type : '0' %>" placeholder="请输入report_type" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">content</label>
+          <div class="layui-input-block">
+            <input type="text" name="content" lay-verify="content"
+                   value="<%= tuex_report.content ? tuex_report.content : '' %>" placeholder="请输入content" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= tuex_report.sorted_num ? tuex_report.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      report_type: function (value, item) {
+        if (!value.trim()) {
+          return 'report_type不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'report_type必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'report_type必须是整数';
+        }
+      },
+      content: function (value, item) {
+        if (value.trim().length > 500) {
+          return 'content的长度必须小于500';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/tuex_report/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

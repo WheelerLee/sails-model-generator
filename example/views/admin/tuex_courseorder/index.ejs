@@ -1,0 +1,214 @@
+<div class="layui-card layadmin-header">
+
+</div>
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-body">
+          <form class="layui-form" id="searchForm" style="margin-bottom: 20px;">
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="order_code" value="" placeholder="order_code" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="house_number" value="" placeholder="house_number" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="street_name" value="" placeholder="street_name" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="mobile" value="" placeholder="mobile" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="name" value="" placeholder="name" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="total_money" value="" placeholder="total_money" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="coupon_money" value="" placeholder="coupon_money" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="coupon_id" value="" placeholder="coupon_id" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="pay_money" value="" placeholder="pay_money" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="course_name" value="" placeholder="course_name" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="course_count" value="" placeholder="course_count" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="cancel_desc" value="" placeholder="cancel_desc" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="canceltime" value="" placeholder="canceltime" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="refuse_desc" value="" placeholder="refuse_desc" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="cancel_type" value="" placeholder="cancel_type" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="paytime" value="" placeholder="paytime" class="layui-input search_input">
+            </div>
+            <a class="layui-btn layui-btn-normal" style="margin: 8px 0 0 0" id="search_btn">
+              <i class="layui-icon larry-icon">&#xe615;</i>查询
+            </a>
+            <button type="reset" id="reset_btn" class="layui-btn" style="margin: 8px 0 0 0"><i class="layui-icon larry-icon">&#x1002;</i>
+              重置
+            </button>
+            <% if (modify_permission) { %>
+            <a class="layui-btn layui-btn-primary" id="add_btn" style="margin: 8px 0 0 0">
+              <i class="layui-icon larry-icon">&#xe654;</i>添加
+            </a>
+            <% } %>
+          </form>
+          <table style="margin-top: 20px;" class="layui-hide" id="test-table-form" lay-filter="table"></table>
+          <script type="text/html" id="operation">
+            <% if (modify_permission) { %>
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <% } %>
+            <% if (delete_permission) { %>
+            {{#  if(d.deleted === 0){ }}
+            <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+            {{#  } else { }}
+            {{#  } }}
+            <% } %>
+          </script>
+          <script type="text/html" id="deleted">
+            {{#  if(d.deleted === 0){ }}
+            正常
+            {{#  } else { }}
+            <span style="color: #F581B1;">已删除</span>
+            {{#  } }}
+          </script>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  layui.use(['table', 'form'], function () {
+    var table = layui.table, form = layui.form, $ = layui.$;
+    var tableRender = table.render({
+      elem: '#test-table-form',
+      url: '/admin/tuex_courseorder/index',
+      method: 'post',
+      cellMinWidth: 80,
+      cols: [[
+        {field:'student_id', title: 'student_id'},
+        {field:'teacher_id', title: 'teacher_id'},
+        {field:'course_id', title: 'course_id'},
+        {field:'order_code', title: 'order_code'},
+        {field:'house_number', title: 'house_number'},
+        {field:'street_name', title: 'street_name'},
+        {field:'province', title: 'province'},
+        {field:'city', title: 'city'},
+        {field:'mobile', title: 'mobile'},
+        {field:'name', title: 'name'},
+        {field:'total_money', title: 'total_money'},
+        {field:'coupon_money', title: 'coupon_money'},
+        {field:'coupon_id', title: 'coupon_id'},
+        {field:'pay_money', title: 'pay_money'},
+        {field:'course_name', title: 'course_name'},
+        {field:'course_grade', title: 'course_grade'},
+        {field:'course_subject', title: 'course_subject'},
+        {field:'course_count', title: 'course_count'},
+        {field:'status', title: 'status'},
+        {field:'cancel_desc', title: 'cancel_desc'},
+        {field:'canceltime', title: 'canceltime'},
+        {field:'refuse_desc', title: 'refuse_desc'},
+        {field:'cancel_type', title: 'cancel_type'},
+        {field:'paytime', title: 'paytime'},
+        {field: 'deleted', title: '是否删除', templet: "#deleted"},
+        {fixed: 'right', title: '操作', align: 'center', toolbar: '#operation'}
+      ]],
+      page: true,
+      done: function(res, curr, count) {
+        if (curr > 1 && res.data.length === 0) { //不是第一页并且没有数据的时候，跳转到前一页
+          var obj = {};
+          var array = $('#searchForm').serializeArray();
+          for (var i = 0; i < array.length; i++) {
+            var item = array[i];
+            obj[item.name] = item.value;
+          }
+
+          tableRender.reload({
+            where: obj,
+            page: {
+              curr: curr - 1 //跳转到前一页
+            }
+          });
+        }
+      }
+    });
+
+    $('#add_btn').on('click', function () {
+      parent.window.addTab({
+        title: '添加Tuex_courseorder',
+        href: '/admin/tuex_courseorder/modify'
+      });
+    });
+
+    $('#search_btn').on('click', function () {
+      var obj = {};
+      var array = $('#searchForm').serializeArray();
+      for (var i = 0; i < array.length; i++) {
+        var item = array[i];
+        obj[item.name] = item.value;
+      }
+
+      tableRender.reload({
+        where: obj,
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
+      });
+    });
+
+    table.on('tool(table)', function(obj) {
+      if (obj.event === 'edit') {
+        //标签页打开编辑页面
+        parent.window.addTab({
+          title: '编辑Tuex_courseorder',
+          href: '/admin/tuex_courseorder/modify?id=' + obj.data.id
+        });
+      } else if (obj.event === 'delete') {
+        layer.confirm('是否确定删除？', {icon: 3, title: '提示'}, function (index) {
+          layer.close(index);
+          var loading = layer.load(1);
+          $.post('/admin/tuex_courseorder/delete', obj.data, function (data) {
+            layer.close(loading);
+            if (data.errCode === 0) {
+              layer.msg(data.msg, {
+                icon: 6,
+                time: 1000
+              }, function () {
+
+                var obj = {};
+                var array = $('#searchForm').serializeArray();
+
+                for (var i = 0; i < array.length; i++) {
+                  var item = array[i];
+                  obj[item.name] = item.value;
+                }
+                tableRender.reload({
+                  where: obj
+                });
+
+              });
+            }
+            else {
+              layer.msg(data.msg, {icon: 5});
+            }
+          });
+        });
+      }
+    });
+
+  });
+</script>

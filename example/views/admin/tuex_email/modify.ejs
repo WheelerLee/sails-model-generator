@@ -1,0 +1,107 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (tuex_email.id) { %>
+        <input type="hidden" value="<%= tuex_email.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">member_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="member_id" lay-verify="member_id"
+                   value="<%= tuex_email.member_id ? tuex_email.member_id : '' %>" placeholder="请输入member_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">email</label>
+          <div class="layui-input-block">
+            <input type="text" name="email" lay-verify="email"
+                   value="<%= tuex_email.email ? tuex_email.email : '' %>" placeholder="请输入email" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">deal_with</label>
+          <div class="layui-input-block">
+            <input type="text" name="deal_with" lay-verify="deal_with"
+                   value="<%= tuex_email.deal_with ? tuex_email.deal_with : '0' %>" placeholder="请输入deal_with" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= tuex_email.sorted_num ? tuex_email.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      email: function (value, item) {
+        if (value.trim().length > 255) {
+          return 'email的长度必须小于255';
+        }
+      },
+      deal_with: function (value, item) {
+        if (!value.trim()) {
+          return 'deal_with不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'deal_with必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'deal_with必须是整数';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/tuex_email/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

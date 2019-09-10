@@ -1,0 +1,154 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" wid100 action="" lay-filter="component-form-group">
+        <div class="layui-form-item">
+          <label class="layui-form-label">发送服务器</label>
+          <div class="layui-input-inline">
+            <input type="text" name="email_host" lay-verify="email_host"
+                   value="<%= email_settings.email_host ? email_settings.email_host : '' %>" placeholder="发送服务器" autocomplete="off"
+                   class="layui-input">
+          </div>
+          <div class="layui-form-mid layui-word-aux">邮件服务器的主机名(例如 "smtp.gmail.com" 或 "192.168.1.15")</div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">端口</label>
+          <div class="layui-input-inline">
+            <input type="text" name="email_port" lay-verify="email_port"
+                   value="<%= email_settings.email_port ? email_settings.email_port : '' %>" placeholder="端口" autocomplete="off"
+                   class="layui-input">
+          </div>
+          <div class="layui-form-mid layui-word-aux">安全连接一般为465，其他为587</div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">发件名</label>
+          <div class="layui-input-inline">
+            <input type="text" name="email_sender" lay-verify="email_sender"
+                   value="<%= email_settings.email_sender ? email_settings.email_sender : '' %>" placeholder="发件名" autocomplete="off"
+                   class="layui-input">
+          </div>
+          <div class="layui-form-mid layui-word-aux">发送显示的昵称</div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">账户名</label>
+          <div class="layui-input-inline">
+            <input type="text" name="email_user" lay-verify="email_user"
+                   value="<%= email_settings.email_user ? email_settings.email_user : '' %>" placeholder="账户名" autocomplete="off"
+                   class="layui-input">
+          </div>
+          <div class="layui-form-mid layui-word-aux">用于连接到邮件服务器的用户名</div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">密码</label>
+          <div class="layui-input-inline">
+            <input type="text" name="email_password" lay-verify="email_password"
+                   value="<%= email_settings.email_password ? email_settings.email_password : '' %>" placeholder="密码" autocomplete="off"
+                   class="layui-input">
+          </div>
+          <div class="layui-form-mid layui-word-aux">用于连接到邮件服务器的密码</div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">启用安全连接</label>
+          <div class="layui-input-inline">
+            <input type="checkbox" name="email_secure" lay-skin="switch" lay-text="是|否" <%- (parseInt(email_settings.email_secure) === 1) ? 'checked' : '' %> >
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="component-form-submit">确认保存</button>
+            <button class="layui-btn layui-btn-primary" lay-submit lay-filter="component-form-test">发送测试邮件</button>
+          </div>
+        </div>
+
+        <!-- <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit" style="background-color: #84b349">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div> -->
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form, laydate = layui.laydate;
+    laydate.render({
+      elem: "#validity_priod",
+      type: "date"
+    })
+    /* 自定义验证规则 */
+    form.verify({
+      email_host: function (value, item) {
+        if (!value.trim()) {
+          return '发送服务器不能为空';
+        }
+      },
+      email_port: function (value, item) {
+        if (!value.trim()) {
+          return '端口不能为空';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return '端口必须是整数';
+        }
+      },
+      email_user: function (value, item) {
+        if (!value.trim()) {
+          return '账户名不能为空';
+        }
+      },
+      email_password: function (value, item) {
+        if (!value.trim()) {
+          return '密码不能为空';
+        }
+      },
+      email_sender: function (value, item) {
+        if (!value.trim()) {
+          return '发送者不能为空';
+        }
+      }
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      var fields = data.field;
+      $.post('/admin/system/email', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function () {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+    form.on('submit(component-form-test)', function (data) {
+      var loading = layer.load(1);
+      var fields = data.field;
+      $.post('/admin/system/email?type=test', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          // layer.msg(data.msg, {
+          //   icon: 6,
+          //   time: 2000
+          // }, function () {
+          //   // window.location.reload();
+          // });
+          layer.alert(data.msg, {icon: 1});
+        } else {
+          layer.alert(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

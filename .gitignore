@@ -1,13 +1,1 @@
-
-.idea/modules.xml
-
-.idea/sails-model-generator.iml
-
-.idea/vcs.xml
-
-.idea/workspace.xml
-.idea/misc.xml
-.idea/markdown-navigator/profiles_settings.xml
-.idea/markdown-navigator.xml
-.idea/codeStyles/codeStyleConfig.xml
-example
+lib

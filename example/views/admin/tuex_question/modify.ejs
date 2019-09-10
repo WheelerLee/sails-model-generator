@@ -1,0 +1,294 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (tuex_question.id) { %>
+        <input type="hidden" value="<%= tuex_question.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">student_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="student_id" lay-verify="student_id"
+                   value="<%= tuex_question.student_id ? tuex_question.student_id : '' %>" placeholder="请输入student_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">title</label>
+          <div class="layui-input-block">
+            <input type="text" name="title" lay-verify="title"
+                   value="<%= tuex_question.title ? tuex_question.title : '' %>" placeholder="请输入title" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">pics</label>
+          <div class="layui-input-block">
+            <input type="text" name="pics" lay-verify="pics"
+                   value="<%= tuex_question.pics ? tuex_question.pics : '' %>" placeholder="请输入pics" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">content</label>
+          <div class="layui-input-block">
+            <input type="text" name="content" lay-verify="content"
+                   value="<%= tuex_question.content ? tuex_question.content : '' %>" placeholder="请输入content" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">hot</label>
+          <div class="layui-input-block">
+            <input type="text" name="hot" lay-verify="hot"
+                   value="<%= tuex_question.hot ? tuex_question.hot : '0' %>" placeholder="请输入hot" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">label</label>
+          <div class="layui-input-block">
+            <input type="text" name="label" lay-verify="label"
+                   value="<%= tuex_question.label ? tuex_question.label : '' %>" placeholder="请输入label" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">status</label>
+          <div class="layui-input-block">
+            <input type="text" name="status" lay-verify="status"
+                   value="<%= tuex_question.status ? tuex_question.status : '0' %>" placeholder="请输入status" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">days</label>
+          <div class="layui-input-block">
+            <input type="text" name="days" lay-verify="days"
+                   value="<%= tuex_question.days ? tuex_question.days : '0' %>" placeholder="请输入days" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">amount</label>
+          <div class="layui-input-block">
+            <input type="text" name="amount" lay-verify="amount"
+                   value="<%= tuex_question.amount ? tuex_question.amount : '0' %>" placeholder="请输入amount" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">type</label>
+          <div class="layui-input-block">
+            <input type="text" name="type" lay-verify="type"
+                   value="<%= tuex_question.type ? tuex_question.type : '0' %>" placeholder="请输入type" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">answer</label>
+          <div class="layui-input-block">
+            <input type="text" name="answer" lay-verify="answer"
+                   value="<%= tuex_question.answer ? tuex_question.answer : '' %>" placeholder="请输入answer" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">have_answer</label>
+          <div class="layui-input-block">
+            <input type="text" name="have_answer" lay-verify="have_answer"
+                   value="<%= tuex_question.have_answer ? tuex_question.have_answer : '0' %>" placeholder="请输入have_answer" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">is_select</label>
+          <div class="layui-input-block">
+            <input type="text" name="is_select" lay-verify="is_select"
+                   value="<%= tuex_question.is_select ? tuex_question.is_select : '0' %>" placeholder="请输入is_select" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">select_time</label>
+          <div class="layui-input-block">
+            <input type="text" name="select_time" lay-verify="select_time"
+                   value="<%= tuex_question.select_time ? tuex_question.select_time : '0' %>" placeholder="请输入select_time" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">end_time</label>
+          <div class="layui-input-block">
+            <input type="text" name="end_time" lay-verify="end_time"
+                   value="<%= tuex_question.end_time ? tuex_question.end_time : '0' %>" placeholder="请输入end_time" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= tuex_question.sorted_num ? tuex_question.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      title: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'title的长度必须小于100';
+        }
+      },
+      pics: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'pics的长度必须小于100';
+        }
+      },
+      content: function (value, item) {
+      },
+      hot: function (value, item) {
+        if (!value.trim()) {
+          return 'hot不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'hot必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'hot必须是整数';
+        }
+      },
+      status: function (value, item) {
+        if (!value.trim()) {
+          return 'status不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'status必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'status必须是整数';
+        }
+      },
+      days: function (value, item) {
+        if (!value.trim()) {
+          return 'days不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'days必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'days必须是整数';
+        }
+      },
+      amount: function (value, item) {
+        if (!value.trim()) {
+          return 'amount不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'amount必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'amount必须是整数';
+        }
+      },
+      type: function (value, item) {
+        if (!value.trim()) {
+          return 'type不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'type必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'type必须是整数';
+        }
+      },
+      have_answer: function (value, item) {
+        if (!value.trim()) {
+          return 'have_answer不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'have_answer必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'have_answer必须是整数';
+        }
+      },
+      is_select: function (value, item) {
+        if (!value.trim()) {
+          return 'is_select不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'is_select必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'is_select必须是整数';
+        }
+      },
+      select_time: function (value, item) {
+        if (!value.trim()) {
+          return 'select_time不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'select_time必须是数字';
+        }
+      },
+      end_time: function (value, item) {
+        if (!value.trim()) {
+          return 'end_time不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'end_time必须是数字';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/tuex_question/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

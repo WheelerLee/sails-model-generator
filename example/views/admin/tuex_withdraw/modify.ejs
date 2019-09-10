@@ -1,0 +1,174 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (tuex_withdraw.id) { %>
+        <input type="hidden" value="<%= tuex_withdraw.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">teacher_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="teacher_id" lay-verify="teacher_id"
+                   value="<%= tuex_withdraw.teacher_id ? tuex_withdraw.teacher_id : '' %>" placeholder="请输入teacher_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">bankcard_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="bankcard_id" lay-verify="bankcard_id"
+                   value="<%= tuex_withdraw.bankcard_id ? tuex_withdraw.bankcard_id : '' %>" placeholder="请输入bankcard_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">amount</label>
+          <div class="layui-input-block">
+            <input type="text" name="amount" lay-verify="amount"
+                   value="<%= tuex_withdraw.amount ? tuex_withdraw.amount : '0' %>" placeholder="请输入amount" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">left_money</label>
+          <div class="layui-input-block">
+            <input type="text" name="left_money" lay-verify="left_money"
+                   value="<%= tuex_withdraw.left_money ? tuex_withdraw.left_money : '0' %>" placeholder="请输入left_money" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">act_money</label>
+          <div class="layui-input-block">
+            <input type="text" name="act_money" lay-verify="act_money"
+                   value="<%= tuex_withdraw.act_money ? tuex_withdraw.act_money : '0' %>" placeholder="请输入act_money" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">status</label>
+          <div class="layui-input-block">
+            <input type="text" name="status" lay-verify="status"
+                   value="<%= tuex_withdraw.status ? tuex_withdraw.status : '0' %>" placeholder="请输入status" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">refuse_desc</label>
+          <div class="layui-input-block">
+            <input type="text" name="refuse_desc" lay-verify="refuse_desc"
+                   value="<%= tuex_withdraw.refuse_desc ? tuex_withdraw.refuse_desc : '' %>" placeholder="请输入refuse_desc" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= tuex_withdraw.sorted_num ? tuex_withdraw.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      amount: function (value, item) {
+        if (!value.trim()) {
+          return 'amount不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'amount必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'amount必须是整数';
+        }
+      },
+      left_money: function (value, item) {
+        if (!value.trim()) {
+          return 'left_money不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'left_money必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'left_money必须是整数';
+        }
+      },
+      act_money: function (value, item) {
+        if (!value.trim()) {
+          return 'act_money不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'act_money必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'act_money必须是整数';
+        }
+      },
+      status: function (value, item) {
+        if (!value.trim()) {
+          return 'status不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'status必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'status必须是整数';
+        }
+      },
+      refuse_desc: function (value, item) {
+        if (value.trim().length > 300) {
+          return 'refuse_desc的长度必须小于300';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/tuex_withdraw/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

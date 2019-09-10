@@ -252,7 +252,7 @@ module.exports = {
         for (let setting of settings) {
           let big = await Xt_setting.create({
             id: setting.id,
-            value: null
+            value: 'object'
           }).fetch().usingConnection(db);
           for (let s of setting.value) {
             await Xt_setting.create({
@@ -295,6 +295,7 @@ module.exports = {
 
         <%_ } _%>
 
+        //FIXME: 添加默认的setting配置
         proceed(null, {msg: '创建成功'});
 
       } catch (e) {

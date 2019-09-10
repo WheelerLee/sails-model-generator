@@ -1,0 +1,174 @@
+<div class="layui-card layadmin-header">
+
+</div>
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-body">
+          <form class="layui-form" id="searchForm" style="margin-bottom: 20px;">
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="name" value="" placeholder="name" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="amount" value="" placeholder="amount" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="big_amount" value="" placeholder="big_amount" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="desc" value="" placeholder="desc" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="status" value="" placeholder="status" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="validity_priod" value="" placeholder="validity_priod" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="code" value="" placeholder="code" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="num" value="" placeholder="num" class="layui-input search_input">
+            </div>
+            <a class="layui-btn layui-btn-normal" style="margin: 8px 0 0 0" id="search_btn">
+              <i class="layui-icon larry-icon">&#xe615;</i>查询
+            </a>
+            <button type="reset" id="reset_btn" class="layui-btn" style="margin: 8px 0 0 0"><i class="layui-icon larry-icon">&#x1002;</i>
+              重置
+            </button>
+            <% if (modify_permission) { %>
+            <a class="layui-btn layui-btn-primary" id="add_btn" style="margin: 8px 0 0 0">
+              <i class="layui-icon larry-icon">&#xe654;</i>添加
+            </a>
+            <% } %>
+          </form>
+          <table style="margin-top: 20px;" class="layui-hide" id="test-table-form" lay-filter="table"></table>
+          <script type="text/html" id="operation">
+            <% if (modify_permission) { %>
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <% } %>
+            <% if (delete_permission) { %>
+            {{#  if(d.deleted === 0){ }}
+            <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+            {{#  } else { }}
+            {{#  } }}
+            <% } %>
+          </script>
+          <script type="text/html" id="deleted">
+            {{#  if(d.deleted === 0){ }}
+            正常
+            {{#  } else { }}
+            <span style="color: #F581B1;">已删除</span>
+            {{#  } }}
+          </script>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  layui.use(['table', 'form'], function () {
+    var table = layui.table, form = layui.form, $ = layui.$;
+    var tableRender = table.render({
+      elem: '#test-table-form',
+      url: '/admin/tuex_coupon/index',
+      method: 'post',
+      cellMinWidth: 80,
+      cols: [[
+        {field:'name', title: 'name'},
+        {field:'amount', title: 'amount'},
+        {field:'big_amount', title: 'big_amount'},
+        {field:'desc', title: 'desc'},
+        {field:'status', title: 'status'},
+        {field:'validity_priod', title: 'validity_priod'},
+        {field:'code', title: 'code'},
+        {field:'num', title: 'num'},
+        {field: 'deleted', title: '是否删除', templet: "#deleted"},
+        {fixed: 'right', title: '操作', align: 'center', toolbar: '#operation'}
+      ]],
+      page: true,
+      done: function(res, curr, count) {
+        if (curr > 1 && res.data.length === 0) { //不是第一页并且没有数据的时候，跳转到前一页
+          var obj = {};
+          var array = $('#searchForm').serializeArray();
+          for (var i = 0; i < array.length; i++) {
+            var item = array[i];
+            obj[item.name] = item.value;
+          }
+
+          tableRender.reload({
+            where: obj,
+            page: {
+              curr: curr - 1 //跳转到前一页
+            }
+          });
+        }
+      }
+    });
+
+    $('#add_btn').on('click', function () {
+      parent.window.addTab({
+        title: '添加Tuex_coupon',
+        href: '/admin/tuex_coupon/modify'
+      });
+    });
+
+    $('#search_btn').on('click', function () {
+      var obj = {};
+      var array = $('#searchForm').serializeArray();
+      for (var i = 0; i < array.length; i++) {
+        var item = array[i];
+        obj[item.name] = item.value;
+      }
+
+      tableRender.reload({
+        where: obj,
+        page: {
+          curr: 1 //重新从第 1 页开始
+        }
+      });
+    });
+
+    table.on('tool(table)', function(obj) {
+      if (obj.event === 'edit') {
+        //标签页打开编辑页面
+        parent.window.addTab({
+          title: '编辑Tuex_coupon',
+          href: '/admin/tuex_coupon/modify?id=' + obj.data.id
+        });
+      } else if (obj.event === 'delete') {
+        layer.confirm('是否确定删除？', {icon: 3, title: '提示'}, function (index) {
+          layer.close(index);
+          var loading = layer.load(1);
+          $.post('/admin/tuex_coupon/delete', obj.data, function (data) {
+            layer.close(loading);
+            if (data.errCode === 0) {
+              layer.msg(data.msg, {
+                icon: 6,
+                time: 1000
+              }, function () {
+
+                var obj = {};
+                var array = $('#searchForm').serializeArray();
+
+                for (var i = 0; i < array.length; i++) {
+                  var item = array[i];
+                  obj[item.name] = item.value;
+                }
+                tableRender.reload({
+                  where: obj
+                });
+
+              });
+            }
+            else {
+              layer.msg(data.msg, {icon: 5});
+            }
+          });
+        });
+      }
+    });
+
+  });
+</script>

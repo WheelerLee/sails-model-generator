@@ -1,0 +1,292 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (tuex_courseorderitem.id) { %>
+        <input type="hidden" value="<%= tuex_courseorderitem.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">order_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="order_id" lay-verify="order_id"
+                   value="<%= tuex_courseorderitem.order_id ? tuex_courseorderitem.order_id : '' %>" placeholder="请输入order_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">course_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="course_id" lay-verify="course_id"
+                   value="<%= tuex_courseorderitem.course_id ? tuex_courseorderitem.course_id : '' %>" placeholder="请输入course_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">student_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="student_id" lay-verify="student_id"
+                   value="<%= tuex_courseorderitem.student_id ? tuex_courseorderitem.student_id : '' %>" placeholder="请输入student_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">teacher_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="teacher_id" lay-verify="teacher_id"
+                   value="<%= tuex_courseorderitem.teacher_id ? tuex_courseorderitem.teacher_id : '' %>" placeholder="请输入teacher_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">price</label>
+          <div class="layui-input-block">
+            <input type="text" name="price" lay-verify="price"
+                   value="<%= tuex_courseorderitem.price ? tuex_courseorderitem.price : '0' %>" placeholder="请输入price" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">course_name</label>
+          <div class="layui-input-block">
+            <input type="text" name="course_name" lay-verify="course_name"
+                   value="<%= tuex_courseorderitem.course_name ? tuex_courseorderitem.course_name : '' %>" placeholder="请输入course_name" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">course_date</label>
+          <div class="layui-input-block">
+            <input type="text" name="course_date" lay-verify="course_date"
+                   value="<%= tuex_courseorderitem.course_date ? tuex_courseorderitem.course_date : '' %>" placeholder="请输入course_date" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">start_time</label>
+          <div class="layui-input-block">
+            <input type="text" name="start_time" lay-verify="start_time"
+                   value="<%= tuex_courseorderitem.start_time ? tuex_courseorderitem.start_time : '' %>" placeholder="请输入start_time" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">end_time</label>
+          <div class="layui-input-block">
+            <input type="text" name="end_time" lay-verify="end_time"
+                   value="<%= tuex_courseorderitem.end_time ? tuex_courseorderitem.end_time : '' %>" placeholder="请输入end_time" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">times</label>
+          <div class="layui-input-block">
+            <input type="text" name="times" lay-verify="times"
+                   value="<%= tuex_courseorderitem.times ? tuex_courseorderitem.times : '' %>" placeholder="请输入times" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">status</label>
+          <div class="layui-input-block">
+            <input type="text" name="status" lay-verify="status"
+                   value="<%= tuex_courseorderitem.status ? tuex_courseorderitem.status : '0' %>" placeholder="请输入status" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">cancel_desc</label>
+          <div class="layui-input-block">
+            <input type="text" name="cancel_desc" lay-verify="cancel_desc"
+                   value="<%= tuex_courseorderitem.cancel_desc ? tuex_courseorderitem.cancel_desc : '' %>" placeholder="请输入cancel_desc" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">canceltime</label>
+          <div class="layui-input-block">
+            <input type="text" name="canceltime" lay-verify="canceltime"
+                   value="<%= tuex_courseorderitem.canceltime ? tuex_courseorderitem.canceltime : '0' %>" placeholder="请输入canceltime" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">cancel_type</label>
+          <div class="layui-input-block">
+            <input type="text" name="cancel_type" lay-verify="cancel_type"
+                   value="<%= tuex_courseorderitem.cancel_type ? tuex_courseorderitem.cancel_type : '0' %>" placeholder="请输入cancel_type" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">refuse_desc</label>
+          <div class="layui-input-block">
+            <input type="text" name="refuse_desc" lay-verify="refuse_desc"
+                   value="<%= tuex_courseorderitem.refuse_desc ? tuex_courseorderitem.refuse_desc : '' %>" placeholder="请输入refuse_desc" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">start_class_time</label>
+          <div class="layui-input-block">
+            <input type="text" name="start_class_time" lay-verify="start_class_time"
+                   value="<%= tuex_courseorderitem.start_class_time ? tuex_courseorderitem.start_class_time : '0' %>" placeholder="请输入start_class_time" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">end_class_time</label>
+          <div class="layui-input-block">
+            <input type="text" name="end_class_time" lay-verify="end_class_time"
+                   value="<%= tuex_courseorderitem.end_class_time ? tuex_courseorderitem.end_class_time : '0' %>" placeholder="请输入end_class_time" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= tuex_courseorderitem.sorted_num ? tuex_courseorderitem.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      price: function (value, item) {
+        if (!value.trim()) {
+          return 'price不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'price必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'price必须是整数';
+        }
+      },
+      course_name: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'course_name的长度必须小于100';
+        }
+      },
+      course_date: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'course_date的长度必须小于100';
+        }
+      },
+      start_time: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'start_time的长度必须小于100';
+        }
+      },
+      end_time: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'end_time的长度必须小于100';
+        }
+      },
+      times: function (value, item) {
+        if (value.trim().length > 500) {
+          return 'times的长度必须小于500';
+        }
+      },
+      status: function (value, item) {
+        if (!value.trim()) {
+          return 'status不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'status必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'status必须是整数';
+        }
+      },
+      cancel_desc: function (value, item) {
+        if (value.trim().length > 300) {
+          return 'cancel_desc的长度必须小于300';
+        }
+      },
+      canceltime: function (value, item) {
+        if (!value.trim()) {
+          return 'canceltime不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'canceltime必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'canceltime必须是整数';
+        }
+      },
+      cancel_type: function (value, item) {
+        if (!value.trim()) {
+          return 'cancel_type不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'cancel_type必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'cancel_type必须是整数';
+        }
+      },
+      refuse_desc: function (value, item) {
+        if (value.trim().length > 500) {
+          return 'refuse_desc的长度必须小于500';
+        }
+      },
+      start_class_time: function (value, item) {
+        if (!value.trim()) {
+          return 'start_class_time不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'start_class_time必须是数字';
+        }
+      },
+      end_class_time: function (value, item) {
+        if (!value.trim()) {
+          return 'end_class_time不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'end_class_time必须是数字';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/tuex_courseorderitem/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

@@ -1,0 +1,199 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (jz_record.id) { %>
+        <input type="hidden" value="<%= jz_record.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">activity_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="activity_id" lay-verify="activity_id"
+                   value="<%= jz_record.activity_id ? jz_record.activity_id : '' %>" placeholder="请输入activity_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">img_url</label>
+          <div class="layui-input-block">
+            <input type="text" name="img_url" lay-verify="img_url"
+                   value="<%= jz_record.img_url ? jz_record.img_url : '' %>" placeholder="请输入img_url" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">verify_status</label>
+          <div class="layui-input-block">
+            <input type="text" name="verify_status" lay-verify="verify_status"
+                   value="<%= jz_record.verify_status ? jz_record.verify_status : '' %>" placeholder="请输入verify_status" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">user_name</label>
+          <div class="layui-input-block">
+            <input type="text" name="user_name" lay-verify="user_name"
+                   value="<%= jz_record.user_name ? jz_record.user_name : '' %>" placeholder="请输入user_name" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">mobile_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="mobile_num" lay-verify="mobile_num"
+                   value="<%= jz_record.mobile_num ? jz_record.mobile_num : '' %>" placeholder="请输入mobile_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">count</label>
+          <div class="layui-input-block">
+            <input type="text" name="count" lay-verify="count"
+                   value="<%= jz_record.count ? jz_record.count : '0' %>" placeholder="请输入count" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">email</label>
+          <div class="layui-input-block">
+            <input type="text" name="email" lay-verify="email"
+                   value="<%= jz_record.email ? jz_record.email : '' %>" placeholder="请输入email" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">wallet_address</label>
+          <div class="layui-input-block">
+            <input type="text" name="wallet_address" lay-verify="wallet_address"
+                   value="<%= jz_record.wallet_address ? jz_record.wallet_address : '' %>" placeholder="请输入wallet_address" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">subscription_q</label>
+          <div class="layui-input-block">
+            <input type="text" name="subscription_q" lay-verify="subscription_q"
+                   value="<%= jz_record.subscription_q ? jz_record.subscription_q : '' %>" placeholder="请输入subscription_q" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">subject</label>
+          <div class="layui-input-block">
+            <input type="text" name="subject" lay-verify="subject"
+                   value="<%= jz_record.subject ? jz_record.subject : '' %>" placeholder="请输入subject" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">content</label>
+          <div class="layui-input-block">
+            <input type="text" name="content" lay-verify="content"
+                   value="<%= jz_record.content ? jz_record.content : '' %>" placeholder="请输入content" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= jz_record.sorted_num ? jz_record.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      img_url: function (value, item) {
+        if (value.trim().length > 500) {
+          return 'img_url的长度必须小于500';
+        }
+      },
+      verify_status: function (value, item) {
+        if (value.trim().length > 200) {
+          return 'verify_status的长度必须小于200';
+        }
+      },
+      user_name: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'user_name的长度必须小于100';
+        }
+      },
+      mobile_num: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'mobile_num的长度必须小于100';
+        }
+      },
+      count: function (value, item) {
+        if (!value.trim()) {
+          return 'count不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'count必须是数字';
+        }
+      },
+      email: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'email的长度必须小于100';
+        }
+      },
+      wallet_address: function (value, item) {
+        if (value.trim().length > 200) {
+          return 'wallet_address的长度必须小于200';
+        }
+      },
+      subscription_q: function (value, item) {
+        if (value.trim().length > 200) {
+          return 'subscription_q的长度必须小于200';
+        }
+      },
+      subject: function (value, item) {
+        if (value.trim().length > 200) {
+          return 'subject的长度必须小于200';
+        }
+      },
+      content: function (value, item) {
+        if (value.trim().length > 200) {
+          return 'content的长度必须小于200';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/jz_record/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

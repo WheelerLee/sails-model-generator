@@ -1,0 +1,168 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (web_propertys.id) { %>
+        <input type="hidden" value="<%= web_propertys.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">name</label>
+          <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="name"
+                   value="<%= web_propertys.name ? web_propertys.name : '' %>" placeholder="请输入name" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">en_code</label>
+          <div class="layui-input-block">
+            <input type="text" name="en_code" lay-verify="en_code"
+                   value="<%= web_propertys.en_code ? web_propertys.en_code : '' %>" placeholder="请输入en_code" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">code</label>
+          <div class="layui-input-block">
+            <input type="text" name="code" lay-verify="code"
+                   value="<%= web_propertys.code ? web_propertys.code : '' %>" placeholder="请输入code" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">data_type</label>
+          <div class="layui-input-block">
+            <input type="text" name="data_type" lay-verify="data_type"
+                   value="<%= web_propertys.data_type ? web_propertys.data_type : '' %>" placeholder="请输入data_type" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">permission</label>
+          <div class="layui-input-block">
+            <input type="text" name="permission" lay-verify="permission"
+                   value="<%= web_propertys.permission ? web_propertys.permission : '' %>" placeholder="请输入permission" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">object_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="object_id" lay-verify="object_id"
+                   value="<%= web_propertys.object_id ? web_propertys.object_id : '' %>" placeholder="请输入object_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">descriptions</label>
+          <div class="layui-input-block">
+            <input type="text" name="descriptions" lay-verify="descriptions"
+                   value="<%= web_propertys.descriptions ? web_propertys.descriptions : '' %>" placeholder="请输入descriptions" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">show_line</label>
+          <div class="layui-input-block">
+            <input type="text" name="show_line" lay-verify="show_line"
+                   value="<%= web_propertys.show_line ? web_propertys.show_line : '0' %>" placeholder="请输入show_line" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= web_propertys.sorted_num ? web_propertys.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      name: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'name的长度必须小于100';
+        }
+      },
+      en_code: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'en_code的长度必须小于100';
+        }
+      },
+      code: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'code的长度必须小于100';
+        }
+      },
+      data_type: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'data_type的长度必须小于100';
+        }
+      },
+      permission: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'permission的长度必须小于100';
+        }
+      },
+      object_id: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'object_id的长度必须小于100';
+        }
+      },
+      descriptions: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'descriptions的长度必须小于100';
+        }
+      },
+      show_line: function (value, item) {
+        if (!value.trim()) {
+          return 'show_line不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'show_line必须是数字';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/web_propertys/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

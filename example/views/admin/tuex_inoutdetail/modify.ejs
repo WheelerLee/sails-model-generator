@@ -1,0 +1,185 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (tuex_inoutdetail.id) { %>
+        <input type="hidden" value="<%= tuex_inoutdetail.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">title</label>
+          <div class="layui-input-block">
+            <input type="text" name="title" lay-verify="title"
+                   value="<%= tuex_inoutdetail.title ? tuex_inoutdetail.title : '' %>" placeholder="请输入title" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">classes</label>
+          <div class="layui-input-block">
+            <input type="text" name="classes" lay-verify="classes"
+                   value="<%= tuex_inoutdetail.classes ? tuex_inoutdetail.classes : '' %>" placeholder="请输入classes" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">topic_member</label>
+          <div class="layui-input-block">
+            <input type="text" name="topic_member" lay-verify="topic_member"
+                   value="<%= tuex_inoutdetail.topic_member ? tuex_inoutdetail.topic_member : '' %>" placeholder="请输入topic_member" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">total_price</label>
+          <div class="layui-input-block">
+            <input type="text" name="total_price" lay-verify="total_price"
+                   value="<%= tuex_inoutdetail.total_price ? tuex_inoutdetail.total_price : '0' %>" placeholder="请输入total_price" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">price</label>
+          <div class="layui-input-block">
+            <input type="text" name="price" lay-verify="price"
+                   value="<%= tuex_inoutdetail.price ? tuex_inoutdetail.price : '0' %>" placeholder="请输入price" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">coupon_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="coupon_id" lay-verify="coupon_id"
+                   value="<%= tuex_inoutdetail.coupon_id ? tuex_inoutdetail.coupon_id : '' %>" placeholder="请输入coupon_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">type</label>
+          <div class="layui-input-block">
+            <input type="text" name="type" lay-verify="type"
+                   value="<%= tuex_inoutdetail.type ? tuex_inoutdetail.type : '0' %>" placeholder="请输入type" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">desc</label>
+          <div class="layui-input-block">
+            <input type="text" name="desc" lay-verify="desc"
+                   value="<%= tuex_inoutdetail.desc ? tuex_inoutdetail.desc : '' %>" placeholder="请输入desc" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">origin_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="origin_id" lay-verify="origin_id"
+                   value="<%= tuex_inoutdetail.origin_id ? tuex_inoutdetail.origin_id : '' %>" placeholder="请输入origin_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= tuex_inoutdetail.sorted_num ? tuex_inoutdetail.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      title: function (value, item) {
+        if (value.trim().length > 200) {
+          return 'title的长度必须小于200';
+        }
+      },
+      total_price: function (value, item) {
+        if (!value.trim()) {
+          return 'total_price不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'total_price必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'total_price必须是整数';
+        }
+      },
+      price: function (value, item) {
+        if (!value.trim()) {
+          return 'price不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'price必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'price必须是整数';
+        }
+      },
+      coupon_id: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'coupon_id的长度必须小于32';
+        }
+      },
+      type: function (value, item) {
+        if (!value.trim()) {
+          return 'type不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'type必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'type必须是整数';
+        }
+      },
+      desc: function (value, item) {
+        if (value.trim().length > 500) {
+          return 'desc的长度必须小于500';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/tuex_inoutdetail/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

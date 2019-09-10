@@ -1,0 +1,111 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (system_log.id) { %>
+        <input type="hidden" value="<%= system_log.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">user_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="user_id" lay-verify="user_id"
+                   value="<%= system_log.user_id ? system_log.user_id : '' %>" placeholder="请输入user_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">user_name</label>
+          <div class="layui-input-block">
+            <input type="text" name="user_name" lay-verify="user_name"
+                   value="<%= system_log.user_name ? system_log.user_name : '' %>" placeholder="请输入user_name" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">content</label>
+          <div class="layui-input-block">
+            <input type="text" name="content" lay-verify="content"
+                   value="<%= system_log.content ? system_log.content : '' %>" placeholder="请输入content" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">type</label>
+          <div class="layui-input-block">
+            <input type="text" name="type" lay-verify="type"
+                   value="<%= system_log.type ? system_log.type : '' %>" placeholder="请输入type" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= system_log.sorted_num ? system_log.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      user_name: function (value, item) {
+        if (value.trim().length > 128) {
+          return 'user_name的长度必须小于128';
+        }
+      },
+      content: function (value, item) {
+        if (value.trim().length > 2000) {
+          return 'content的长度必须小于2000';
+        }
+      },
+      type: function (value, item) {
+        if (value.trim().length > 128) {
+          return 'type的长度必须小于128';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/system_log/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

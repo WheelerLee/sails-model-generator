@@ -1,0 +1,237 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (news.id) { %>
+        <input type="hidden" value="<%= news.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">author</label>
+          <div class="layui-input-block">
+            <input type="text" name="author" lay-verify="author"
+                   value="<%= news.author ? news.author : '' %>" placeholder="请输入author" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">title</label>
+          <div class="layui-input-block">
+            <input type="text" name="title" lay-verify="title"
+                   value="<%= news.title ? news.title : '' %>" placeholder="请输入title" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">type</label>
+          <div class="layui-input-block">
+            <input type="text" name="type" lay-verify="type"
+                   value="<%= news.type ? news.type : '' %>" placeholder="请输入type" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">content</label>
+          <div class="layui-input-block">
+            <input type="text" name="content" lay-verify="content"
+                   value="<%= news.content ? news.content : '' %>" placeholder="请输入content" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">picture</label>
+          <div class="layui-input-block">
+            <input type="text" name="picture" lay-verify="picture"
+                   value="<%= news.picture ? news.picture : '' %>" placeholder="请输入picture" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">count</label>
+          <div class="layui-input-block">
+            <input type="text" name="count" lay-verify="count"
+                   value="<%= news.count ? news.count : '0' %>" placeholder="请输入count" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">city_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="city_id" lay-verify="city_id"
+                   value="<%= news.city_id ? news.city_id : '' %>" placeholder="请输入city_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sources</label>
+          <div class="layui-input-block">
+            <input type="text" name="sources" lay-verify="sources"
+                   value="<%= news.sources ? news.sources : '' %>" placeholder="请输入sources" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">time</label>
+          <div class="layui-input-block">
+            <input type="text" name="time" lay-verify="time"
+                   value="<%= news.time ? news.time : '0' %>" placeholder="请输入time" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">status</label>
+          <div class="layui-input-block">
+            <input type="text" name="status" lay-verify="status"
+                   value="<%= news.status ? news.status : '0' %>" placeholder="请输入status" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">brief</label>
+          <div class="layui-input-block">
+            <input type="text" name="brief" lay-verify="brief"
+                   value="<%= news.brief ? news.brief : '' %>" placeholder="请输入brief" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">hits</label>
+          <div class="layui-input-block">
+            <input type="text" name="hits" lay-verify="hits"
+                   value="<%= news.hits ? news.hits : '0' %>" placeholder="请输入hits" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= news.sorted_num ? news.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      author: function (value, item) {
+        if (value.trim().length > 128) {
+          return 'author的长度必须小于128';
+        }
+      },
+      title: function (value, item) {
+        if (value.trim().length > 200) {
+          return 'title的长度必须小于200';
+        }
+      },
+      type: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'type的长度必须小于32';
+        }
+      },
+      content: function (value, item) {
+      },
+      picture: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'picture的长度必须小于32';
+        }
+      },
+      count: function (value, item) {
+        if (!value.trim()) {
+          return 'count不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'count必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'count必须是整数';
+        }
+      },
+      city_id: function (value, item) {
+        if (value.trim().length > 255) {
+          return 'city_id的长度必须小于255';
+        }
+      },
+      sources: function (value, item) {
+        if (value.trim().length > 2000) {
+          return 'sources的长度必须小于2000';
+        }
+      },
+      time: function (value, item) {
+        if (!value.trim()) {
+          return 'time不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'time必须是数字';
+        }
+      },
+      status: function (value, item) {
+        if (!value.trim()) {
+          return 'status不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'status必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'status必须是整数';
+        }
+      },
+      brief: function (value, item) {
+        if (value.trim().length > 500) {
+          return 'brief的长度必须小于500';
+        }
+      },
+      hits: function (value, item) {
+        if (!value.trim()) {
+          return 'hits不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'hits必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'hits必须是整数';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/news/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

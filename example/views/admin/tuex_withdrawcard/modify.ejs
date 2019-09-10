@@ -1,0 +1,135 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (tuex_withdrawcard.id) { %>
+        <input type="hidden" value="<%= tuex_withdrawcard.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">teacher_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="teacher_id" lay-verify="teacher_id"
+                   value="<%= tuex_withdrawcard.teacher_id ? tuex_withdrawcard.teacher_id : '' %>" placeholder="请输入teacher_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">name</label>
+          <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="name"
+                   value="<%= tuex_withdrawcard.name ? tuex_withdrawcard.name : '' %>" placeholder="请输入name" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">branch_address</label>
+          <div class="layui-input-block">
+            <input type="text" name="branch_address" lay-verify="branch_address"
+                   value="<%= tuex_withdrawcard.branch_address ? tuex_withdrawcard.branch_address : '' %>" placeholder="请输入branch_address" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">transit_number</label>
+          <div class="layui-input-block">
+            <input type="text" name="transit_number" lay-verify="transit_number"
+                   value="<%= tuex_withdrawcard.transit_number ? tuex_withdrawcard.transit_number : '' %>" placeholder="请输入transit_number" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">istitution_number</label>
+          <div class="layui-input-block">
+            <input type="text" name="istitution_number" lay-verify="istitution_number"
+                   value="<%= tuex_withdrawcard.istitution_number ? tuex_withdrawcard.istitution_number : '' %>" placeholder="请输入istitution_number" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">account_number</label>
+          <div class="layui-input-block">
+            <input type="text" name="account_number" lay-verify="account_number"
+                   value="<%= tuex_withdrawcard.account_number ? tuex_withdrawcard.account_number : '' %>" placeholder="请输入account_number" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= tuex_withdrawcard.sorted_num ? tuex_withdrawcard.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      name: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'name的长度必须小于100';
+        }
+      },
+      branch_address: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'branch_address的长度必须小于100';
+        }
+      },
+      transit_number: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'transit_number的长度必须小于100';
+        }
+      },
+      istitution_number: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'istitution_number的长度必须小于100';
+        }
+      },
+      account_number: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'account_number的长度必须小于100';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/tuex_withdrawcard/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

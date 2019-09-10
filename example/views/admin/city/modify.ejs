@@ -1,0 +1,143 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (city.id) { %>
+        <input type="hidden" value="<%= city.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">city_name</label>
+          <div class="layui-input-block">
+            <input type="text" name="city_name" lay-verify="city_name"
+                   value="<%= city.city_name ? city.city_name : '' %>" placeholder="请输入city_name" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">en_name</label>
+          <div class="layui-input-block">
+            <input type="text" name="en_name" lay-verify="en_name"
+                   value="<%= city.en_name ? city.en_name : '' %>" placeholder="请输入en_name" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">province_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="province_id" lay-verify="province_id"
+                   value="<%= city.province_id ? city.province_id : '' %>" placeholder="请输入province_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">ranking</label>
+          <div class="layui-input-block">
+            <input type="text" name="ranking" lay-verify="ranking"
+                   value="<%= city.ranking ? city.ranking : '0' %>" placeholder="请输入ranking" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">lat</label>
+          <div class="layui-input-block">
+            <input type="text" name="lat" lay-verify="lat"
+                   value="<%= city.lat ? city.lat : '' %>" placeholder="请输入lat" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">lng</label>
+          <div class="layui-input-block">
+            <input type="text" name="lng" lay-verify="lng"
+                   value="<%= city.lng ? city.lng : '' %>" placeholder="请输入lng" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= city.sorted_num ? city.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      city_name: function (value, item) {
+        if (value.trim().length > 128) {
+          return 'city_name的长度必须小于128';
+        }
+      },
+      en_name: function (value, item) {
+        if (value.trim().length > 128) {
+          return 'en_name的长度必须小于128';
+        }
+      },
+      ranking: function (value, item) {
+        if (!value.trim()) {
+          return 'ranking不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'ranking必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'ranking必须是整数';
+        }
+      },
+      lat: function (value, item) {
+        if (value.trim().length > 255) {
+          return 'lat的长度必须小于255';
+        }
+      },
+      lng: function (value, item) {
+        if (value.trim().length > 255) {
+          return 'lng的长度必须小于255';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/city/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

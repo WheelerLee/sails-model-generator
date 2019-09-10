@@ -1,0 +1,187 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (tuex_teacher.id) { %>
+        <input type="hidden" value="<%= tuex_teacher.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">identity_pic</label>
+          <div class="layui-input-block">
+            <input type="text" name="identity_pic" lay-verify="identity_pic"
+                   value="<%= tuex_teacher.identity_pic ? tuex_teacher.identity_pic : '' %>" placeholder="请输入identity_pic" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">education_pic</label>
+          <div class="layui-input-block">
+            <input type="text" name="education_pic" lay-verify="education_pic"
+                   value="<%= tuex_teacher.education_pic ? tuex_teacher.education_pic : '' %>" placeholder="请输入education_pic" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">intelligence_pic</label>
+          <div class="layui-input-block">
+            <input type="text" name="intelligence_pic" lay-verify="intelligence_pic"
+                   value="<%= tuex_teacher.intelligence_pic ? tuex_teacher.intelligence_pic : '' %>" placeholder="请输入intelligence_pic" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">audit_desc</label>
+          <div class="layui-input-block">
+            <input type="text" name="audit_desc" lay-verify="audit_desc"
+                   value="<%= tuex_teacher.audit_desc ? tuex_teacher.audit_desc : '' %>" placeholder="请输入audit_desc" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">identity_code</label>
+          <div class="layui-input-block">
+            <input type="text" name="identity_code" lay-verify="identity_code"
+                   value="<%= tuex_teacher.identity_code ? tuex_teacher.identity_code : '' %>" placeholder="请输入identity_code" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">info</label>
+          <div class="layui-input-block">
+            <input type="text" name="info" lay-verify="info"
+                   value="<%= tuex_teacher.info ? tuex_teacher.info : '' %>" placeholder="请输入info" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">score</label>
+          <div class="layui-input-block">
+            <input type="text" name="score" lay-verify="score"
+                   value="<%= tuex_teacher.score ? tuex_teacher.score : '0' %>" placeholder="请输入score" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">is_comment</label>
+          <div class="layui-input-block">
+            <input type="text" name="is_comment" lay-verify="is_comment"
+                   value="<%= tuex_teacher.is_comment ? tuex_teacher.is_comment : '0' %>" placeholder="请输入is_comment" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">course_grade</label>
+          <div class="layui-input-block">
+            <input type="text" name="course_grade" lay-verify="course_grade"
+                   value="<%= tuex_teacher.course_grade ? tuex_teacher.course_grade : '' %>" placeholder="请输入course_grade" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">course_subject</label>
+          <div class="layui-input-block">
+            <input type="text" name="course_subject" lay-verify="course_subject"
+                   value="<%= tuex_teacher.course_subject ? tuex_teacher.course_subject : '' %>" placeholder="请输入course_subject" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= tuex_teacher.sorted_num ? tuex_teacher.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      identity_pic: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'identity_pic的长度必须小于100';
+        }
+      },
+      education_pic: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'education_pic的长度必须小于100';
+        }
+      },
+      intelligence_pic: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'intelligence_pic的长度必须小于100';
+        }
+      },
+      audit_desc: function (value, item) {
+        if (value.trim().length > 200) {
+          return 'audit_desc的长度必须小于200';
+        }
+      },
+      identity_code: function (value, item) {
+        if (value.trim().length > 200) {
+          return 'identity_code的长度必须小于200';
+        }
+      },
+      info: function (value, item) {
+      },
+      score: function (value, item) {
+        if (!value.trim()) {
+          return 'score不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'score必须是数字';
+        }
+      },
+      is_comment: function (value, item) {
+        if (!value.trim()) {
+          return 'is_comment不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'is_comment必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'is_comment必须是整数';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/tuex_teacher/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

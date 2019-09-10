@@ -1,0 +1,152 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (tuex_guardian.id) { %>
+        <input type="hidden" value="<%= tuex_guardian.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">student_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="student_id" lay-verify="student_id"
+                   value="<%= tuex_guardian.student_id ? tuex_guardian.student_id : '' %>" placeholder="请输入student_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">name</label>
+          <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="name"
+                   value="<%= tuex_guardian.name ? tuex_guardian.name : '' %>" placeholder="请输入name" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">relationship</label>
+          <div class="layui-input-block">
+            <input type="text" name="relationship" lay-verify="relationship"
+                   value="<%= tuex_guardian.relationship ? tuex_guardian.relationship : '' %>" placeholder="请输入relationship" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">area_code</label>
+          <div class="layui-input-block">
+            <input type="text" name="area_code" lay-verify="area_code"
+                   value="<%= tuex_guardian.area_code ? tuex_guardian.area_code : '' %>" placeholder="请输入area_code" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">mobile</label>
+          <div class="layui-input-block">
+            <input type="text" name="mobile" lay-verify="mobile"
+                   value="<%= tuex_guardian.mobile ? tuex_guardian.mobile : '' %>" placeholder="请输入mobile" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">password</label>
+          <div class="layui-input-block">
+            <input type="text" name="password" lay-verify="password"
+                   value="<%= tuex_guardian.password ? tuex_guardian.password : '' %>" placeholder="请输入password" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">status</label>
+          <div class="layui-input-block">
+            <input type="text" name="status" lay-verify="status"
+                   value="<%= tuex_guardian.status ? tuex_guardian.status : '' %>" placeholder="请输入status" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= tuex_guardian.sorted_num ? tuex_guardian.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      student_id: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'student_id的长度必须小于32';
+        }
+      },
+      name: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'name的长度必须小于100';
+        }
+      },
+      relationship: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'relationship的长度必须小于100';
+        }
+      },
+      area_code: function (value, item) {
+        if (value.trim().length > 20) {
+          return 'area_code的长度必须小于20';
+        }
+      },
+      mobile: function (value, item) {
+        if (value.trim().length > 20) {
+          return 'mobile的长度必须小于20';
+        }
+      },
+      password: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'password的长度必须小于100';
+        }
+      },
+      status: function (value, item) {
+        if (value.trim().length > 100) {
+          return 'status的长度必须小于100';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/tuex_guardian/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

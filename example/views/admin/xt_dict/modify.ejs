@@ -1,0 +1,127 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (xt_dict.id) { %>
+        <input type="hidden" value="<%= xt_dict.id %>" name="id">
+        <% } %>
+        <input type="hidden" value="<%= parent_id ? parent_id : xt_dict.parent_id %>" name="parent_id">
+        <div class="layui-form-item">
+          <label class="layui-form-label">编号</label>
+          <div class="layui-input-block">
+            <input
+              type="text" name="code" lay-verify="code"
+              value="<%= xt_dict.code ? xt_dict.code : '' %>"
+              <%= xt_dict.code ? 'disabled' : '' %>
+              placeholder="请输入编号" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">名称</label>
+          <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="name"
+                   value="<%= xt_dict.name ? xt_dict.name : '' %>" placeholder="请输入名称" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">英文名称</label>
+          <div class="layui-input-block">
+            <input type="text" name="name_en" lay-verify="name_en"
+                   value="<%= xt_dict.name_en ? xt_dict.name_en : '' %>" placeholder="请输入英文名称" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">值</label>
+          <div class="layui-input-block">
+            <input type="text" name="vals" lay-verify="vals"
+                   value="<%= xt_dict.vals ? xt_dict.vals : '' %>" placeholder="请输入值" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">备注</label>
+          <div class="layui-input-block">
+            <input type="text" name="remarks" lay-verify="remarks"
+                   value="<%= xt_dict.remarks ? xt_dict.remarks : '' %>" placeholder="请输入备注" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">排序号</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= xt_dict.sorted_num ? xt_dict.sorted_num : '' %>" placeholder="请输入排序号"
+                   autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      code: function (value, item) {
+      },
+      name: function (value, item) {
+      },
+      name_en: function (value, item) {
+      },
+      vals: function (value, item) {
+      },
+      remarks: function (value, item) {
+      },
+      deleted: function (value, item) {
+      },
+      create_user: function (value, item) {
+      },
+      sorted_num: function (value, item) {
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      var fields = data.field;
+      for (var i in fields) {
+        if (!fields[i]) {
+          delete fields[i];
+        }
+      }
+      $.post('/admin/xt_dict/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+            <% if (dict == '1') { %>
+            parent.reloadTable();
+            <% } else { %>
+            parent.get_menu();
+            <% } %>
+
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

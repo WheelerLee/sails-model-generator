@@ -1,0 +1,152 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (country.id) { %>
+        <input type="hidden" value="<%= country.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">code</label>
+          <div class="layui-input-block">
+            <input type="text" name="code" lay-verify="code"
+                   value="<%= country.code ? country.code : '' %>" placeholder="请输入code" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">all_name</label>
+          <div class="layui-input-block">
+            <input type="text" name="all_name" lay-verify="all_name"
+                   value="<%= country.all_name ? country.all_name : '' %>" placeholder="请输入all_name" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">name</label>
+          <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="name"
+                   value="<%= country.name ? country.name : '' %>" placeholder="请输入name" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">type</label>
+          <div class="layui-input-block">
+            <input type="text" name="type" lay-verify="type"
+                   value="<%= country.type ? country.type : '' %>" placeholder="请输入type" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">area_code</label>
+          <div class="layui-input-block">
+            <input type="text" name="area_code" lay-verify="area_code"
+                   value="<%= country.area_code ? country.area_code : '' %>" placeholder="请输入area_code" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">dns_name</label>
+          <div class="layui-input-block">
+            <input type="text" name="dns_name" lay-verify="dns_name"
+                   value="<%= country.dns_name ? country.dns_name : '' %>" placeholder="请输入dns_name" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">time_diff</label>
+          <div class="layui-input-block">
+            <input type="text" name="time_diff" lay-verify="time_diff"
+                   value="<%= country.time_diff ? country.time_diff : '' %>" placeholder="请输入time_diff" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= country.sorted_num ? country.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      code: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'code的长度必须小于32';
+        }
+      },
+      all_name: function (value, item) {
+        if (value.trim().length > 128) {
+          return 'all_name的长度必须小于128';
+        }
+      },
+      name: function (value, item) {
+        if (value.trim().length > 128) {
+          return 'name的长度必须小于128';
+        }
+      },
+      type: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'type的长度必须小于32';
+        }
+      },
+      area_code: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'area_code的长度必须小于32';
+        }
+      },
+      dns_name: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'dns_name的长度必须小于32';
+        }
+      },
+      time_diff: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'time_diff的长度必须小于32';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/country/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

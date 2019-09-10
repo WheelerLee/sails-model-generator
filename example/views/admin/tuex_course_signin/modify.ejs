@@ -1,0 +1,138 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (tuex_course_signin.id) { %>
+        <input type="hidden" value="<%= tuex_course_signin.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">teach_orderitem_id</label>
+          <div class="layui-input-block">
+            <input type="text" name="teach_orderitem_id" lay-verify="teach_orderitem_id"
+                   value="<%= tuex_course_signin.teach_orderitem_id ? tuex_course_signin.teach_orderitem_id : '' %>" placeholder="请输入teach_orderitem_id" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">topic_member</label>
+          <div class="layui-input-block">
+            <input type="text" name="topic_member" lay-verify="topic_member"
+                   value="<%= tuex_course_signin.topic_member ? tuex_course_signin.topic_member : '' %>" placeholder="请输入topic_member" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">signin_date</label>
+          <div class="layui-input-block">
+            <input type="text" name="signin_date" lay-verify="signin_date"
+                   value="<%= tuex_course_signin.signin_date ? tuex_course_signin.signin_date : '0' %>" placeholder="请输入signin_date" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">type</label>
+          <div class="layui-input-block">
+            <input type="text" name="type" lay-verify="type"
+                   value="<%= tuex_course_signin.type ? tuex_course_signin.type : '0' %>" placeholder="请输入type" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">lat</label>
+          <div class="layui-input-block">
+            <input type="text" name="lat" lay-verify="lat"
+                   value="<%= tuex_course_signin.lat ? tuex_course_signin.lat : '' %>" placeholder="请输入lat" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">lng</label>
+          <div class="layui-input-block">
+            <input type="text" name="lng" lay-verify="lng"
+                   value="<%= tuex_course_signin.lng ? tuex_course_signin.lng : '' %>" placeholder="请输入lng" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= tuex_course_signin.sorted_num ? tuex_course_signin.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      signin_date: function (value, item) {
+        if (!value.trim()) {
+          return 'signin_date不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'signin_date必须是数字';
+        }
+      },
+      type: function (value, item) {
+        if (!value.trim()) {
+          return 'type不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'type必须是数字';
+        }
+      },
+      lat: function (value, item) {
+        if (value.trim().length > 50) {
+          return 'lat的长度必须小于50';
+        }
+      },
+      lng: function (value, item) {
+        if (value.trim().length > 50) {
+          return 'lng的长度必须小于50';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/tuex_course_signin/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>
