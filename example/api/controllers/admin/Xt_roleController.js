@@ -23,7 +23,9 @@ module.exports = {
         var limit = parseInt(req.param('limit', 10));
         var obj = {};
         if (req.param('name') && req.param('name').trim() !== '') {
-          obj['name'] = {contains: req.param('name').trim()};
+          obj['name'] = {
+            contains: req.param('name').trim()
+          };
         }
         if (req.param('id') && req.param('id').trim() !== '') {
           obj['id'] = req.param('id').trim();
@@ -32,7 +34,9 @@ module.exports = {
           obj['deleted'] = req.param('deleted').trim();
         }
         if (req.param('create_user') && req.param('create_user').trim() !== '') {
-          obj['create_user'] = {contains: req.param('create_user').trim()};
+          obj['create_user'] = {
+            contains: req.param('create_user').trim()
+          };
         }
         if (req.param('sorted_num') && req.param('sorted_num').trim() !== '') {
           obj['sorted_num'] = req.param('sorted_num').trim();
@@ -66,9 +70,14 @@ module.exports = {
       var id = req.param('id');
       let xt_role = {};
       if (id) {
-        xt_role = await Xt_role.findOne({id: id});
+        xt_role = await Xt_role.findOne({
+          id: id
+        });
       }
-      return res.view({layout: 'admin/layout', xt_role: xt_role});
+      return res.view({
+        layout: 'admin/layout',
+        xt_role: xt_role
+      });
     } else {
       var id = req.param('id');
       var obj = req.body || {};
@@ -76,7 +85,9 @@ module.exports = {
       try {
         let result;
         if (id) {
-          result = await Xt_role.update({id: id}, obj);
+          result = await Xt_role.update({
+            id: id
+          }, obj);
         } else {
           obj.create_user = req.session.admin.id;
           result = await Xt_role.create(obj);
@@ -100,7 +111,11 @@ module.exports = {
   delete: async function (req, res) {
     try {
       var id = req.param('id');
-      var result = await Xt_role.update({id: id}, {deleted: 1});
+      var result = await Xt_role.update({
+        id: id
+      }, {
+        deleted: 1
+      });
       res.json({
         errCode: 0,
         msg: '删除成功',
@@ -123,73 +138,74 @@ module.exports = {
   distribution_resource: async function (req, res) {
     if (req.method.toLowerCase() === 'get') {
       try {
-        var role_id = req.param('role_id');
-        var result = await(Xt_role_resource.find({role_id: role_id}));
-        var resources = await(Xt_resource.find({where: {parent_id: null}, sort: "sorted_num"}).populate('sub_resources'));
-        for (var i in resources) {
-          for (var j in resources[i].sub_resources) {
-            var resource = resources[i].sub_resources[j];
-            for (var k in result) {
-              if (result[k].resource_id === resource.id) {
-                resource.isUse = true;
+        let role_id = req.param('role_id');
+        let result = await (Xt_role_resource.find({
+          role_id: role_id
+        }));
+        let xx = function (rs) {
+          for (let r of rs) {
+            for (let k of result) {
+              if (r.id === k.resource_id && (!r.children || r.children.length === 0)) { //存在孩子节点的元素不需要checked
+                r.checked = true;
+                break;
               }
+            }
+            if (r.children && r.children.length > 0) {
+              xx(r.children);
             }
           }
         }
-        return res.view({layout: 'admin/layout', resources: resources, role_id: role_id});
+        let resources = await Xt_resource.getAllResources();
+        xx(resources);
+
+        return res.view({
+          layout: 'admin/layout',
+          resources: resources,
+          role_id: role_id
+        });
       } catch (e) {
         res.serverError(e);
       }
     } else {
 
-      try {
-        var resources = req.param('resources', []);
-        var role_id = req.param('role_id', '');
-        if (!role_id) {
-          return res.json({
-            errCode: 1,
-            msg: '系统异常，请关闭页面重试!'
-          });
-        }
-
-        await(Xt_role_resource.destroy({role_id: role_id}));  //先删除当前角色下的所有分配的资源
-
-        for (var i in resources) {
-          var resource = resources[i];
-          var resource_ids = req.param(resource, []);
-
-          if (resource_ids.length > 0) { //大于0的话把父资源也添加到关联表
-            await(Xt_role_resource.create({
-              role_id: role_id,
-              resource_id: resource
-            }));
-          }
-
-          for (var j in resource_ids) {
-            var resource_id = resource_ids[j];
-
-            var role_resource = await(Xt_role_resource.findOne({role_id: role_id, resource_id: resource_id}));
-            if (!role_resource) {
-              await(Xt_role_resource.create({
-                role_id: role_id,
-                resource_id: resource_id
-              }));
-            }
-
-          }
-        }
-        return res.json({
-          errCode: 0,
-          msg: '保存成功!'
-        });
-
-      } catch (e) {
-        console.log(e);
+      var resources = req.param('resources', []);
+      var role_id = req.param('role_id', '');
+      if (!role_id) {
         return res.json({
           errCode: 1,
           msg: '系统异常，请关闭页面重试!'
         });
       }
+
+      let a = await sails.getDatastore().transaction(async function (db, proceed) {
+        try {
+          await (Xt_role_resource.destroy({
+            role_id: role_id
+          })).usingConnection(db); //先删除当前角色下的所有分配的资源
+          let xx = async function (rs) {
+            for (let r of rs) {
+              await Xt_role_resource.create({
+                role_id: role_id,
+                resource_id: r.id
+              }).usingConnection(db);
+              if (r.children && r.children.length > 0) {
+                xx(r.children);
+              }
+            }
+          }
+          await xx(resources);
+
+          proceed(null, {
+            errCode: 0,
+            msg: '保存成功!'
+          });
+
+        } catch (e) {
+          proceed(e);
+        }
+      });
+
+      return res.json(a);
 
     }
   }
