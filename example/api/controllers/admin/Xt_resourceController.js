@@ -45,9 +45,14 @@ module.exports = {
 
     if (req.method.toLowerCase() === 'get') {
       var id = req.param('id');
+      var parent_id = req.param('parent_id');
       let xt_resource = {};
+      let parent = {};
       if (id) {
         xt_resource = await Xt_resource.findOne({id: id});
+      }
+      if (parent_id) {
+        parent = await Xt_resource.findOne({id: parent_id});
       }
       let types = await Xt_dict.find({
         parent_id: 'resource_type'
@@ -56,7 +61,7 @@ module.exports = {
         parent_id: null,
         deleted: 0
       });
-      return res.view({layout: 'admin/layout', xt_resource: xt_resource, types: types, resources: resources});
+      return res.view({layout: 'admin/layout', xt_resource: xt_resource, types: types, resources: resources, parent: parent});
     } else {
       var id = req.param('id');
       var obj = req.body || {};

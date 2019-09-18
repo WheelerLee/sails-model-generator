@@ -1,124 +1,239 @@
-<div class="layui-card layadmin-header">
-
-</div>
-<div class="layui-fluid">
-  <div class="layui-row layui-col-space15">
-    <div class="layui-col-md12">
-      <div class="layui-card">
-        <div class="layui-card-body">
-          <table id="table1" class="layui-table" lay-filter="table1"></table>
+<style>
+    /** 箭头未展开 */
+    #table1+.treeTable .treeTable-icon .layui-icon-triangle-d:before {
+      content: "\e602";
+    }
+  
+    /** 箭头展开 */
+    #table1+.treeTable .treeTable-icon.open .layui-icon-triangle-d:before {
+      content: "\e61a";
+    }
+  
+    /** 文件图标 */
+    #table1+.treeTable .treeTable-icon .layui-icon-file:before {
+      content: "";
+    }
+  
+    /** 文件夹未展开 */
+    #table1+.treeTable .treeTable-icon .layui-icon-layer:before {
+      content: "";
+    }
+  
+    /** 文件夹展开 */
+    #table1+.treeTable .treeTable-icon.open .layui-icon-layer:before {
+      content: "";
+    }
+  </style>
+  <div class="layui-card layadmin-header">
+  
+  </div>
+  <div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-md12">
+        <div class="layui-card">
+          <div class="layui-card-body">
+            <form class="layui-form" id="searchForm" style="margin-bottom: 20px;">
+              <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+                <input id="search-text" type="text" name="name" value="" placeholder="名称"
+                  class="layui-input search_input">
+              </div>
+              <a class="layui-btn layui-btn-normal" style="margin: 8px 0 0 0" id="search_btn">
+                <i class="layui-icon larry-icon">&#xe615;</i>查询
+              </a>
+              <% if (modify_permission) { %>
+              <a class="layui-btn layui-btn-primary" id="add_btn" style="margin: 8px 0 0 0">
+                <i class="layui-icon larry-icon">&#xe654;</i>添加
+              </a>
+              <% } %>
+            </form>
+            <table id="table1" class="layui-table" lay-filter="table1"></table>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-
-<!-- <script type="text/html" id="res_type_code">
-  {{#  if(d.res_type_code){ }}
-  {{d.res_type_code.name}}
-  {{#  } else { }}
-
-  {{#  } }}
-</script> -->
-<script type="text/html" id="icon_path">
-  {{#  if(d.icon_path) { }}
-  <i class="layui-icon">{{d.icon_path}}</i>
-  {{#  } }}
-</script>
-<script type="text/html" id="operation">
-  <% if (modify_permission) { %>
-  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-  <% } %>
-  <% if (delete_permission) { %>
-  {{#  if(d.deleted === 0){ }}
-  <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
-  {{#  } else { }}
-  {{#  } }}
-  <% } %>
-</script>
-<script type="text/javascript">
-  layui.config({
-    base: '/layui/module/'
-  }).extend({
-    treetable: 'treetable-lay/treetable'
-  }).use(['treetable', 'table'], function() {
-
-    var treetable = layui.treetable;
-    var table = layui.table;
-    var form = layui.form;
-    var $ = layui.$;
-
-    var renderTable = function() {
-      layer.load(2);
-      treetable.render({
-        elem: '#table1',
-        method: 'POST',
-        url: '/admin/xt_resource/index?x=y',
-        treeColIndex: 0,
-        treeSpid: 0,
-        treeIdName: 'id',
-        treePidName: 'parent_id',
-        treeDefaultClose: true,
-        cols: [[
-          {field:'name', title: '名称'},
-          {field:'path', title: '路径', width: 280},
-          {field:'icon_path', title: '图标', width: 80, align: 'center', templet: "#icon_path"},
-          {field:'res_type_code', title: '类型', width: 80, align: 'center', templet: function(d) {
-            if (d.res_type_code) {
-              if (d.res_type_code.id === 'resource_page') {
-                return '<span class="layui-badge-rim ">' + d.res_type_code.name + '</span>';
-              } else {
-                return '<span class="layui-badge layui-bg-gray">' + d.res_type_code.name + '</span>';
-              }
-            }
-          }},
-          // {field:'description', title: '描述'},
-          {fixed: 'right', title: '操作', width: 130, align: 'center', toolbar: '#operation'}
-        ]],
-        done: function() {
-          layer.closeAll('loading');
-        }
-      });
-    }
-    renderTable();
-
-    table.on('tool(table1)', function(obj) {
-      if (obj.event === 'edit') {
-        //标签页打开编辑页面
-        parent.window.addTab({
-          title: '编辑资源',
-          href: '/admin/xt_resource/modify?id=' + obj.data.id
-        });
-      } else if (obj.event === 'delete') {
-        layer.confirm('是否确定删除？', {icon: 3, title: '提示'}, function (index) {
-          layer.close(index);
-          var loading = layer.load(1);
-          $.post('/admin/xt_resource/delete', obj.data, function (data) {
-            layer.close(loading);
-            if (data.errCode === 0) {
-              layer.msg(data.msg, {
-                icon: 6,
-                time: 1000
-              }, function () {
-
-                var obj = {};
-                var array = $('#searchForm').serializeArray();
-
-                for (var i = 0; i < array.length; i++) {
-                  var item = array[i];
-                  obj[item.name] = item.value;
+  
+  <!-- <script type="text/html" id="res_type_code">
+    {{#  if(d.res_type_code){ }}
+    {{d.res_type_code.name}}
+    {{#  } else { }}
+  
+    {{#  } }}
+  </script> -->
+  <script type="text/html" id="icon_path">
+    {{#  if(d.icon_path) { }}
+    <i class="layui-icon">{{d.icon_path}}</i>
+    {{#  } }}
+  </script>
+  <script type="text/html" id="operation">
+    <% if (modify_permission) { %>
+    <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="add">添加</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <% } %>
+    <% if (delete_permission) { %>
+    {{#  if(d.deleted === 0){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+    {{#  } else { }}
+    {{#  } }}
+    <% } %>
+  </script>
+  <script type="text/javascript">
+    layui.config({
+      base: '/layui/module/'
+    }).extend({
+      treetable: 'treetable-lay/treetable'
+    }).use(['treetable', 'table'], function () {
+  
+      var treetable = layui.treetable;
+      var table = layui.table;
+      var form = layui.form;
+      var $ = layui.$;
+  
+      var renderTable = function () {
+        layer.load(2);
+        treetable.render({
+          elem: '#table1',
+          method: 'POST',
+          url: '/admin/xt_resource/index?x=y',
+          treeColIndex: 0,
+          treeSpid: 0,
+          treeIdName: 'id',
+          treePidName: 'parent_id',
+          treeDefaultClose: true,
+          cols: [
+            [{
+                field: 'name',
+                title: '名称'
+              },
+              {
+                field: 'path',
+                title: '路径',
+                width: 280
+              },
+              {
+                field: 'icon_path',
+                title: '图标',
+                width: 80,
+                align: 'center',
+                templet: "#icon_path"
+              },
+              {
+                field: 'res_type_code',
+                title: '类型',
+                width: 80,
+                align: 'center',
+                templet: function (d) {
+                  if (d.res_type_code) {
+                    if (d.res_type_code.id === 'resource_page') {
+                      return '<span class="layui-badge-rim ">' + d.res_type_code.name + '</span>';
+                    } else {
+                      return '<span class="layui-badge layui-bg-gray">' + d.res_type_code.name + '</span>';
+                    }
+                  }
                 }
-                renderTable();
-
-              });
-            }
-            else {
-              layer.msg(data.msg, {icon: 5});
-            }
-          });
+              },
+              // {field:'description', title: '描述'},
+              {
+                fixed: 'right',
+                title: '操作',
+                width: 170,
+                align: 'center',
+                toolbar: '#operation'
+              }
+            ]
+          ],
+          done: function () {
+            layer.closeAll('loading');
+          }
         });
       }
+      renderTable();
+  
+      table.on('tool(table1)', function (obj) {
+        console.log(obj);
+        if (obj.event === 'edit') {
+          //标签页打开编辑页面
+          parent.window.addTab({
+            title: '编辑资源',
+            href: '/admin/xt_resource/modify?id=' + obj.data.id + '&parent_id=' + obj.data.parent_id
+          });
+        } else if (obj.event === 'add') {
+          //标签页打开编辑页面
+          parent.window.addTab({
+            title: '添加资源',
+            href: '/admin/xt_resource/modify?parent_id=' + obj.data.id
+          });
+        } else if (obj.event === 'delete') {
+          layer.confirm('是否确定删除？', {
+            icon: 3,
+            title: '提示'
+          }, function (index) {
+            layer.close(index);
+            var loading = layer.load(1);
+            $.post('/admin/xt_resource/delete', obj.data, function (data) {
+              layer.close(loading);
+              if (data.errCode === 0) {
+                layer.msg(data.msg, {
+                  icon: 6,
+                  time: 1000
+                }, function () {
+  
+                  var obj = {};
+                  var array = $('#searchForm').serializeArray();
+  
+                  for (var i = 0; i < array.length; i++) {
+                    var item = array[i];
+                    obj[item.name] = item.value;
+                  }
+                  renderTable();
+  
+                });
+              } else {
+                layer.msg(data.msg, {
+                  icon: 5
+                });
+              }
+            });
+          });
+        }
+      });
+  
+      $('#search_btn').click(function () {
+        var keyword = $('#search-text').val();
+        var searchCount = 0;
+        $('#table1').next('.treeTable').find('.layui-table-body tbody tr td').each(function () {
+          $(this).css('background-color', 'transparent');
+          var text = $(this).text();
+          if (keyword != '' && text.indexOf(keyword) >= 0) {
+            $(this).css('background-color', 'rgba(250,230,160,0.5)');
+            if (searchCount == 0) {
+              treetable.expandAll('#auth-table');
+              $('html,body').stop(true);
+              $('html,body').animate({
+                scrollTop: $(this).offset().top - 150
+              }, 500);
+            }
+            searchCount++;
+          }
+        });
+        if (keyword == '') {
+          layer.msg("请输入搜索内容", {
+            icon: 5
+          });
+        } else if (searchCount == 0) {
+          layer.msg("没有匹配结果", {
+            icon: 5
+          });
+        }
+      });
+  
+      $('#add_btn').on('click', function () {
+        parent.window.addTab({
+          title: '添加资源',
+          href: '/admin/xt_resource/modify'
+        });
+      });
+  
     });
-
-  });
-</script>
+  </script>
+  

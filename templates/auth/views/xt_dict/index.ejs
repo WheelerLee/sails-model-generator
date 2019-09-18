@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/layui/lib/menu.css">
+<link rel="stylesheet" href="/layui/module/menu/menu.css">
 
 <div class="layui-card layadmin-header">
 
@@ -47,15 +47,19 @@
   var menu;
   var menu_data;
   var tableRender;
+  var tree;
 
-  layui.extend({
-    menu: '/layui/lib/menu'
+  layui.config({
+    base: '/layui/module/'
+  }).extend({
+    menu: 'menu/menu'
   }).use(['table', 'form', 'tree', 'menu'], function (m) {
 
     table = layui.table;
     form = layui.form;
     $ = layui.$;
     menu = layui.menu;
+    tree = layui.tree;
 
     tableRender = table.render({
       elem: '#test-table-form',
@@ -256,9 +260,9 @@
         $('#dict').empty();
         var data = result.data;
         menu_data = data;
-        layui.tree({
+        tree.render({
           elem: '#dict', //传入元素选择器
-          nodes: data,
+          data: data,
           click: function (node) {
             console.log(node);
             if (!node.children) {

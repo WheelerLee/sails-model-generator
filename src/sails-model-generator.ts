@@ -21,6 +21,7 @@ program.version('5.0.1', '-v, --version', '输出当前的版本号')
   .helpOption('-h, --help', '帮助信息')
   .option('-f, --folder <folder>', '指定生成的文件夹，默认是admin，当然现在也支持admin。别的文件夹会有路径上的bug')
   .option('--reset', '重置生成的管理系统，会将和admin相关的都会删除，请谨慎')
+  .option('--skip', '忽略依赖添加');
 
 program.parse(process.argv);
 
@@ -29,6 +30,7 @@ if (program.folder) {
   folder = program.folder;
 }
 let reset = program.reset;
+let skip = program.skip;
 
 if (!fs.existsSync(process.cwd() + '/views/') || !fs.existsSync(process.cwd() + '/api/')
   || !fs.existsSync(process.cwd() + '/api/controllers/') || !fs.existsSync(process.cwd() + '/api/models/')
@@ -38,6 +40,6 @@ if (!fs.existsSync(process.cwd() + '/views/') || !fs.existsSync(process.cwd() + 
 }
 
 let generator = new Generator(folder);
-generator.generate(reset);
+generator.generate(reset, skip);
 
 console.log('代码生成成功，运行后请访问 http://127.0.0.1:1337/mock/add 添加基础数据');

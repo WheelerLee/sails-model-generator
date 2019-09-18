@@ -23,7 +23,12 @@ export default class Generator {
     this.folderName = folderName;
   }
 
-  generate(reset: boolean): void {
+  /**
+   * 生成后台代码
+   * @param reset 是否覆盖已经存在的文件生成
+   * @param skip 是否跳过依赖添加
+   */
+  generate(reset: boolean, skip: boolean): void {
 
     //是否需要重置
     if (reset) this.reset();
@@ -51,7 +56,9 @@ export default class Generator {
     this.unzipStaticFiles();
     this.updateConfigFile();
 
-    this.exec();
+    if (!skip) { //忽略依赖添加
+      this.exec();
+    }
 
   }
 
