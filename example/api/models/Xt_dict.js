@@ -1,7 +1,7 @@
 /**
  * Xt_dict.js
  *
- * @description :: TODO: 字典子项.
+ * @description :: 字典子项.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 
@@ -23,16 +23,10 @@ module.exports = {
       columnType: 'varchar(50)',
       maxLength: 50
     },
-    name: {  //字典名称
+    name: {  //字典名称，直接和翻译表对应
       type: 'string',
       columnType: 'varchar(50)',
       maxLength: 50
-    },
-    name_en: {//英文名
-      type: 'string',
-      columnType: 'varchar(50)',
-      maxLength: 50,
-      allowNull: true
     },
     vals: {  //对应值
       type: 'string',

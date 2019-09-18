@@ -85,6 +85,27 @@ module.exports = {
     });
   },
 
+  /**
+   * 获取所有的权限，按照children排列
+   */
+  getAllResources: async function(parent_id) {
+
+    let resources = [];
+    if (parent_id) {
+      let sql = 'select *, name as title from xt_resource where deleted = 0 and parent_id=$1 order by xt_resource.sorted_num asc';
+      resources = (await sails.sendNativeQuery(sql, [parent_id])).rows;
+    } else {
+      let sql = 'select *, name as title from xt_resource where deleted = 0 and parent_id is null order by sorted_num asc';
+      resources = (await sails.sendNativeQuery(sql)).rows;
+    }
+    for (let resource of resources) {
+      resource.children = await Xt_resource.getAllResources(resource.id);
+    }
+    
+    return resources;
+    
+  },
+
   beforeCreate: function (valuesToSet, proceed) {
     if (valuesToSet.path) {
       valuesToSet.path = valuesToSet.path.toLowerCase();
@@ -95,6 +116,17 @@ module.exports = {
   beforeUpdate: function (valuesToSet, proceed) {
     if (valuesToSet.path) {
       valuesToSet.path = valuesToSet.path.toLowerCase();
+    }
+    return proceed();
+  },
+
+  afterUpdate: async function (updatedRecord, proceed) {
+    if (updatedRecord.deleted === 1) { //删除的话，顺道删除子元素
+      await Xt_resource.update({
+        parent_id: updatedRecord.id
+      }, {
+        deleted: 1
+      });
     }
     return proceed();
   },

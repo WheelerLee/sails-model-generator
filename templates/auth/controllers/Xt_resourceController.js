@@ -7,57 +7,32 @@
 module.exports = {
 
   index: async function (req, res) {
-    if (req.method.toLowerCase() === 'get') {
+    // if (req.method.toLowerCase() === 'get') {
+    if (req.param('x') !== 'y') {
       var modify_permission = await PermissionService.valid(req.session.admin.id, '/admin/xt_resource/modify');
       var delete_permission = await PermissionService.valid(req.session.admin.id, '/admin/xt_resource/delete');
       return res.view({layout: 'admin/layout', modify_permission: modify_permission, delete_permission: delete_permission});
     } else {
       try {
-        var page = parseInt(req.param('page', 1));
-        var limit = parseInt(req.param('limit', 10));
-        var obj = {};
-        if (req.param('name') && req.param('name').trim() !== '') {
-          obj['name'] = {contains: req.param('name').trim()};
+        // let data = await Xt_resource.getAllResources();
+        // let sql = 'select * from xt_resource where deleted = 0 order by xt_resource.sorted_num asc';
+        // let resources = (await sails.sendNativeQuery(sql, [])).rows;
+        let resources = await Xt_resource.find({
+          where: {
+            deleted: 0
+          },
+          sort: 'sorted_num asc'
+        }).populate('res_type_code');
+        for (let r of resources) {
+          if (!r.parent_id) r.parent_id = 0;
         }
-        if (req.param('res_type_code') && req.param('res_type_code').trim() !== '') {
-          obj['res_type_code'] = {contains: req.param('res_type_code').trim()};
-        }
-        if (req.param('icon_path') && req.param('icon_path').trim() !== '') {
-          obj['icon_path'] = {contains: req.param('icon_path').trim()};
-        }
-        if (req.param('path') && req.param('path').trim() !== '') {
-          obj['path'] = {contains: req.param('path').trim()};
-        }
-        if (req.param('description') && req.param('description').trim() !== '') {
-          obj['description'] = {contains: req.param('description').trim()};
-        }
-        if (req.param('id') && req.param('id').trim() !== '') {
-          obj['id'] = req.param('id').trim();
-        }
-        if (req.param('deleted') && req.param('deleted').trim() !== '') {
-          obj['deleted'] = req.param('deleted').trim();
-        }
-        if (req.param('create_user') && req.param('create_user').trim() !== '') {
-          obj['create_user'] = {contains: req.param('create_user').trim()};
-        }
-        if (req.param('sorted_num') && req.param('sorted_num').trim() !== '') {
-          obj['sorted_num'] = req.param('sorted_num').trim();
-        }
-
-        let data = await Xt_resource.find({
-          where: obj,
-          limit: limit,
-          skip: (page - 1) * limit,
-          sort: 'sorted_num desc'
-        }).populate('res_type_code').populate('parent_id');
-        var count = await Xt_resource.count(obj);
         res.json({
           code: 0,
           msg: '',
-          count: count,
-          data: data
+          data: resources
         });
       } catch (e) {
+        console.log(e);
         res.json({
           code: 1,
           msg: '获取失败'
@@ -113,7 +88,7 @@ module.exports = {
   delete: async function (req, res) {
     try {
       var id = req.param('id');
-      var result = await Xt_resource.update({id: id}, {deleted: 1});
+      var result = await Xt_resource.update({id: id}, {deleted: 1}).fetch();
       res.json({
         errCode: 0,
         msg: '删除成功',

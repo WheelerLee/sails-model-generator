@@ -1719,8 +1719,34 @@ module.exports = {
         }).usingConnection(db);
 
 
+        let xt_translation = await Xt_resource.create({
+          name: 'Xt_translation管理',
+          res_type_code: 'resource_page',
+          sorted_num: 1
+        }).fetch().usingConnection(db);
+        await Xt_resource.create({
+          name: 'Xt_translation列表',
+          res_type_code: 'resource_page',
+          sorted_num: 1,
+          path: '/admin/xt_translation/index',
+          parent_id: xt_translation.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'Xt_translation添加编辑',
+          res_type_code: 'resource_btn',
+          sorted_num: 1,
+          path: '/admin/xt_translation/modify',
+          parent_id: xt_translation.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'Xt_translation删除',
+          res_type_code: 'resource_btn',
+          sorted_num: 1,
+          path: '/admin/xt_translation/delete',
+          parent_id: xt_translation.id
+        }).usingConnection(db);
 
-        //FIXME: 添加默认的setting配置
+
         proceed(null, {msg: '创建成功'});
 
       } catch (e) {
@@ -1728,6 +1754,9 @@ module.exports = {
       }
 
     });
+
+    let settings = await SystemService.getSettings(null);
+    sails.settings = settings;
 
     return res.json(a);
 
