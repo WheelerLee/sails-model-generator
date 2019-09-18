@@ -48,41 +48,36 @@ module.exports = {
    * 获取userId的页面资源
    * @param userId 用户ID
    */
-  getPageByUserId: function (userId) {
+  getPageByUserId: async function (userId) {
 
-    let sql = 'select xt_resource.* from xt_resource LEFT JOIN xt_role_resource on ' +
-      'xt_resource.id=xt_role_resource.resource_id LEFT JOIN xt_user_role on ' +
-      'xt_role_resource.role_id=xt_user_role.role_id where xt_user_role.user_id=$1 ' +
-      'and xt_resource.deleted=0 and xt_role_resource.deleted=0 and xt_user_role.deleted=0 ' +
-      'and xt_resource.res_type_code=$2 order by xt_resource.parent_id,xt_resource.sorted_num asc';
-
-    return sails.sendNativeQuery(sql, [userId, 'resource_page']).then(function (results) {
-
-      var getParent = function (rs, id) {
-        for (var i in rs) {
-          var resource = rs[i];
-          if (resource.id === id) {
-            return resource;
-          }
-        }
-        return null
-      };
-
-      results = results.rows;
-      var resources = [];
-      for (var i in results) {
-        var resource = results[i];
-        if (!resource.parent_id) {
-          resources.push(resource);
-        } else {
-          var parent = getParent(resources, resource.parent_id);
-          if (!parent) continue;
-          if (!parent.sub_resources) parent.sub_resources = [];
-          parent.sub_resources.push(resource);
-        }
+    const xx = async function(parent_id) {
+      let sql;
+      if (parent_id) {
+        sql = 'select xt_resource.* from xt_resource LEFT JOIN xt_role_resource on ' +
+          'xt_resource.id=xt_role_resource.resource_id LEFT JOIN xt_user_role on ' +
+          'xt_role_resource.role_id=xt_user_role.role_id where xt_user_role.user_id=$1 ' +
+          'and xt_resource.deleted=0 and xt_role_resource.deleted=0 and xt_user_role.deleted=0 ' +
+          'and xt_resource.res_type_code=$2 and xt_resource.parent_id=$3 order by ' + 
+          'xt_resource.parent_id,xt_resource.sorted_num asc';
+      } else {
+        sql = 'select xt_resource.* from xt_resource LEFT JOIN xt_role_resource on ' +
+          'xt_resource.id=xt_role_resource.resource_id LEFT JOIN xt_user_role on ' +
+          'xt_role_resource.role_id=xt_user_role.role_id where xt_user_role.user_id=$1 ' +
+          'and xt_resource.deleted=0 and xt_role_resource.deleted=0 and xt_user_role.deleted=0 ' +
+          'and xt_resource.res_type_code=$2 and xt_resource.parent_id is null order by ' + 
+          'xt_resource.parent_id,xt_resource.sorted_num asc';
       }
+      let resources = (await sails.sendNativeQuery(sql, [userId, 'resource_page', parent_id])).rows;
+
+      for (let r of resources) {
+        r.sub_resources = await xx(r.id);
+      }
+
       return resources;
-    });
+    }
+
+    return (await xx());
+
   },
 
   /**
