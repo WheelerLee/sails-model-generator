@@ -7,56 +7,28 @@
 module.exports = {
 
   index: async function (req, res) {
-    if (req.method.toLowerCase() === 'get') {
+    if (req.param('x') !== 'y') {
       var modify_permission = await PermissionService.valid(req.session.admin.id, '/admin/xt_dict/modify');
       var delete_permission = await PermissionService.valid(req.session.admin.id, '/admin/xt_dict/delete');
       return res.view({layout: 'admin/layout', modify_permission: modify_permission, delete_permission: delete_permission});
     } else {
       try {
-        // var page = parseInt(req.param('page', 1));
-        // var limit = parseInt(req.param('limit', 10));
-        // var obj = {};
-        // if (req.param('id') && req.param('id').trim() !== '') {
-        //   obj['id'] = req.param('id').trim();
-        // }
-        // if (req.param('code') && req.param('code').trim() !== '') {
-        //   obj['code'] = {contains: req.param('code').trim()};
-        // }
-        // if (req.param('name') && req.param('name').trim() !== '') {
-        //   obj['name'] = {contains: req.param('name').trim()};
-        // }
-        // if (req.param('name_en') && req.param('name_en').trim() !== '') {
-        //   obj['name_en'] = {contains: req.param('name_en').trim()};
-        // }
-        // if (req.param('vals') && req.param('vals').trim() !== '') {
-        //   obj['vals'] = {contains: req.param('vals').trim()};
-        // }
-        // if (req.param('remarks') && req.param('remarks').trim() !== '') {
-        //   obj['remarks'] = {contains: req.param('remarks').trim()};
-        // }
-        // if (req.param('deleted') && req.param('deleted').trim() !== '') {
-        //   obj['deleted'] = req.param('deleted').trim();
-        // }
-        // if (req.param('create_user') && req.param('create_user').trim() !== '') {
-        //   obj['create_user'] = {contains: req.param('create_user').trim()};
-        // }
-        // if (req.param('sorted_num') && req.param('sorted_num').trim() !== '') {
-        //   obj['sorted_num'] = req.param('sorted_num').trim();
-        // }
-        //
-        // let data = await Xt_dict.find({
-        //   where: obj,
-        //   limit: limit,
-        //   skip: (page - 1) * limit,
-        //   sort: 'sorted_num desc'
-        // });
-        // var count = await Xt_dict.count(obj);
-        // res.json({
-        //   code: 0,
-        //   msg: '',
-        //   count: count,
-        //   data: data
-        // });
+
+        let data = await Xt_dict.find({
+          where: {
+            deleted: 0
+          },
+          sort: "sorted_num asc"
+        });
+        for (let r of data) {
+          if (!r.parent_id) r.parent_id = 0;
+        }
+
+        return res.json({
+          code: 0,
+          msg: '',
+          data: data
+        });
 
         let action = req.param('action');
         if (action === 'menu') {
