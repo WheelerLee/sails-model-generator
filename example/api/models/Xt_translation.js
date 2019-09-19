@@ -25,6 +25,27 @@ module.exports = {
       columnType: 'text',
       allowNull: true
     }
+  },
+
+  keep: async function(language, i18n_key, i18n_value, db) {
+    let translation = await Xt_translation.findOne({
+      language: language,
+      i18n_key: i18n_key
+    }); //先查看是否有值了，有的话就更新，没有就新建
+    if (translation) {
+      await Xt_translation.update({
+        language: language,
+        i18n_key: i18n_key
+      }, {
+        i18n_value: i18n_value
+      });
+    } else {
+      await Xt_translation.create({
+        language: language,
+        i18n_key: i18n_key,
+        i18n_value: i18n_value
+      });
+    }
   }
 
 };

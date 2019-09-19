@@ -28,6 +28,16 @@ module.exports = {
       columnType: 'varchar(50)',
       maxLength: 50
     },
+    name_en: {  //字典名称，直接和翻译表对应
+      type: 'string',
+      columnType: 'varchar(50)',
+      maxLength: 50
+    },
+    name_zh: {  //字典名称，直接和翻译表对应
+      type: 'string',
+      columnType: 'varchar(50)',
+      maxLength: 50
+    },
     vals: {  //对应值
       type: 'string',
       columnType: 'varchar(100)',

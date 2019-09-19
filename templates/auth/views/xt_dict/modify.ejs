@@ -17,18 +17,18 @@
             </div>
           </div>
           <div class="layui-form-item">
-            <label class="layui-form-label">名称</label>
-            <div class="layui-input-block">
-              <input type="text" name="name" lay-verify="name"
-                     value="<%= xt_dict.name ? xt_dict.name : '' %>" placeholder="请输入名称" autocomplete="off"
-                     class="layui-input">
-            </div>
-          </div>
-          <div class="layui-form-item">
             <label class="layui-form-label">英文名称</label>
             <div class="layui-input-block">
               <input type="text" name="name_en" lay-verify="name_en"
                      value="<%= xt_dict.name_en ? xt_dict.name_en : '' %>" placeholder="请输入英文名称" autocomplete="off"
+                     class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">中文名称</label>
+            <div class="layui-input-block">
+              <input type="text" name="name_zh" lay-verify="name_zh"
+                     value="<%= xt_dict.name_zh ? xt_dict.name_zh : '' %>" placeholder="请输入名称" autocomplete="off"
                      class="layui-input">
             </div>
           </div>
@@ -76,7 +76,7 @@
       form.verify({
         code: function (value, item) {
         },
-        name: function (value, item) {
+        name_zh: function (value, item) {
         },
         name_en: function (value, item) {
         },

@@ -94,6 +94,9 @@ module.exports = {
     } else {
       var id = req.param('id');
       var obj = req.body || {};
+      if (obj.name_en) {
+        obj.name = obj.name_en;
+      }
 
       try {
         let result;
