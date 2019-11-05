@@ -1,6 +1,6 @@
 {
   "name": "sails-model-generator",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "description": "生成默认的后台关系系统",
   "main": "index.js",
   "scripts": {

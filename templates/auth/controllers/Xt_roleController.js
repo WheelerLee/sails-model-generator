@@ -168,7 +168,7 @@ module.exports = {
       }
     } else {
 
-      var resources = req.param('resources', []);
+      var resources = JSON.parse(req.param('resources', '[]'));
       var role_id = req.param('role_id', '');
       if (!role_id) {
         return res.json({

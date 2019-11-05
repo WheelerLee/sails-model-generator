@@ -15,12 +15,13 @@
     "gm": "^1.23.1",
     "grunt": "1.0.1",
     "moment": "^2.24.0",
-    "nodemailer": "^6.3.0",
+    "nodemailer": "^6.3.1",
     "sails": "^1.0.1",
     "sails-hook-grunt": "^3.0.2",
     "sails-hook-orm": "^2.0.0-16",
     "sails-hook-sockets": "^1.4.0",
     "sails-mysql": "^1.0.1",
+    "sharp": "^0.23.2",
     "uuid": "^3.3.3"
   },
   "devDependencies": {

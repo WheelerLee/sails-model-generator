@@ -43,7 +43,7 @@ module.exports = {
       nav += `
         <li class="layui-nav-item">
         <a href="javascript:;" lay-tips="${r.name}" lay-direction="2">
-        <i class="layui-icon">${r.icon_path}</i>
+        <i class="layui-icon">${r.icon_path ? r.icon_path : ''}</i>
         <cite>${r.name}</cite>
         <span class="layui-nav-more"></span>
         </a>

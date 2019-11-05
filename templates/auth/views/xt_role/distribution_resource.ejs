@@ -37,7 +37,7 @@
         console.log(checkData);
         var loading = layer.load(1);
         $.post('/admin/xt_role/distribution_resource', {
-          resources: checkData,
+          resources: JSON.stringify(checkData),
           role_id: <%= role_id %>
         }, function (data) {
           layer.close(loading);
