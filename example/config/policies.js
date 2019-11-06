@@ -64,12 +64,6 @@ module.exports.policies = {
   'admin/Jz_recordController': {
     '*': ['adminSessionAuth', 'permissionsAuth']
   },
-  'admin/Msg_messageController': {
-    '*': ['adminSessionAuth', 'permissionsAuth']
-  },
-  'admin/Msg_send_recordController': {
-    '*': ['adminSessionAuth', 'permissionsAuth']
-  },
   'admin/Msg_typeController': {
     '*': ['adminSessionAuth', 'permissionsAuth']
   },

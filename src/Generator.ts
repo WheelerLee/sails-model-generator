@@ -12,7 +12,7 @@ import Worker from './Worker';
 
 const omit_models = [
   'Attach', 'Xt_user', 'Xt_resource', 'Xt_role', 'Xt_dict', 'Xt_role_resource', 
-  'Xt_user_resource', 'Xt_user_role', 'Xt_setting'
+  'Xt_user_resource', 'Xt_user_role', 'Xt_setting', 'Msg_send_record', 'Msg_message'
 ]; //需要忽略的模型
 
 export default class Generator {

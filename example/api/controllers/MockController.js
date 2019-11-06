@@ -459,62 +459,6 @@ module.exports = {
         }).usingConnection(db);
 
 
-        let msg_message = await Xt_resource.create({
-          name: 'Msg_message管理',
-          res_type_code: 'resource_page',
-          sorted_num: 1
-        }).fetch().usingConnection(db);
-        await Xt_resource.create({
-          name: 'Msg_message列表',
-          res_type_code: 'resource_page',
-          sorted_num: 1,
-          path: '/admin/msg_message/index',
-          parent_id: msg_message.id
-        }).usingConnection(db);
-        await Xt_resource.create({
-          name: 'Msg_message添加编辑',
-          res_type_code: 'resource_btn',
-          sorted_num: 1,
-          path: '/admin/msg_message/modify',
-          parent_id: msg_message.id
-        }).usingConnection(db);
-        await Xt_resource.create({
-          name: 'Msg_message删除',
-          res_type_code: 'resource_btn',
-          sorted_num: 1,
-          path: '/admin/msg_message/delete',
-          parent_id: msg_message.id
-        }).usingConnection(db);
-
-
-        let msg_send_record = await Xt_resource.create({
-          name: 'Msg_send_record管理',
-          res_type_code: 'resource_page',
-          sorted_num: 1
-        }).fetch().usingConnection(db);
-        await Xt_resource.create({
-          name: 'Msg_send_record列表',
-          res_type_code: 'resource_page',
-          sorted_num: 1,
-          path: '/admin/msg_send_record/index',
-          parent_id: msg_send_record.id
-        }).usingConnection(db);
-        await Xt_resource.create({
-          name: 'Msg_send_record添加编辑',
-          res_type_code: 'resource_btn',
-          sorted_num: 1,
-          path: '/admin/msg_send_record/modify',
-          parent_id: msg_send_record.id
-        }).usingConnection(db);
-        await Xt_resource.create({
-          name: 'Msg_send_record删除',
-          res_type_code: 'resource_btn',
-          sorted_num: 1,
-          path: '/admin/msg_send_record/delete',
-          parent_id: msg_send_record.id
-        }).usingConnection(db);
-
-
         let msg_type = await Xt_resource.create({
           name: 'Msg_type管理',
           res_type_code: 'resource_page',
