@@ -11,7 +11,9 @@ module.exports = {
     if (req.method.toLowerCase() === 'get') {
       var modify_permission = await PermissionService.valid(req.session.admin.id, '/admin/message/modify');
       var delete_permission = await PermissionService.valid(req.session.admin.id, '/admin/message/delete');
-      return res.view({layout: 'admin/layout', modify_permission: modify_permission, delete_permission: delete_permission});
+      var send_permission = await PermissionService.valid(req.session.admin.id, '/admin/message/send');
+      return res.view({layout: 'admin/layout', modify_permission: modify_permission, 
+        delete_permission: delete_permission, send_permission: send_permission});
     } else {
       try {
         var page = parseInt(req.param('page', 1));
@@ -112,6 +114,69 @@ module.exports = {
         errCode: 1,
         msg: '删除失败，请重试!'
       });
+    }
+  },
+
+  send: async function (req, res) {
+    if (req.method.toLowerCase() === 'get') {
+      let message_id = req.param('message_id');
+      return res.view({layout: 'admin/layout', message_id: message_id});
+    } else {
+      let message_id = req.param('message_id'); 
+
+      if (message_id) { //表示发送需要发送消息
+        let all = req.param('all'); 
+        let message = await Msg_message.findOne({id: message_id, deleted: 0});
+        if (!message) return res.json({errCode: 1, msg: '该消息不存在，请重新选择'});
+
+        if (all === '1') { //表示发送查询的用户
+          let nick_name = req.param('nick_name');
+          let mobile_num = req.param('mobile_num');
+          let obj = {
+            deleted: 0
+          };
+          if (nick_name) obj.nick_name = {contains: nick_name.trim()};
+          if (mobile_num) obj.mobile_num = {contains: mobile_num.trim()};
+          let members = await Xt_member.find(obj);
+
+          MessageService.send_all(members, message);
+
+        } else {
+          let members = req.param('members', '').split(',');
+          for (let member of members) {
+            MessageService.send(member, message).then(function(){}).catch(function(){});
+          }
+        }
+
+        return res.json({errCode: 0, msg: '发送成功'});
+
+      } else {
+        let page = parseInt(req.param('page', '1'));
+        let limit = parseInt(req.param('limit', '10')); 
+        let nick_name = req.param('nick_name', '');
+        let mobile_num = req.param('mobile_num', '');
+  
+        let obj = {
+          deleted: 0
+        };
+        if (nick_name) obj.nick_name = {contains: nick_name.trim()};
+        if (mobile_num) obj.mobile_num = {contains: mobile_num.trim()};
+  
+        let members = await Xt_member.find({
+          where: obj,
+          sort: 'createdAt asc',
+          skip: (page - 1) * limit,
+          limit: limit
+        });
+        var count = await Xt_member.count(obj);
+        res.json({
+          code: 0,
+          msg: '',
+          count: count,
+          data: members
+        });
+      }
+
     }
   }
 

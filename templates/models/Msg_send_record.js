@@ -28,7 +28,8 @@ module.exports = {
     url: {   //消息的链接，用来点击消息打开相关的页面，为空表示只做消息展示
       type: 'string',
       maxLength: 500,
-      columnType: 'varchar(500)'
+      columnType: 'varchar(500)',
+      allowNull: true
     },
     status: { // 0 未读， 1 已读
       type: 'number',

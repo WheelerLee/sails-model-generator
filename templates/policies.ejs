@@ -40,6 +40,9 @@ module.exports.policies = {
   '<%- folderName %>/Xt_roleController': {
     '*': ['adminSessionAuth', 'permissionsAuth']
   },
+  '<%- folderName %>/MessageController': {
+    '*': ['adminSessionAuth', 'permissionsAuth']
+  },
   <%_ for (var i = 0; i < models.length; i++) { _%>
   <%_ var model = models[i] _%>
   '<%- folderName %>/<%- model %>Controller': {

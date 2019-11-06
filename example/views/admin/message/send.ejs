@@ -1,0 +1,177 @@
+<div class="layui-card layadmin-header">
+</div>
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-body">
+          <form class="layui-form" id="searchForm" style="margin-bottom: 20px;">
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="nick_name" value="" placeholder="昵称" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="mobile_num" value="" placeholder="手机号" class="layui-input search_input">
+            </div>
+            <a class="layui-btn layui-btn-normal" style="margin: 8px 0 0 0" id="search_btn">
+              <i class="layui-icon larry-icon">&#xe615;</i>查询
+            </a>
+            <button type="reset" id="reset_btn" class="layui-btn" style="margin: 8px 0 0 0"><i class="layui-icon larry-icon">&#xe666;</i>
+              重置
+            </button>
+            <a class="layui-btn layui-btn-primary" style="margin: 8px 0 0 0" id="msg_btn">
+              <i class="layui-icon larry-icon">&#xe609;</i>发送选择用户
+            </a>
+            <a class="layui-btn layui-btn-primary" style="margin: 8px 0 0 0" id="msg_all_btn">
+              <i class="layui-icon larry-icon">&#xe609;</i>发送查询用户
+            </a>
+          </form>
+          <!--<table style="margin-top: 20px;" class="layui-hide" id="test-table-form" lay-filter="table"></table>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="padding: 0 15px">
+  <table class="layui-table" id="table" lay-filter="table">
+  </table>
+</div>
+<script type="text/javascript">
+  layui.use(['table', 'form', 'layer'], function () {
+    var table = layui.table, form = layui.form, $ = layui.jquery, layer = layui.layer, check_arr = [], check_index = [],
+      page_no = 0, laypage = layui.laypage;
+    var roleTableRender = table.render({
+      id:'test',
+      elem: '#table',
+      url: '/admin/message/send',
+      method: 'post',
+      cols: [[
+        {checkbox: true},
+        {field: 'nick_name', title: '昵称'},
+        {field: 'mobile_num', title: '号码'},
+        {field: 'email', title: '邮箱'}
+      ]],
+      page: true,
+      done: function (data) {
+        page_no = data.page;
+        var div = $(this.elem).next();
+        for (var i of check_index) {
+          var index = i.index + 1;
+          if (page_no == i.page.toString()) {
+            var cell_div = $(div).find("tr:eq(" + index + ")").children("td:eq(0)").children("div");
+            var class_name = "layui-form-checked";
+            if (!$(cell_div).hasClass(class_name)) {
+              $(cell_div).children("div").addClass(class_name);
+              $(cell_div).children("input[type=checkbox]").attr("checked", true);
+            } else {
+              check_index.splice(i.index, 1);
+              check_arr.splice(i.index, 1);
+            }
+          }
+        }
+      }
+    });
+
+    $('body').on('click', '#search_btn', function () {
+      var obj = {};
+      var array = $('#searchForm').serializeArray();
+      for (var i = 0; i < array.length; i++) {
+        var item = array[i];
+        obj[item.name] = item.value;
+      }
+      roleTableRender.reload({
+        where: obj,
+        page: {curr: 1}
+      });
+
+    });
+    $('#reset').on('click', function () {
+      $("input[type=reset]").trigger("click");
+      $('#search_btn').click();
+    });
+
+    $('body').on('click', '#msg_btn', function () {
+      var member_str = [];
+      var checkStatus = table.checkStatus('test');
+      var data = checkStatus.data;
+      for (var d of data){
+        member_str.push(d.id);
+      }
+      if (member_str && member_str.length > 0) {
+        layer.confirm('是否确定发送？', {icon: 3, title: '提示'}, function (index) {
+          layer.close(index);
+          var loading = layer.load(1);
+          var message_id = '<%= message_id %>';
+          $.post('/admin/message/send', {
+            message_id: message_id,
+            members: member_str.join(',')
+          }, function (data) {
+            layer.close(loading);
+            if (data.errCode === 0) {
+              layer.alert(data.msg, {
+                closeBtn: 1
+              });
+            } else {
+              layer.msg(data.msg, {icon: 5});
+            }
+          });
+        })
+      } else
+        return layer.msg("请选择发送用户", {icon: 5});
+
+    });
+
+    $('body').on('click', '#msg_all_btn', function () {
+      layer.confirm('是否确定发送？', {icon: 3, title: '提示'}, function (index) {
+        layer.close(index);
+        var loading = layer.load(1);
+        var obj = {};
+        var array = $('#searchForm').serializeArray();
+        for (var i = 0; i < array.length; i++) {
+          var item = array[i];
+          obj[item.name] = item.value;
+        }
+        var message_id = '<%= message_id %>';
+        obj.message_id = message_id;
+        obj.all = 1;
+        $.post('/admin/message/send', obj, function (data) {
+          layer.close(loading);
+          if (data.errCode === 0) {
+            layer.alert(data.msg, {
+              closeBtn: 1
+            });
+          } else {
+            layer.msg(data.msg, {icon: 5});
+          }
+        });
+      });
+    });
+    
+    table.on('checkbox(table)', function (obj) {
+      var m = this;
+      var page_ = page_no;
+      var td = $(m).parent("div").parent("td");
+      var index = parseInt($(td).parent("tr").attr("data-index"));
+      if (obj.type == "one") {
+        if (obj.checked) {
+          if (check_arr.indexOf(obj.data.id) < 0) {
+            check_arr.push(obj.data.id);
+            check_index.push({index: index, page: page_});
+            console.log(index);
+            // console.log(check_index);
+          }
+        }
+        else {
+          var arr_index = check_arr.indexOf(obj.data.id);
+          check_arr.splice(arr_index, 1);
+          check_index.splice(arr_index, 1);
+        }
+      } else if (obj.type == "all")
+        if (obj.checked)
+          check_arr = "all";
+        else
+          check_arr = [];
+    })
+
+  });
+</script>
+
