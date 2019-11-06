@@ -1,15 +1,16 @@
 /**
  * Created by WheelerLee.
- * admin/Msg_messageController
- * Copyright 2018 https://github.com/WheelerLee
+ * admin/MessageController
+ * 消息管理控制器
+ * Copyright 2019 https://github.com/WheelerLee
  */
 
 module.exports = {
 
   index: async function (req, res) {
     if (req.method.toLowerCase() === 'get') {
-      var modify_permission = await PermissionService.valid(req.session.admin.id, '/admin/Msg_message/modify');
-      var delete_permission = await PermissionService.valid(req.session.admin.id, '/admin/Msg_message/delete');
+      var modify_permission = await PermissionService.valid(req.session.admin.id, '/admin/message/modify');
+      var delete_permission = await PermissionService.valid(req.session.admin.id, '/admin/message/delete');
       return res.view({layout: 'admin/layout', modify_permission: modify_permission, delete_permission: delete_permission});
     } else {
       try {

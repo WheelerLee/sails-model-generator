@@ -8,22 +8,7 @@
         <div class="layui-card-body">
           <form class="layui-form" id="searchForm" style="margin-bottom: 20px;">
             <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="title" value="" placeholder="title" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="content" value="" placeholder="content" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="member_id" value="" placeholder="member_id" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="url" value="" placeholder="url" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="status" value="" placeholder="status" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="read_time" value="" placeholder="read_time" class="layui-input search_input">
+              <input type="text" name="title" value="" placeholder="标题" class="layui-input search_input">
             </div>
             <a class="layui-btn layui-btn-normal" style="margin: 8px 0 0 0" id="search_btn">
               <i class="layui-icon larry-icon">&#xe615;</i>查询
@@ -66,16 +51,13 @@
     var table = layui.table, form = layui.form, $ = layui.$;
     var tableRender = table.render({
       elem: '#test-table-form',
-      url: '/admin/msg_send_record/index',
+      url: '/admin/message/index',
       method: 'post',
       cellMinWidth: 80,
       cols: [[
-        {field:'title', title: 'title'},
-        {field:'content', title: 'content'},
-        {field:'member_id', title: 'member_id'},
+        {field:'title', title: '标题'},
+        {field:'content', title: '内容'},
         {field:'url', title: 'url'},
-        {field:'status', title: 'status'},
-        {field:'read_time', title: 'read_time'},
         {field: 'deleted', title: '是否删除', templet: "#deleted"},
         {fixed: 'right', title: '操作', align: 'center', toolbar: '#operation'}
       ]],
@@ -101,8 +83,8 @@
 
     $('#add_btn').on('click', function () {
       parent.window.addTab({
-        title: '添加Msg_send_record',
-        href: '/admin/msg_send_record/modify'
+        title: '添加消息',
+        href: '/admin/message/modify'
       });
     });
 
@@ -126,14 +108,14 @@
       if (obj.event === 'edit') {
         //标签页打开编辑页面
         parent.window.addTab({
-          title: '编辑Msg_send_record',
-          href: '/admin/msg_send_record/modify?id=' + obj.data.id
+          title: '编辑消息',
+          href: '/admin/message/modify?id=' + obj.data.id
         });
       } else if (obj.event === 'delete') {
         layer.confirm('是否确定删除？', {icon: 3, title: '提示'}, function (index) {
           layer.close(index);
           var loading = layer.load(1);
-          $.post('/admin/msg_send_record/delete', obj.data, function (data) {
+          $.post('/admin/msg_message/delete', obj.data, function (data) {
             layer.close(loading);
             if (data.errCode === 0) {
               layer.msg(data.msg, {

@@ -5,33 +5,30 @@
         <% if (msg_message.id) { %>
         <input type="hidden" value="<%= msg_message.id %>" name="id">
         <% } %>
-
         <div class="layui-form-item">
-          <label class="layui-form-label">title</label>
+          <label class="layui-form-label">标题</label>
           <div class="layui-input-block">
             <input type="text" name="title" lay-verify="title"
-                   value="<%= msg_message.title ? msg_message.title : '' %>" placeholder="请输入title" autocomplete="off" class="layui-input">
+                   value="<%= msg_message.title ? msg_message.title : '' %>" 
+                   placeholder="请输入标题" autocomplete="off" class="layui-input">
           </div>
         </div>
         <div class="layui-form-item">
-          <label class="layui-form-label">content</label>
+          <label class="layui-form-label">内容</label>
           <div class="layui-input-block">
-            <input type="text" name="content" lay-verify="content"
-                   value="<%= msg_message.content ? msg_message.content : '' %>" placeholder="请输入content" autocomplete="off" class="layui-input">
+            <!-- <input type="text" name="content" lay-verify="content"
+                   value="<%= msg_message.content ? msg_message.content : '' %>" 
+                   placeholder="请输入内容" autocomplete="off" class="layui-input"> -->
+            <textarea name="content" placeholder="请输入内容" 
+              class="layui-textarea"><%= msg_message.content ? msg_message.content : '' %></textarea>
           </div>
         </div>
         <div class="layui-form-item">
-          <label class="layui-form-label">url</label>
+          <label class="layui-form-label">链接</label>
           <div class="layui-input-block">
             <input type="text" name="url" lay-verify="url"
-                   value="<%= msg_message.url ? msg_message.url : '' %>" placeholder="请输入url" autocomplete="off" class="layui-input">
-          </div>
-        </div>
-        <div class="layui-form-item">
-          <label class="layui-form-label">sorted_num</label>
-          <div class="layui-input-block">
-            <input type="text" name="sorted_num" lay-verify="sorted_num"
-                   value="<%= msg_message.sorted_num ? msg_message.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+                   value="<%= msg_message.url ? msg_message.url : '' %>" 
+                   placeholder="请输入链接" autocomplete="off" class="layui-input">
           </div>
         </div>
         <div class="layui-form-item layui-layout-admin">
@@ -53,18 +50,27 @@
     /* 自定义验证规则 */
     form.verify({
       title: function (value, item) {
+        if (!value.trim()) {
+          return '标题不能为空';
+        }
         if (value.trim().length > 500) {
-          return 'title的长度必须小于500';
+          return '标题的长度必须小于500';
         }
       },
       content: function (value, item) {
+        if (!value.trim()) {
+          return '内容不能为空';
+        }
         if (value.trim().length > 10000) {
-          return 'content的长度必须小于10000';
+          return '内容的长度必须小于10000';
         }
       },
       url: function (value, item) {
-        if (value.trim().length > 500) {
-          return 'url的长度必须小于500';
+        var reg = /^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-.,@?^=%&:\/~+#]*[\w\-@?^=%&\/~+#])?$/;
+        if (reg.test(value)) {
+
+        } else {
+          return '请输入正确的链接';
         }
       },
       sorted_num: function (value, item) {
@@ -85,7 +91,7 @@
     /* 监听提交 */
     form.on('submit(component-form-submit)', function (data) {
       var loading = layer.load(1);
-      $.post('/admin/msg_message/modify', data.field, function (data) {
+      $.post('/admin/message/modify', data.field, function (data) {
         layer.close(loading);
         if (data.errCode === 0) {
           layer.msg(data.msg, {

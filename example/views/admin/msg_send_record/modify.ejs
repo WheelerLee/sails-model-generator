@@ -7,6 +7,13 @@
         <% } %>
 
         <div class="layui-form-item">
+          <label class="layui-form-label">title</label>
+          <div class="layui-input-block">
+            <input type="text" name="title" lay-verify="title"
+                   value="<%= msg_send_record.title ? msg_send_record.title : '' %>" placeholder="请输入title" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
           <label class="layui-form-label">content</label>
           <div class="layui-input-block">
             <input type="text" name="content" lay-verify="content"
@@ -14,17 +21,10 @@
           </div>
         </div>
         <div class="layui-form-item">
-          <label class="layui-form-label">member</label>
+          <label class="layui-form-label">member_id</label>
           <div class="layui-input-block">
-            <input type="text" name="member" lay-verify="member"
-                   value="<%= msg_send_record.member ? msg_send_record.member : '' %>" placeholder="请输入member" autocomplete="off" class="layui-input">
-          </div>
-        </div>
-        <div class="layui-form-item">
-          <label class="layui-form-label">type</label>
-          <div class="layui-input-block">
-            <input type="text" name="type" lay-verify="type"
-                   value="<%= msg_send_record.type ? msg_send_record.type : '' %>" placeholder="请输入type" autocomplete="off" class="layui-input">
+            <input type="text" name="member_id" lay-verify="member_id"
+                   value="<%= msg_send_record.member_id ? msg_send_record.member_id : '0' %>" placeholder="请输入member_id" autocomplete="off" class="layui-input">
           </div>
         </div>
         <div class="layui-form-item">
@@ -39,6 +39,13 @@
           <div class="layui-input-block">
             <input type="text" name="status" lay-verify="status"
                    value="<%= msg_send_record.status ? msg_send_record.status : '0' %>" placeholder="请输入status" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">read_time</label>
+          <div class="layui-input-block">
+            <input type="text" name="read_time" lay-verify="read_time"
+                   value="<%= msg_send_record.read_time ? msg_send_record.read_time : '0' %>" placeholder="请输入read_time" autocomplete="off" class="layui-input">
           </div>
         </div>
         <div class="layui-form-item">
@@ -66,9 +73,27 @@
 
     /* 自定义验证规则 */
     form.verify({
+      title: function (value, item) {
+        if (value.trim().length > 500) {
+          return 'title的长度必须小于500';
+        }
+      },
       content: function (value, item) {
         if (value.trim().length > 10000) {
           return 'content的长度必须小于10000';
+        }
+      },
+      member_id: function (value, item) {
+        if (!value.trim()) {
+          return 'member_id不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'member_id必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'member_id必须是整数';
         }
       },
       url: function (value, item) {
@@ -87,6 +112,19 @@
         var reg = /^[0-9]+$/;
         if(!reg.test(value.trim())) {
           return 'status必须是整数';
+        }
+      },
+      read_time: function (value, item) {
+        if (!value.trim()) {
+          return 'read_time不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'read_time必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'read_time必须是整数';
         }
       },
       sorted_num: function (value, item) {

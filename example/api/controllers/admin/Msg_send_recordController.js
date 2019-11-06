@@ -16,14 +16,23 @@ module.exports = {
         var page = parseInt(req.param('page', 1));
         var limit = parseInt(req.param('limit', 10));
         var obj = {};
+        if (req.param('title') && req.param('title').trim() !== '') {
+          obj['title'] = {contains: req.param('title').trim()};
+        }
         if (req.param('content') && req.param('content').trim() !== '') {
           obj['content'] = {contains: req.param('content').trim()};
+        }
+        if (req.param('member_id') && req.param('member_id').trim() !== '') {
+          obj['member_id'] = req.param('member_id').trim();
         }
         if (req.param('url') && req.param('url').trim() !== '') {
           obj['url'] = {contains: req.param('url').trim()};
         }
         if (req.param('status') && req.param('status').trim() !== '') {
           obj['status'] = req.param('status').trim();
+        }
+        if (req.param('read_time') && req.param('read_time').trim() !== '') {
+          obj['read_time'] = req.param('read_time').trim();
         }
         if (req.param('id') && req.param('id').trim() !== '') {
           obj['id'] = req.param('id').trim();

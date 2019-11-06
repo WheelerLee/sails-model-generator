@@ -8,6 +8,9 @@
         <div class="layui-card-body">
           <form class="layui-form" id="searchForm" style="margin-bottom: 20px;">
             <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input type="text" name="title" value="" placeholder="title" class="layui-input search_input">
+            </div>
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
               <input type="text" name="content" value="" placeholder="content" class="layui-input search_input">
             </div>
             <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
@@ -58,8 +61,8 @@
       method: 'post',
       cellMinWidth: 80,
       cols: [[
+        {field:'title', title: 'title'},
         {field:'content', title: 'content'},
-        {field:'type', title: 'type'},
         {field:'url', title: 'url'},
         {field: 'deleted', title: '是否删除', templet: "#deleted"},
         {fixed: 'right', title: '操作', align: 'center', toolbar: '#operation'}
