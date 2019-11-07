@@ -122,6 +122,28 @@ module.exports = {
     if (req.method.toLowerCase() === 'get') {
       let firebase_settings = sails.settings.firebase_settings;
       return res.view({layout: 'admin/layout', firebase_settings: firebase_settings});
+    } else {
+      let databaseURL = req.param('databaseURL');
+      let cert = req.param('cert');
+      let android_icon = req.param('android_icon');
+      let android_color = req.param('android_color');
+
+      let firebase_settings = {
+        databaseURL: databaseURL,
+        cert: cert,
+        android_icon: android_icon,
+        android_color: android_color
+      };
+      sails.settings.firebase_settings = firebase_settings;
+
+      await Xt_setting.update({id: 'databaseURL'}, {value: databaseURL});
+      await Xt_setting.update({id: 'cert'}, {value: cert});
+      await Xt_setting.update({id: 'android_icon'}, {value: android_icon});
+      await Xt_setting.update({id: 'android_color'}, {value: android_color});
+      res.json({
+        errCode: 0,
+        msg: '修改成功'
+      });
     }
   }
 

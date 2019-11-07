@@ -28,7 +28,7 @@
           <div class="layui-input-block">
             <input type="text" name="url" lay-verify="url"
                    value="<%= msg_message.url ? msg_message.url : '' %>" 
-                   placeholder="请输入链接" autocomplete="off" class="layui-input">
+                   placeholder="请输入链接(选填))" autocomplete="off" class="layui-input">
           </div>
         </div>
         <div class="layui-form-item layui-layout-admin">
@@ -66,11 +66,13 @@
         }
       },
       url: function (value, item) {
-        var reg = /^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-.,@?^=%&:\/~+#]*[\w\-@?^=%&\/~+#])?$/;
-        if (reg.test(value)) {
+        if (item) {
+          var reg = /^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-.,@?^=%&:\/~+#]*[\w\-@?^=%&\/~+#])?$/;
+          if (reg.test(value)) {
 
-        } else {
-          return '请输入正确的链接';
+          } else {
+            return '请输入正确的链接';
+          }
         }
       },
       sorted_num: function (value, item) {

@@ -15,8 +15,8 @@ module.exports = {
     },
     value: {  //设置的内容  比如：后台管理系统
       type: 'string',
-      maxLength: 1000,
-      columnType: 'varchar(1000)',
+      maxLength: 10000,
+      columnType: 'varchar(10000)',
       allowNull: true
     },
     parent: {  //为空表示顶级内容

@@ -87,12 +87,54 @@ module.exports = {
           user_id: admin.id
         }).usingConnection(db);   //将管理员账号设置为超级管理员角色
 
+        //创建消息管理
+        let message_auth = await Xt_resource.create({
+          name: '消息管理',
+          res_type_code: 'resource_page',
+          icon_path: '&#xe667;',
+          sorted_num: 1
+        }).fetch().usingConnection(db);
+        //创建消息管理子资源
+        let auth_message_resources = [
+          {
+            name: '消息列表',
+            res_type_code: 'resource_page',
+            sorted_num: 1,
+            path: '/<%- folderName %>/message/index',
+            parent_id: message_auth.id
+          },
+          {
+            name: '消息添加编辑',
+            res_type_code: 'resource_btn',
+            sorted_num: 2,
+            path: '/<%- folderName %>/message/modify',
+            parent_id: message_auth.id
+          },
+          {
+            name: '消息删除',
+            res_type_code: 'resource_btn',
+            sorted_num: 2,
+            path: '/<%- folderName %>/message/delete',
+            parent_id: message_auth.id
+          },
+          {
+            name: '发送消息',
+            res_type_code: 'resource_btn',
+            sorted_num: 2,
+            path: '/<%- folderName %>/message/send',
+            parent_id: message_auth.id
+          }
+        ];
+        for (let auth_sub_resource of auth_message_resources) {
+          await Xt_resource.create(auth_sub_resource).usingConnection(db);
+        }
+
         //创建权限管理资源
         let resource_auth = await Xt_resource.create({
           name: '权限管理',
           res_type_code: 'resource_page',
           icon_path: '&#xe672;',
-          sorted_num: 2
+          sorted_num: 98
         }).fetch().usingConnection(db);
         await Xt_role_resource.create({
           role_id: role.id,
@@ -104,7 +146,7 @@ module.exports = {
           name: '系统管理',
           res_type_code: 'resource_page',
           icon_path: '&#xe716;',
-          sorted_num: 1
+          sorted_num: 99
         }).fetch().usingConnection(db);
         //创建权限管理子资源
         let auth_sub_resources = [
@@ -253,6 +295,15 @@ module.exports = {
               {id: 'email_password', value: ''},
               {id: 'email_secure', value: '0'},
               {id: 'email_sender', value: ''}
+            ]
+          },
+          {
+            id: 'firebase_settings',
+            value: [
+              {id: 'databaseURL', value: ''},
+              {id: 'cert', value: ''},
+              {id: 'android_color', value: ''},
+              {id: 'android_icon', value: ''}
             ]
           }
         ];

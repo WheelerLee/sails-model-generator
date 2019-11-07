@@ -25,6 +25,7 @@ module.exports = {
       url: message.url,
       member_id: member_id
     });
+    await MessageService.push_by_firebase(member_id, title, content);
   },
 
   /**

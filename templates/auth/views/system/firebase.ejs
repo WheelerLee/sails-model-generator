@@ -4,36 +4,40 @@
       <form class="layui-form" wid100 action="" lay-filter="component-form-group">
         <div class="layui-form-item">
           <label class="layui-form-label">databaseURL</label>
-          <div class="layui-input-inline">
+          <div class="layui-input-block">
             <input type="text" name="databaseURL" lay-verify="databaseURL"
-                   value="<%= firebase_settings.databaseURL ? firebase_settings.databaseURL : '' %>" placeholder="databaseURL" autocomplete="off"
-                   class="layui-input">
-          </div>
-          <div class="layui-form-mid layui-word-aux">请登录firebase.com添加APP后获取</div>
-        </div>
-        <div class="layui-form-item">
-          <label class="layui-form-label">cert</label>
-          <div class="layui-input-inline">
-            <input type="text" name="cert" lay-verify="cert"
-                   value="<%= firebase_settings.cert ? firebase_settings.cert : '' %>" placeholder="cert" autocomplete="off"
+                   value="<%= firebase_settings.databaseURL ? firebase_settings.databaseURL : '' %>" 
+                   placeholder="登录https://firebase.google.com/添加APP后获取" autocomplete="off"
                    class="layui-input">
           </div>
         </div>
         <div class="layui-form-item">
-          <label class="layui-form-label">安卓图标颜色</label>
+          <label class="layui-form-label">密钥</label>
+          <div class="layui-input-block">
+            <textarea 
+              name="cert" 
+              lay-verify="cert" 
+              placeholder="登录https://firebase.google.com/添加APP后获取,复制json文件的内容粘贴到此处"
+              class="layui-textarea"><%= firebase_settings.cert ? firebase_settings.cert : '' %></textarea>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">图标颜色</label>
           <div class="layui-input-inline">
             <input type="text" name="android_color" lay-verify="android_color"
                    value="<%= firebase_settings.android_color ? firebase_settings.android_color : '' %>" placeholder="安卓图标颜色" autocomplete="off"
                    class="layui-input">
           </div>
+          <div class="layui-form-mid layui-word-aux">只支持Android</div>
         </div>
         <div class="layui-form-item">
-          <label class="layui-form-label">安卓图标</label>
+          <label class="layui-form-label">图标</label>
           <div class="layui-input-inline">
             <input type="text" name="android_icon" lay-verify="android_icon"
                    value="<%= firebase_settings.android_icon ? firebase_settings.android_icon : '' %>" placeholder="安卓图标" autocomplete="off"
                    class="layui-input">
           </div>
+          <div class="layui-form-mid layui-word-aux">只支持Android</div>
         </div>
         <div class="layui-form-item">
           <div class="layui-input-block">
@@ -63,33 +67,14 @@
     })
     /* 自定义验证规则 */
     form.verify({
-      email_host: function (value, item) {
+      databaseURL: function (value, item) {
         if (!value.trim()) {
-          return '发送服务器不能为空';
+          return 'databaseURL不能为空';
         }
       },
-      email_port: function (value, item) {
+      cert: function (value, item) {
         if (!value.trim()) {
-          return '端口不能为空';
-        }
-        var reg = /^[0-9]+$/;
-        if(!reg.test(value.trim())) {
-          return '端口必须是整数';
-        }
-      },
-      email_user: function (value, item) {
-        if (!value.trim()) {
-          return '账户名不能为空';
-        }
-      },
-      email_password: function (value, item) {
-        if (!value.trim()) {
-          return '密码不能为空';
-        }
-      },
-      email_sender: function (value, item) {
-        if (!value.trim()) {
-          return '发送者不能为空';
+          return '密钥不能为空';
         }
       }
     });
@@ -98,7 +83,7 @@
     form.on('submit(component-form-submit)', function (data) {
       var loading = layer.load(1);
       var fields = data.field;
-      $.post('/admin/system/email', data.field, function (data) {
+      $.post('/admin/system/firebase', data.field, function (data) {
         layer.close(loading);
         if (data.errCode === 0) {
           layer.msg(data.msg, {
