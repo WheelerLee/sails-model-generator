@@ -42,4 +42,4 @@ if (!fs.existsSync(process.cwd() + '/views/') || !fs.existsSync(process.cwd() + 
 let generator = new Generator(folder);
 generator.generate(reset, skip);
 
-console.log('代码生成成功，运行后请访问 http://127.0.0.1:1337/mock/add 添加基础数据');
+// console.log('代码生成成功，运行后请访问 http://127.0.0.1:1337/mock/add 添加基础数据');

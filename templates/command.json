@@ -1,0 +1,44 @@
+{
+  "list": [
+    {
+      "name": "ajv",
+      "exec": "npm i ajv -D"
+    },
+    {
+      "name": "axios",
+      "exec": "npm i axios -S"
+    },
+    {
+      "name": "gm",
+      "exec": "npm i gm -S"
+    },
+    {
+      "name": "moment",
+      "exec": "npm i moment -S"
+    },
+    {
+      "name": "nodemailer",
+      "exec": "npm i nodemailer -S"
+    },
+    {
+      "name": "uuid",
+      "exec": "npm i uuid -S"
+    },
+    {
+      "name": "fs-extra",
+      "exec": "npm i fs-extra -S"
+    },
+    {
+      "name": "sails-mysql",
+      "exec": "npm i sails-mysql -S"
+    },
+    {
+      "name": "promise-queue-plus",
+      "exec": "npm i promise-queue-plus -S"
+    },
+    {
+      "name": "firebase-admin",
+      "exec": "npm i firebase-admin -S"
+    }
+  ]
+}

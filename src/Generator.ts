@@ -9,11 +9,17 @@ import colors from 'colors';
 import fs from 'fs-extra';
 import ejs from 'ejs';
 import Worker from './Worker';
+import ora, { Ora } from 'ora';
 
 const omit_models = [
   'Attach', 'Xt_user', 'Xt_resource', 'Xt_role', 'Xt_dict', 'Xt_role_resource', 
   'Xt_user_resource', 'Xt_user_role', 'Xt_setting', 'Msg_send_record', 'Msg_message'
 ]; //需要忽略的模型
+
+interface Command {
+  name: string,
+  exec: string
+}
 
 export default class Generator {
 
@@ -28,7 +34,7 @@ export default class Generator {
    * @param reset 是否覆盖已经存在的文件生成
    * @param skip 是否跳过依赖添加
    */
-  generate(reset: boolean, skip: boolean): void {
+  async generate(reset: boolean, skip: boolean): void {
 
     //是否需要重置
     if (reset) this.reset();
@@ -39,27 +45,36 @@ export default class Generator {
       return;
     }
 
-    //创建需要的文件夹
-    this.createFolder();
+    const spinner: Ora = ora('生成代码').start();
 
-    let models = this.getModels();
+    await this.createFolder();
+    let models = await this.getModels();
     for (let model of models) {
-      this.generateModel(model);
+      await this.generateModel(model);
     }
 
-    this.cpAdminModel();
-    this.generateMockController(models);
-    this.addPolicies(models);
+    await this.cpAdminModel();
+    await this.generateMockController(models);
+    await this.addPolicies(models);
 
-    this.copyBaseFiles();
-    this.copyAuthFiles();
-    this.unzipStaticFiles();
-    this.updateConfigFile();
+    await this.copyBaseFiles();
+    await this.copyAuthFiles();
+    await this.unzipStaticFiles();
+    await this.updateConfigFile();
+    spinner.succeed('生成代码');
 
     if (!skip) { //忽略依赖添加
-      this.exec();
+      await this.exec();
     }
 
+    spinner.stopAndPersist({
+      text: '代码生成成功，运行后请访问 http://127.0.0.1:1337/mock/add 添加基础数据'
+    });
+    
+    // this.core(skip).then((a) => {
+    //   spinner.succeed('代码生成成功，运行后请访问 http://127.0.0.1:1337/mock/add 添加基础数据\n');
+    // });
+    
   }
 
   /**
@@ -86,36 +101,39 @@ export default class Generator {
    * 创建生成代码存放的各级文件夹
    */
   private createFolder() {
-    fs.ensureDirSync(`${process.cwd()}/views/${this.folderName}/`);
-    fs.ensureDirSync(`${process.cwd()}/api/controllers/${this.folderName}/`);
-    fs.ensureDirSync(`${process.cwd()}/api/services/`);
-    fs.ensureDirSync(`${process.cwd()}/api/policies/`);
+    return Promise.all([
+      fs.ensureDirSync(`${process.cwd()}/views/${this.folderName}/`),
+      fs.ensureDirSync(`${process.cwd()}/api/controllers/${this.folderName}/`),
+      fs.ensureDirSync(`${process.cwd()}/api/services/`),
+      fs.ensureDirSync(`${process.cwd()}/api/policies/`)
+    ]);
   }
 
   /**
    * 获取项目包含的model，剔除了基本的model
    * @returns string[] 包含的models
    */
-  private getModels(): string[] {
-    const files = fs.readdirSync(`${process.cwd()}/api/models/`);
-    let models: string[] = [];
-    for (let file of files) {
-      if (file.endsWith('.js')) {
-        let modelName = file.replace('.js', '');
-        if (omit_models.indexOf(modelName) < 0) {
-          models.push(modelName);
+  private getModels(): Promise<string[]> {
+    return fs.readdir(`${process.cwd()}/api/models/`).then(files => {
+      let models: string[] = [];
+      for (let file of files) {
+        if (file.endsWith('.js')) {
+          let modelName = file.replace('.js', '');
+          if (omit_models.indexOf(modelName) < 0) {
+            models.push(modelName);
+          }
         }
       }
-    }
-    return models;
+      return models;
+    });
   }
 
   /**
    * 生成model的控制器和页面
    * @param fileName model的文件名
    */
-  private generateModel(fileName: string) {
-    console.log(colors.progress('正在创建模型的操作方法...'));
+  private async generateModel(fileName: string) {
+    // console.log(colors.progress('正在创建模型的操作方法...'));
     let model = require(`${process.cwd()}/api/models/${fileName}`);
     let modelName = fileName.replace('.js', '');
 
@@ -156,9 +174,9 @@ export default class Generator {
       console.log(colors.warn(`model${modelName}没有设置主键，已忽略`));
     } else {
       if (omit_models.indexOf(modelName) < 0) { //权限相关的直接生产权限系统
-        Worker.generateController(this.folderName, modelName, model, primaryKey);
-        Worker.generateIndexPage(this.folderName, modelName, model, primaryKey);
-        Worker.generateAddPage(this.folderName, modelName, model, primaryKey);
+        await Worker.generateController(this.folderName, modelName, model, primaryKey);
+        await Worker.generateIndexPage(this.folderName, modelName, model, primaryKey);
+        await Worker.generateAddPage(this.folderName, modelName, model, primaryKey);
       }
     }
   }
@@ -166,17 +184,17 @@ export default class Generator {
   /**
    * 移动基础的model到项目中
    */
-  private cpAdminModel() {
+  private async cpAdminModel() {
     const proRootPath = __dirname + '/..';
-    const controllers = fs.readdirSync(proRootPath + '/templates/models');
+    const controllers = await fs.readdir(proRootPath + '/templates/models');
     for (let controller of controllers) {
       if (controller.endsWith('.js')) {
-        if (!fs.existsSync(`${process.cwd()}/api/models/${controller}`)) {
-          console.log(colors.info('复制' + controller + '到models下'));
+        if (!(await fs.pathExists(`${process.cwd()}/api/models/${controller}`))) {
+          // console.log(colors.info('复制' + controller + '到models下'));
           let ps = proRootPath + '/templates/models/' + controller;
-          fs.writeFileSync(process.cwd() + '/api/models/' + controller, fs.readFileSync(ps));
+          await fs.writeFile(process.cwd() + '/api/models/' + controller, await fs.readFile(ps));
         } else {
-          console.log(colors.warn('models下已经存在' + controller));
+          // console.log(colors.warn('models下已经存在' + controller));
         }
       }
     }
@@ -186,147 +204,153 @@ export default class Generator {
    * 生成mock控制器，包含add方法等
    * @param models 所有的model
    */
-  private generateMockController(models: string[]) {
-    let str = fs.readFileSync(__dirname + '/../templates/MockController.ejs');//读取控制器模板
+  private async generateMockController(models: string[]) {
+    let str = await fs.readFile(__dirname + '/../templates/MockController.ejs');//读取控制器模板
     let controllerStr = ejs.render(str.toString(), {
       folderName: this.folderName,
       models: models
     });
     let path = `${process.cwd()}/api/controllers/`;
-    fs.ensureDirSync(path);
-    fs.writeFileSync(`${path}MockController.js`, new Buffer(controllerStr), {flag: 'w', encoding: 'utf8'});
-    console.log(colors.info('创建MockController'));
+    await fs.ensureDir(path);
+    await fs.writeFile(`${path}MockController.js`, Buffer.from(controllerStr), {flag: 'w', encoding: 'utf8'});
+    // console.log(colors.info('创建MockController'));
   }
 
   /**
    * 添加请求策略
    * @param models 所有的模型
    */
-  private addPolicies(models: string[]) {
-    let str = fs.readFileSync(__dirname + '/../templates/policies.ejs');  //读取policies模板
+  private async addPolicies(models: string[]) {
+    let str = await fs.readFile(__dirname + '/../templates/policies.ejs');  //读取policies模板
     let policiesStr = ejs.render(str.toString(), {
       folderName: this.folderName,
       models: models
     });
     let file_path = process.cwd() + '/config/policies.js';
-    fs.writeFileSync(file_path, new Buffer(policiesStr), {flag: 'w', encoding: 'utf8'});
-    console.log(colors.info('插入policies成功'));
+    await fs.writeFile(file_path, Buffer.from(policiesStr), {flag: 'w', encoding: 'utf8'});
+    // console.log(colors.info('插入policies成功'));
   }
 
   /**
    * 复制基础文件到相关目录
    */
-  private copyBaseFiles() {
-    console.log(colors.progress('正在复制基础文件到项目...'));
+  private async copyBaseFiles() {
+    // console.log(colors.progress('正在复制基础文件到项目...'));
     let proRootPath = __dirname + '/..';
-    fs.writeFileSync(`${process.cwd()}/views/${this.folderName}/layout.ejs`,
-      fs.readFileSync(`${proRootPath}/templates/layout.ejs`));                    //复制layout.ejs
+    await fs.writeFile(`${process.cwd()}/views/${this.folderName}/layout.ejs`,
+      await fs.readFile(`${proRootPath}/templates/layout.ejs`));                    //复制layout.ejs
 
-    let policies = fs.readdirSync(proRootPath + '/templates/policies');
+    let policies = await fs.readdir(proRootPath + '/templates/policies');
     for (let i in policies) {
       var folder = policies[i];
       if (folder.startsWith('.')) {
         continue;
       }
-      fs.writeFileSync(process.cwd() + '/api/policies/' + folder,
-        fs.readFileSync(proRootPath + '/templates/policies/' + folder));
+      await fs.writeFile(process.cwd() + '/api/policies/' + folder,
+        await fs.readFile(proRootPath + '/templates/policies/' + folder));
     }
 
-    let services = fs.readdirSync(proRootPath + '/templates/services');
+    let services = await fs.readdir(proRootPath + '/templates/services');
     for (let i in services) {
       let folder = services[i];
       if (folder.startsWith('.')) {
         continue;
       }
-      fs.writeFileSync(process.cwd() + '/api/services/' + folder,
-        fs.readFileSync(proRootPath + '/templates/services/' + folder));
+      await fs.writeFile(process.cwd() + '/api/services/' + folder,
+        await fs.readFile(proRootPath + '/templates/services/' + folder));
     }
-    console.log(colors.success('复制基础文件到项目成功'));
+    // console.log(colors.success('复制基础文件到项目成功'));
   }
 
   /**
    * 复制权限的文件到项目中
    */
-  private copyAuthFiles() {
-    console.log(colors.progress('正在复制权限文件到项目...'));
+  private async copyAuthFiles() {
+    // console.log(colors.progress('正在复制权限文件到项目...'));
     let proRootPath = __dirname + '/..';
 
-    let controllers = fs.readdirSync(proRootPath + '/templates/auth/controllers');
+    let controllers = await fs.readdir(proRootPath + '/templates/auth/controllers');
     for (let i in controllers) {
       let controller = controllers[i];
-      fs.writeFileSync(process.cwd() + '/api/controllers/' + this.folderName + '/' + controller,
-        fs.readFileSync(proRootPath + '/templates/auth/controllers/' + controller));
+      await fs.writeFile(process.cwd() + '/api/controllers/' + this.folderName + '/' + controller,
+        await fs.readFile(proRootPath + '/templates/auth/controllers/' + controller));
     }
 
-    fs.writeFileSync(process.cwd() + '/api/controllers/StaticController.js',
-        fs.readFileSync(proRootPath + '/templates/others/StaticController.js'));
+    await fs.writeFile(process.cwd() + '/api/controllers/StaticController.js',
+      await fs.readFile(proRootPath + '/templates/others/StaticController.js'));
 
-    let views = fs.readdirSync(proRootPath + '/templates/auth/views');
+    let views = await fs.readdir(proRootPath + '/templates/auth/views');
     for (let i in views) {
       let folder = views[i];
       if (folder.startsWith('.')) {
         continue;
       }
       let path = process.cwd() + '/views/' + this.folderName + '/' + folder;
-      if (fs.existsSync(path)) {
+      if (await fs.pathExists(path)) {
       }
       else {
-        fs.mkdirSync(path);
+        await fs.mkdir(path);
       }
-      let files = fs.readdirSync(proRootPath + '/templates/auth/views/' + folder);
+      let files = await fs.readdir(proRootPath + '/templates/auth/views/' + folder);
       for (let j in files) {
         let file = files[j];
-        fs.writeFileSync(process.cwd() + '/views/' + this.folderName + '/' + folder + '/' + file,
-          fs.readFileSync(proRootPath + '/templates/auth/views/' + folder + '/' + file));
+        await fs.writeFile(process.cwd() + '/views/' + this.folderName + '/' + folder + '/' + file,
+          await fs.readFile(proRootPath + '/templates/auth/views/' + folder + '/' + file));
       }
     }
-    console.log(colors.success('复制权限文件到项目成功'));
+    // console.log(colors.success('复制权限文件到项目成功'));
   }
 
   /**
    * 解压静态资源文件
    */
   private unzipStaticFiles() {
-    console.log(colors.progress('正在解压静态资源...'));
-    fs.copySync(__dirname + '/..' + '/templates/assets', process.cwd() + '/assets/');
-    console.log(colors.success('解压静态资源成功...'));
+    // console.log(colors.progress('正在解压静态资源...'));
+    return fs.copy(__dirname + '/..' + '/templates/assets', process.cwd() + '/assets/');
+    // console.log(colors.success('解压静态资源成功...'));
   }
 
   /**
    * 替换配置文件
    * @param {String} folderName 文件夹名
    */
-  private updateConfigFile() {
-    console.log(colors.progress('正在替换配置文件...'));
+  private async updateConfigFile() {
+    // console.log(colors.progress('正在替换配置文件...'));
     let proRootPath = __dirname + '/..'; 
     let pp = proRootPath + '/templates/configs/';
     let op = process.cwd() + '/config/';
-    let files = fs.readdirSync(pp);
+    let files = await fs.readdir(pp);
     for (let i in files) {
       let file = files[i];
       if (file.endsWith('.js')) {
-        fs.writeFileSync(op + file, fs.readFileSync(pp + file));
+        await fs.writeFile(op + file, fs.readFileSync(pp + file));
       }
     }
-    console.log(colors.success('替换配置文件成功'));
+    // console.log(colors.success('替换配置文件成功'));
   }
 
   /**
    * 执行shell脚本添加依赖
    */
-  private exec() {
-    console.log(colors.progress('添加项目依赖...'));
-    let process = require('child_process');
-    process.execSync('npm i axios --save');
-    process.execSync('npm i gm --save');
-    process.execSync('npm i moment --save');
-    process.execSync('npm i nodemailer --save');
-    process.execSync('npm i uuid --save');
-    process.execSync('npm i fs-extra --save');
-    process.execSync('npm i sails-mysql --save');
-    process.execSync('npm i promise-queue-plus --save');
-    process.execSync('npm i firebase-admin --save');
-    console.log(colors.success('添加项目依赖成功'));
+  private async exec() {
+    // console.log(colors.progress('添加项目依赖...'));
+    // const spinner = ora('添加项目依赖\n').start();
+    const spinner = ora('添加项目依赖').start();
+    let list: Command[] = require('../templates/command.json').list;
+    for (let command of list) {
+      spinner.text = '添加项目依赖: ' + command.name;
+      await this.execPromise(command);
+    }
+    spinner.succeed('添加项目依赖');
+  }
+
+  private execPromise(command: Command) {
+    return new Promise(function(resolve, reject) {
+      let process = require('child_process');
+      process.exec(command.exec, function() {
+        resolve(true);
+      });
+    });
   }
 
 }

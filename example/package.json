@@ -27,7 +27,8 @@
     "uuid": "^3.3.3"
   },
   "devDependencies": {
-    "@sailshq/eslint": "^4.19.3"
+    "@sailshq/eslint": "^4.19.3",
+    "ajv": "^6.10.2"
   },
   "scripts": {
     "start": "NODE_ENV=production node app.js",
