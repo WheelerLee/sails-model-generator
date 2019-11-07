@@ -228,6 +228,13 @@ module.exports = {
           path: '/admin/system/email',
           parent_id: resource_system.id
         }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'Firebase配置',
+          res_type_code: 'resource_page',
+          sorted_num: 1,
+          path: '/admin/system/firebase',
+          parent_id: resource_system.id
+        }).usingConnection(db);
 
         let settings = [
           {
@@ -1660,6 +1667,34 @@ module.exports = {
           sorted_num: 1,
           path: '/admin/web_values/delete',
           parent_id: web_values.id
+        }).usingConnection(db);
+
+
+        let xt_member = await Xt_resource.create({
+          name: 'Xt_member管理',
+          res_type_code: 'resource_page',
+          sorted_num: 1
+        }).fetch().usingConnection(db);
+        await Xt_resource.create({
+          name: 'Xt_member列表',
+          res_type_code: 'resource_page',
+          sorted_num: 1,
+          path: '/admin/xt_member/index',
+          parent_id: xt_member.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'Xt_member添加编辑',
+          res_type_code: 'resource_btn',
+          sorted_num: 1,
+          path: '/admin/xt_member/modify',
+          parent_id: xt_member.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'Xt_member删除',
+          res_type_code: 'resource_btn',
+          sorted_num: 1,
+          path: '/admin/xt_member/delete',
+          parent_id: xt_member.id
         }).usingConnection(db);
 
 

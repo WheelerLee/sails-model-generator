@@ -97,6 +97,12 @@ module.exports = {
       maxLength: 256,
       allowNull: true,
       columnType: 'varchar(256)'
+    },
+    fcm_token: {  // fcm_token 
+      type: 'string',
+      maxLength: 256,
+      allowNull: true,
+      columnType: 'varchar(256)'
     }
   }
 

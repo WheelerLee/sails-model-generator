@@ -1,0 +1,256 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (xt_member.id) { %>
+        <input type="hidden" value="<%= xt_member.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">nick_name</label>
+          <div class="layui-input-block">
+            <input type="text" name="nick_name" lay-verify="nick_name"
+                   value="<%= xt_member.nick_name ? xt_member.nick_name : '' %>" placeholder="请输入nick_name" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">head_icon</label>
+          <div class="layui-input-block">
+            <input type="text" name="head_icon" lay-verify="head_icon"
+                   value="<%= xt_member.head_icon ? xt_member.head_icon : '' %>" placeholder="请输入head_icon" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">area_code</label>
+          <div class="layui-input-block">
+            <input type="text" name="area_code" lay-verify="area_code"
+                   value="<%= xt_member.area_code ? xt_member.area_code : '' %>" placeholder="请输入area_code" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">mobile_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="mobile_num" lay-verify="mobile_num"
+                   value="<%= xt_member.mobile_num ? xt_member.mobile_num : '' %>" placeholder="请输入mobile_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">email</label>
+          <div class="layui-input-block">
+            <input type="text" name="email" lay-verify="email"
+                   value="<%= xt_member.email ? xt_member.email : '' %>" placeholder="请输入email" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">login_name</label>
+          <div class="layui-input-block">
+            <input type="text" name="login_name" lay-verify="login_name"
+                   value="<%= xt_member.login_name ? xt_member.login_name : '' %>" placeholder="请输入login_name" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">password</label>
+          <div class="layui-input-block">
+            <input type="text" name="password" lay-verify="password"
+                   value="<%= xt_member.password ? xt_member.password : '' %>" placeholder="请输入password" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">invite_member</label>
+          <div class="layui-input-block">
+            <input type="text" name="invite_member" lay-verify="invite_member"
+                   value="<%= xt_member.invite_member ? xt_member.invite_member : '' %>" placeholder="请输入invite_member" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">invite_code</label>
+          <div class="layui-input-block">
+            <input type="text" name="invite_code" lay-verify="invite_code"
+                   value="<%= xt_member.invite_code ? xt_member.invite_code : '' %>" placeholder="请输入invite_code" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">languages</label>
+          <div class="layui-input-block">
+            <input type="text" name="languages" lay-verify="languages"
+                   value="<%= xt_member.languages ? xt_member.languages : '' %>" placeholder="请输入languages" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sex</label>
+          <div class="layui-input-block">
+            <input type="text" name="sex" lay-verify="sex"
+                   value="<%= xt_member.sex ? xt_member.sex : '1' %>" placeholder="请输入sex" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">apptoken</label>
+          <div class="layui-input-block">
+            <input type="text" name="apptoken" lay-verify="apptoken"
+                   value="<%= xt_member.apptoken ? xt_member.apptoken : '' %>" placeholder="请输入apptoken" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">descriptions</label>
+          <div class="layui-input-block">
+            <input type="text" name="descriptions" lay-verify="descriptions"
+                   value="<%= xt_member.descriptions ? xt_member.descriptions : '' %>" placeholder="请输入descriptions" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">registry_way</label>
+          <div class="layui-input-block">
+            <input type="text" name="registry_way" lay-verify="registry_way"
+                   value="<%= xt_member.registry_way ? xt_member.registry_way : '' %>" placeholder="请输入registry_way" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">last_login_device</label>
+          <div class="layui-input-block">
+            <input type="text" name="last_login_device" lay-verify="last_login_device"
+                   value="<%= xt_member.last_login_device ? xt_member.last_login_device : '' %>" placeholder="请输入last_login_device" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= xt_member.sorted_num ? xt_member.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      nick_name: function (value, item) {
+        if (value.trim().length > 200) {
+          return 'nick_name的长度必须小于200';
+        }
+      },
+      head_icon: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'head_icon的长度必须小于32';
+        }
+      },
+      area_code: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'area_code的长度必须小于32';
+        }
+      },
+      mobile_num: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'mobile_num的长度必须小于32';
+        }
+      },
+      email: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'email的长度必须小于32';
+        }
+      },
+      login_name: function (value, item) {
+        if (value.trim().length > 50) {
+          return 'login_name的长度必须小于50';
+        }
+      },
+      password: function (value, item) {
+        if (value.trim().length > 256) {
+          return 'password的长度必须小于256';
+        }
+      },
+      invite_member: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'invite_member的长度必须小于32';
+        }
+      },
+      invite_code: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'invite_code的长度必须小于32';
+        }
+      },
+      languages: function (value, item) {
+        if (value.trim().length > 256) {
+          return 'languages的长度必须小于256';
+        }
+      },
+      sex: function (value, item) {
+        if (!value.trim()) {
+          return 'sex不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sex必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sex必须是整数';
+        }
+      },
+      apptoken: function (value, item) {
+        if (value.trim().length > 256) {
+          return 'apptoken的长度必须小于256';
+        }
+      },
+      descriptions: function (value, item) {
+        if (value.trim().length > 256) {
+          return 'descriptions的长度必须小于256';
+        }
+      },
+      registry_way: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'registry_way的长度必须小于32';
+        }
+      },
+      last_login_device: function (value, item) {
+        if (value.trim().length > 256) {
+          return 'last_login_device的长度必须小于256';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/xt_member/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

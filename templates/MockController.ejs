@@ -228,6 +228,13 @@ module.exports = {
           path: '/<%- folderName %>/system/email',
           parent_id: resource_system.id
         }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'Firebase配置',
+          res_type_code: 'resource_page',
+          sorted_num: 1,
+          path: '/<%- folderName %>/system/firebase',
+          parent_id: resource_system.id
+        }).usingConnection(db);
 
         let settings = [
           {

@@ -1,0 +1,136 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <div class="layui-form-item">
+          <label class="layui-form-label">databaseURL</label>
+          <div class="layui-input-inline">
+            <input type="text" name="databaseURL" lay-verify="databaseURL"
+                   value="<%= firebase_settings.databaseURL ? firebase_settings.databaseURL : '' %>" placeholder="databaseURL" autocomplete="off"
+                   class="layui-input">
+          </div>
+          <div class="layui-form-mid layui-word-aux">请登录firebase.com添加APP后获取</div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">cert</label>
+          <div class="layui-input-inline">
+            <input type="text" name="cert" lay-verify="cert"
+                   value="<%= firebase_settings.cert ? firebase_settings.cert : '' %>" placeholder="cert" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">安卓图标颜色</label>
+          <div class="layui-input-inline">
+            <input type="text" name="android_color" lay-verify="android_color"
+                   value="<%= firebase_settings.android_color ? firebase_settings.android_color : '' %>" placeholder="安卓图标颜色" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">安卓图标</label>
+          <div class="layui-input-inline">
+            <input type="text" name="android_icon" lay-verify="android_icon"
+                   value="<%= firebase_settings.android_icon ? firebase_settings.android_icon : '' %>" placeholder="安卓图标" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="component-form-submit">确认保存</button>
+            <button class="layui-btn layui-btn-primary" lay-submit lay-filter="component-form-test">发送测试邮件</button>
+          </div>
+        </div>
+
+        <!-- <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit" style="background-color: #84b349">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div> -->
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form, laydate = layui.laydate;
+    laydate.render({
+      elem: "#validity_priod",
+      type: "date"
+    })
+    /* 自定义验证规则 */
+    form.verify({
+      email_host: function (value, item) {
+        if (!value.trim()) {
+          return '发送服务器不能为空';
+        }
+      },
+      email_port: function (value, item) {
+        if (!value.trim()) {
+          return '端口不能为空';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return '端口必须是整数';
+        }
+      },
+      email_user: function (value, item) {
+        if (!value.trim()) {
+          return '账户名不能为空';
+        }
+      },
+      email_password: function (value, item) {
+        if (!value.trim()) {
+          return '密码不能为空';
+        }
+      },
+      email_sender: function (value, item) {
+        if (!value.trim()) {
+          return '发送者不能为空';
+        }
+      }
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      var fields = data.field;
+      $.post('/admin/system/email', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function () {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+    form.on('submit(component-form-test)', function (data) {
+      var loading = layer.load(1);
+      var fields = data.field;
+      $.post('/admin/system/email?type=test', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          // layer.msg(data.msg, {
+          //   icon: 6,
+          //   time: 2000
+          // }, function () {
+          //   // window.location.reload();
+          // });
+          layer.alert(data.msg, {icon: 1});
+        } else {
+          layer.alert(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

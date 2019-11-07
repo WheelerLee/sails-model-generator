@@ -325,6 +325,7 @@ export default class Generator {
     process.execSync('npm i fs-extra --save');
     process.execSync('npm i sails-mysql --save');
     process.execSync('npm i promise-queue-plus --save');
+    process.execSync('npm i firebase-admin --save');
     console.log(colors.success('添加项目依赖成功'));
   }
 

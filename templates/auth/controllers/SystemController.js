@@ -116,6 +116,13 @@ module.exports = {
       }
 
     }
+  },
+
+  firebase: async function (req, res) {
+    if (req.method.toLowerCase() === 'get') {
+      let firebase_settings = sails.settings.firebase_settings;
+      return res.view({layout: 'admin/layout', firebase_settings: firebase_settings});
+    }
   }
 
 };

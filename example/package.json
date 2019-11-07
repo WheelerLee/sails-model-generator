@@ -11,6 +11,7 @@
     "@ztree/ztree_v3": "^3.5.40",
     "async": "2.0.1",
     "axios": "^0.19.0",
+    "firebase-admin": "^8.7.0",
     "fs-extra": "^8.1.0",
     "gm": "^1.23.1",
     "grunt": "1.0.1",
@@ -32,7 +33,8 @@
     "start": "NODE_ENV=production node app.js",
     "test": "npm run lint && npm run custom-tests && echo 'Done.'",
     "lint": "eslint . --max-warnings=0 --report-unused-disable-directives && echo '✔  Your .js files look good.'",
-    "custom-tests": "echo \"(No other custom tests yet.)\" && echo"
+    "custom-tests": "echo \"(No other custom tests yet.)\" && echo",
+    "smg": "node ../lib/sails-model-generator.js --reset --skip"
   },
   "main": "app.js",
   "repository": {
