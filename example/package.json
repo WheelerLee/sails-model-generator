@@ -16,6 +16,7 @@
     "gm": "^1.23.1",
     "grunt": "1.0.1",
     "moment": "^2.24.0",
+    "nexmo": "^2.5.1",
     "nodemailer": "^6.3.1",
     "promise-queue-plus": "^1.2.2",
     "sails": "^1.0.1",

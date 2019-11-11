@@ -17,7 +17,7 @@ colors.setTheme({
   progress: ['blue']
 });
 
-program.version('5.1.0', '-v, --version', '输出当前的版本号')
+program.version('5.1.5', '-v, --version', '输出当前的版本号')
   .helpOption('-h, --help', '帮助信息')
   .option('-f, --folder <folder>', '指定生成的文件夹，默认是admin，当然现在也支持admin。别的文件夹会有路径上的bug')
   .option('--reset', '重置生成的管理系统，会将和admin相关的都会删除，请谨慎')

@@ -3,6 +3,7 @@
  */
 const Queue = require('promise-queue-plus');
 const admin = require('firebase-admin');
+const Nexmo = require('nexmo');
 
 //Realize a queue with a maximum concurrency of 1
 const queue = Queue(10, {
@@ -88,6 +89,34 @@ module.exports = {
 
     return true;
 
+  },
+
+  /**
+   * 使用nexmo发送短信
+   * @param {string} to 接收的号码
+   * @param {string} text 短信内容
+   */
+  sms: function(to, text) {
+    return new Promise(function(resolve, reject) {
+      if (!sails.settings.nexmo_setting || !sails.settings.nexmo_setting.nexmo_api_key 
+        || !sails.settings.nexmo_setting.nexmo_api_secret || !sails.settings.nexmo_setting.nexmo_from) {
+          sails.log.error('请先设置nexmo的相关参数，才能正常使用nexmo的服务');
+          return resolve(false);
+      }
+      const nexmo = new Nexmo({
+        apiKey: sails.settings.nexmo_setting.nexmo_api_key,
+        apiSecret: sails.settings.nexmo_setting.nexmo_api_secret
+      });
+      nexmo.message.sendSms(sails.settings.nexmo_setting.nexmo_from, to, text, function(err, response) {
+        if (err) {
+          sails.log.error(err);
+          resolve(false);
+        } else {
+          sails.log.debug(response);
+          resolve(true);
+        }
+      });
+    });
   }
 
 };

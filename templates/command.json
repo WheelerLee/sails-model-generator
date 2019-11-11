@@ -39,6 +39,10 @@
     {
       "name": "firebase-admin",
       "exec": "npm i firebase-admin -S"
+    },
+    {
+      "name": "nexmo",
+      "exec": "npm i nexmo -S"
     }
   ]
 }
