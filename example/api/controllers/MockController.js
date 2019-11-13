@@ -1826,12 +1826,6 @@ module.exports = {
 
     return res.json(a);
 
-  },
-
-  test: function(req, res) {
-    // MessageService.sms('1', '4388081517', '123456', '验证码: 123456');
-    MessageService.test();
-    res.send('dddd');
   }
 
 };
