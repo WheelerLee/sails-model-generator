@@ -1,0 +1,168 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (msg_sms_record.id) { %>
+        <input type="hidden" value="<%= msg_sms_record.id %>" name="id">
+        <% } %>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">area_code</label>
+          <div class="layui-input-block">
+            <input type="text" name="area_code" lay-verify="area_code"
+                   value="<%= msg_sms_record.area_code ? msg_sms_record.area_code : '' %>" placeholder="请输入area_code" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">mobile_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="mobile_num" lay-verify="mobile_num"
+                   value="<%= msg_sms_record.mobile_num ? msg_sms_record.mobile_num : '' %>" placeholder="请输入mobile_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">check_code</label>
+          <div class="layui-input-block">
+            <input type="text" name="check_code" lay-verify="check_code"
+                   value="<%= msg_sms_record.check_code ? msg_sms_record.check_code : '' %>" placeholder="请输入check_code" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">text</label>
+          <div class="layui-input-block">
+            <input type="text" name="text" lay-verify="text"
+                   value="<%= msg_sms_record.text ? msg_sms_record.text : '' %>" placeholder="请输入text" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">type</label>
+          <div class="layui-input-block">
+            <input type="text" name="type" lay-verify="type"
+                   value="<%= msg_sms_record.type ? msg_sms_record.type : '0' %>" placeholder="请输入type" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">status</label>
+          <div class="layui-input-block">
+            <input type="text" name="status" lay-verify="status"
+                   value="<%= msg_sms_record.status ? msg_sms_record.status : '0' %>" placeholder="请输入status" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">ip</label>
+          <div class="layui-input-block">
+            <input type="text" name="ip" lay-verify="ip"
+                   value="<%= msg_sms_record.ip ? msg_sms_record.ip : '' %>" placeholder="请输入ip" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">sorted_num</label>
+          <div class="layui-input-block">
+            <input type="text" name="sorted_num" lay-verify="sorted_num"
+                   value="<%= msg_sms_record.sorted_num ? msg_sms_record.sorted_num : '1' %>" placeholder="请输入sorted_num" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form;
+
+    /* 自定义验证规则 */
+    form.verify({
+      area_code: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'area_code的长度必须小于32';
+        }
+      },
+      mobile_num: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'mobile_num的长度必须小于32';
+        }
+      },
+      check_code: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'check_code的长度必须小于32';
+        }
+      },
+      text: function (value, item) {
+        if (value.trim().length > 32) {
+          return 'text的长度必须小于32';
+        }
+      },
+      type: function (value, item) {
+        if (!value.trim()) {
+          return 'type不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'type必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'type必须是整数';
+        }
+      },
+      status: function (value, item) {
+        if (!value.trim()) {
+          return 'status不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'status必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'status必须是整数';
+        }
+      },
+      ip: function (value, item) {
+        if (value.trim().length > 255) {
+          return 'ip的长度必须小于255';
+        }
+      },
+      sorted_num: function (value, item) {
+        if (!value.trim()) {
+          return 'sorted_num不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'sorted_num必须是整数';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      $.post('/admin/msg_sms_record/modify', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function() {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

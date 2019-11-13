@@ -7,9 +7,10 @@ const Nexmo = require('nexmo');
 
 //Realize a queue with a maximum concurrency of 1
 const queue = Queue(10, {
-  "retry":0,               //Number of retries
-  "retryIsJump":false,     //retry now? 
-  "timeout":0            //The timeout period
+  "retry": 0,               //Number of retries
+  "retryIsJump": false,     //retry now? 
+  "timeout": 0,            //The timeout period
+  "autoRun": true    
 });
 
 module.exports = {
@@ -36,7 +37,7 @@ module.exports = {
    */
   send_all: function(members, message) {
     for (let member of members) {
-      queue.push(function(a, b) {return MessageService.send(a, b)}, [member.id, message]);
+      queue.push(MessageService.send, [member.id, message]);
     }
   },
 
@@ -92,11 +93,32 @@ module.exports = {
   },
 
   /**
+   * 发送短信
+   * @param {string} area_code 区号，不要带+
+   * @param {string} mobile_num 手机号
+   * @param {string} check_code 验证码
+   * @param {string} text 短信的具体内容
+   * @param {string} ip 发送者的ip地址
+   */
+  sms: async function(area_code, mobile_num, check_code, text, ip) {
+    await Msg_sms_record.create({
+      area_code: area_code,
+      mobile_num: mobile_num,
+      check_code: check_code,
+      text: text,
+      type: check_code ? 0 : 1,
+      status: 0,
+      ip: ip
+    });
+    queue.push(MessageService.sms_by_nexmo, [`${area_code}${mobile_num}`, text]);
+  },
+
+  /**
    * 使用nexmo发送短信
    * @param {string} to 接收的号码
    * @param {string} text 短信内容
    */
-  sms: function(to, text) {
+  sms_by_nexmo: function (to, text) {
     return new Promise(function(resolve, reject) {
       if (!sails.settings.nexmo_setting || !sails.settings.nexmo_setting.nexmo_api_key 
         || !sails.settings.nexmo_setting.nexmo_api_secret || !sails.settings.nexmo_setting.nexmo_from) {

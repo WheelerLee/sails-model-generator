@@ -34,7 +34,14 @@ export default class Generator {
    * @param reset 是否覆盖已经存在的文件生成
    * @param skip 是否跳过依赖添加
    */
-  async generate(reset: boolean, skip: boolean) {
+  async generate(reset: boolean, skip: boolean, s?: string) {
+
+    // if (s) {
+      if (s.split(',').length > 0) {
+
+      }
+    // }
+    
 
     //是否需要重置
     if (reset) this.reset();

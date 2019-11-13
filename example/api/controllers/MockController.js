@@ -305,6 +305,14 @@ module.exports = {
               {id: 'android_color', value: ''},
               {id: 'android_icon', value: ''}
             ]
+          },
+          {
+            id: 'nexmo_setting',
+            value: [
+              {id: 'nexmo_api_key', value: ''},
+              {id: 'nexmo_api_secret', value: ''},
+              {id: 'nexmo_mock', value: '0'}
+            ]
           }
         ];
         for (let setting of settings) {
@@ -514,6 +522,34 @@ module.exports = {
           sorted_num: 1,
           path: '/admin/jz_record/delete',
           parent_id: jz_record.id
+        }).usingConnection(db);
+
+
+        let msg_sms_record = await Xt_resource.create({
+          name: 'Msg_sms_record管理',
+          res_type_code: 'resource_page',
+          sorted_num: 1
+        }).fetch().usingConnection(db);
+        await Xt_resource.create({
+          name: 'Msg_sms_record列表',
+          res_type_code: 'resource_page',
+          sorted_num: 1,
+          path: '/admin/msg_sms_record/index',
+          parent_id: msg_sms_record.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'Msg_sms_record添加编辑',
+          res_type_code: 'resource_btn',
+          sorted_num: 1,
+          path: '/admin/msg_sms_record/modify',
+          parent_id: msg_sms_record.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'Msg_sms_record删除',
+          res_type_code: 'resource_btn',
+          sorted_num: 1,
+          path: '/admin/msg_sms_record/delete',
+          parent_id: msg_sms_record.id
         }).usingConnection(db);
 
 
@@ -1790,6 +1826,12 @@ module.exports = {
 
     return res.json(a);
 
+  },
+
+  test: function(req, res) {
+    // MessageService.sms('1', '4388081517', '123456', '验证码: 123456');
+    MessageService.test();
+    res.send('dddd');
   }
 
 };
