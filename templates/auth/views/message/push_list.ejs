@@ -1,5 +1,3 @@
-<script src="/dayjs/dayjs.min.js"></script>
-<script src="/dayjs/plugin/localizedFormat.js"></script>
 <div class="layui-card layadmin-header">
 // FIXME: 时间国际化需要做相应的修改
 </div>
@@ -24,11 +22,11 @@
             {{ d.member.nick_name }}
           </script>
           <script type="text/html" id="createdAt">
-            {{ dayjs(d.createdAt).format('llll') }}
+            {{ dayjs(d.createdAt).format('lll') }}
           </script>
           <script type="text/html" id="read_time">
             {{#  if(d.read_time){ }}
-            {{ d.read_time }}
+            {{ dayjs(d.read_time).format('lll') }}
             {{#  } else { }}
             <span style="color: #FFB800;">未读</span>
             {{#  } }}
@@ -47,12 +45,13 @@
       url: '/admin/message/push_list',
       method: 'post',
       cellMinWidth: 80,
+      autoSort: false,
       cols: [[
         {field:'member_id', title: '接收者', templet: "#member_id"},
         {field:'title', title: '标题'},
         {field:'content', title: '内容'},
         {field:'url', title: 'url'},
-        {field:'createdAt', title: '发送时间', templet: "#createdAt"},
+        {field:'createdAt', title: '发送时间', templet: "#createdAt", sort: true},
         {field: 'read_time', title: '阅读时间', templet: "#read_time"},
       ]],
       page: true,
@@ -73,6 +72,25 @@
           });
         }
       }
+    });
+
+    table.on('sort(table)', function(sort) {
+      console.log(sort);
+      var obj = {};
+      var array = $('#searchForm').serializeArray();
+      for (var i = 0; i < array.length; i++) {
+        var item = array[i];
+        obj[item.name] = item.value;
+      }
+      if (sort.type) {
+        obj.sort = {};
+        obj.sort[sort.field] = sort.type;
+      }
+      
+      tableRender.reload({
+        initSort: sort,
+        where: obj
+      });
     });
 
     $('#search_btn').on('click', function () {

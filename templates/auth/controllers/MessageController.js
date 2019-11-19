@@ -214,7 +214,7 @@ module.exports = {
           where: obj,
           limit: limit,
           skip: (page - 1) * limit,
-          sort: 'sorted_num desc'
+          sort: req.param('sort') ? [req.param('sort')] : 'sorted_num desc'
         });
         for (let msg of data) {
           msg.member = await Xt_member.findOne({
@@ -232,6 +232,7 @@ module.exports = {
           data: data
         });
       } catch (e) {
+        console.log(e);
         res.json({
           code: 1,
           msg: '获取失败'
