@@ -80,7 +80,7 @@ module.exports = {
       },
       android: {
         notification: {
-          color: sails.settings.firebase_settings.android_color || '#ffffff', // TODO: 此次需要修改到配置项目
+          color: sails.settings.firebase_settings.android_color || '#ffffff',
           icon: ails.settings.firebase_settings.android_icon || 'ic_launcher'
         }
       },

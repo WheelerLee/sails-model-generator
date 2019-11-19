@@ -178,6 +178,66 @@ module.exports = {
       }
 
     }
+  },
+
+  push_list: async function (req, res) {
+    if (req.method.toLowerCase() === 'get') {
+      return res.view({layout: 'admin/layout'});
+    } else {
+      try {
+        var page = parseInt(req.param('page', 1));
+        var limit = parseInt(req.param('limit', 10));
+        var obj = {};
+        if (req.param('title') && req.param('title').trim() !== '') {
+          obj['title'] = {contains: req.param('title').trim()};
+        }
+        if (req.param('content') && req.param('content').trim() !== '') {
+          obj['content'] = {contains: req.param('content').trim()};
+        }
+        if (req.param('url') && req.param('url').trim() !== '') {
+          obj['url'] = {contains: req.param('url').trim()};
+        }
+        if (req.param('id') && req.param('id').trim() !== '') {
+          obj['id'] = req.param('id').trim();
+        }
+        if (req.param('deleted') && req.param('deleted').trim() !== '') {
+          obj['deleted'] = req.param('deleted').trim();
+        }
+        if (req.param('create_user') && req.param('create_user').trim() !== '') {
+          obj['create_user'] = {contains: req.param('create_user').trim()};
+        }
+        if (req.param('sorted_num') && req.param('sorted_num').trim() !== '') {
+          obj['sorted_num'] = req.param('sorted_num').trim();
+        }
+
+        let data = await Msg_send_record.find({
+          where: obj,
+          limit: limit,
+          skip: (page - 1) * limit,
+          sort: 'sorted_num desc'
+        });
+        for (let msg of data) {
+          msg.member = await Xt_member.findOne({
+            where: {
+              id: msg.member_id
+            },
+            select: ['id', 'nick_name']
+          });
+        }
+        var count = await Msg_send_record.count(obj);
+        res.json({
+          code: 0,
+          msg: '',
+          count: count,
+          data: data
+        });
+      } catch (e) {
+        res.json({
+          code: 1,
+          msg: '获取失败'
+        });
+      }
+    }
   }
 
 };

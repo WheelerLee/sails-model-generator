@@ -123,6 +123,20 @@ module.exports = {
             sorted_num: 2,
             path: '/<%- folderName %>/message/send',
             parent_id: message_auth.id
+          },
+          {
+            name: '消息发送记录',
+            res_type_code: 'resource_page',
+            sorted_num: 2,
+            path: '/<%- folderName %>/message/push_list',
+            parent_id: message_auth.id
+          },
+          {
+            name: '短信发送记录',
+            res_type_code: 'resource_page',
+            sorted_num: 3,
+            path: '/<%- folderName %>/message/sms_list',
+            parent_id: message_auth.id
           }
         ];
         for (let auth_sub_resource of auth_message_resources) {
