@@ -1,0 +1,110 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" wid100 action="" lay-filter="component-form-group">
+        <div class="layui-form-item">
+          <label class="layui-form-label">API Key</label>
+          <div class="layui-input-block">
+            <input type="text" name="nexmo_api_key" lay-verify="nexmo_api_key"
+                   value="<%= nexmo_setting.nexmo_api_key ? nexmo_setting.nexmo_api_key : '' %>" 
+                   placeholder="登录https://www.nexmo.com/获取" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">API Secret</label>
+          <div class="layui-input-block">
+            <input type="text" name="nexmo_api_secret" lay-verify="nexmo_api_secret"
+                   value="<%= nexmo_setting.nexmo_api_secret ? nexmo_setting.nexmo_api_secret : '' %>" 
+                   placeholder="登录https://www.nexmo.com/获取" autocomplete="off"
+                   class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">发送号码</label>
+          <div class="layui-input-inline">
+            <input type="text" name="nexmo_from" lay-verify="nexmo_from"
+                   value="<%= nexmo_setting.nexmo_from ? nexmo_setting.nexmo_from : '' %>" placeholder="发送号码" autocomplete="off"
+                   class="layui-input">
+          </div>
+          <div class="layui-form-mid layui-word-aux">对于美国加拿大等地区，需要发送号码</div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="component-form-submit">确认保存</button>
+          </div>
+        </div>
+
+        <!-- <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit" style="background-color: #84b349">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div> -->
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  layui.use(['form', 'laydate'], function () {
+    var $ = layui.$, layer = layui.layer, form = layui.form, laydate = layui.laydate;
+    laydate.render({
+      elem: "#validity_priod",
+      type: "date"
+    })
+    /* 自定义验证规则 */
+    form.verify({
+      databaseURL: function (value, item) {
+        if (!value.trim()) {
+          return 'databaseURL不能为空';
+        }
+      },
+      cert: function (value, item) {
+        if (!value.trim()) {
+          return '密钥不能为空';
+        }
+      }
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var loading = layer.load(1);
+      var fields = data.field;
+      $.post('/admin/system/nexmo', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          layer.msg(data.msg, {
+            icon: 6,
+            time: 2000
+          }, function () {
+            window.location.reload();
+          });
+        } else {
+          layer.msg(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+    form.on('submit(component-form-test)', function (data) {
+      var loading = layer.load(1);
+      var fields = data.field;
+      $.post('/admin/system/email?type=test', data.field, function (data) {
+        layer.close(loading);
+        if (data.errCode === 0) {
+          // layer.msg(data.msg, {
+          //   icon: 6,
+          //   time: 2000
+          // }, function () {
+          //   // window.location.reload();
+          // });
+          layer.alert(data.msg, {icon: 1});
+        } else {
+          layer.alert(data.msg, {icon: 5});
+        }
+      });
+      return false;
+    });
+  });
+</script>

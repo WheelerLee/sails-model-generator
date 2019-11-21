@@ -252,7 +252,7 @@ module.exports = {
         await Xt_resource.create({
           name: '字典管理',
           res_type_code: 'resource_page',
-          sorted_num: 1,
+          sorted_num: 2,
           path: '/<%- folderName %>/xt_dict/index',
           parent_id: resource_system.id
         }).usingConnection(db);
@@ -280,15 +280,22 @@ module.exports = {
         await Xt_resource.create({
           name: '邮件服务器',
           res_type_code: 'resource_page',
-          sorted_num: 1,
+          sorted_num: 3,
           path: '/<%- folderName %>/system/email',
           parent_id: resource_system.id
         }).usingConnection(db);
         await Xt_resource.create({
           name: 'Firebase配置',
           res_type_code: 'resource_page',
-          sorted_num: 1,
+          sorted_num: 4,
           path: '/<%- folderName %>/system/firebase',
+          parent_id: resource_system.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'Nexmo配置',
+          res_type_code: 'resource_page',
+          sorted_num: 5,
+          path: '/<%- folderName %>/system/nexmo',
           parent_id: resource_system.id
         }).usingConnection(db);
 

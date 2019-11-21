@@ -145,6 +145,32 @@ module.exports = {
         msg: '修改成功'
       });
     }
+  },
+
+  nexmo: async function (req, res) {
+    if (req.method.toLowerCase() === 'get') {
+      let nexmo_setting = sails.settings.nexmo_setting;
+      return res.view({layout: 'admin/layout', nexmo_setting: nexmo_setting});
+    } else {
+      let nexmo_api_key = req.param('nexmo_api_key');
+      let nexmo_api_secret = req.param('nexmo_api_secret');
+      let nexmo_from = req.param('nexmo_from');
+
+      let nexmo_setting = {
+        nexmo_api_key: nexmo_api_key,
+        nexmo_api_secret: nexmo_api_secret,
+        nexmo_from: nexmo_from
+      };
+      sails.settings.nexmo_setting = nexmo_setting;
+
+      await Xt_setting.update({id: 'nexmo_api_key'}, {value: nexmo_api_key});
+      await Xt_setting.update({id: 'nexmo_api_secret'}, {value: nexmo_api_secret});
+      await Xt_setting.update({id: 'nexmo_from'}, {value: nexmo_from});
+      res.json({
+        errCode: 0,
+        msg: '修改成功'
+      });
+    }
   }
 
 };
