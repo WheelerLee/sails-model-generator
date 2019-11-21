@@ -35,14 +35,6 @@ export default class Generator {
    * @param skip 是否跳过依赖添加
    */
   async generate(reset: boolean, skip: boolean, s?: string) {
-
-    // if (s) {
-      if (s.split(',').length > 0) {
-
-      }
-    // }
-    
-
     //是否需要重置
     if (reset) this.reset();
   
