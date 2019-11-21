@@ -232,7 +232,40 @@ module.exports = {
           data: data
         });
       } catch (e) {
-        console.log(e);
+        res.json({
+          code: 1,
+          msg: '获取失败'
+        });
+      }
+    }
+  },
+
+  sms_list: async function (req, res) {
+    if (req.method.toLowerCase() === 'get') {
+      return res.view({layout: 'admin/layout'});
+    } else {
+      try {
+        var page = parseInt(req.param('page', 1));
+        var limit = parseInt(req.param('limit', 10));
+        var obj = {};
+        if (req.param('mobile_num') && req.param('mobile_num').trim() !== '') {
+          obj['mobile_num'] = {contains: req.param('mobile_num').trim()};
+        }
+
+        let data = await Msg_sms_record.find({
+          where: obj,
+          limit: limit,
+          skip: (page - 1) * limit,
+          sort: req.param('sort') ? [req.param('sort')] : 'createdAt desc'
+        });
+        var count = await Msg_sms_record.count(obj);
+        res.json({
+          code: 0,
+          msg: '',
+          count: count,
+          data: data
+        });
+      } catch (e) {
         res.json({
           code: 1,
           msg: '获取失败'

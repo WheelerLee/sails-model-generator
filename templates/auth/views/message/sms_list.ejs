@@ -7,7 +7,7 @@
         <div class="layui-card-body">
           <form class="layui-form" id="searchForm" style="margin-bottom: 20px;">
             <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="title" value="" placeholder="标题" class="layui-input search_input">
+              <input type="text" name="mobile_num" value="" placeholder="手机号" class="layui-input search_input">
             </div>
             <a class="layui-btn layui-btn-normal" style="margin: 8px 0 0 0" id="search_btn">
               <i class="layui-icon larry-icon">&#xe615;</i>查询
@@ -17,11 +17,17 @@
             </button>
           </form>
           <table style="margin-top: 20px;" class="layui-hide" id="test-table-form" lay-filter="table"></table>
-          <script type="text/html" id="member_id">
-            {{ d.member.nick_name }}
+          <script type="text/html" id="mobile_num">
+            {{ '+' + d.area_code + " " + d.mobile_num }}
           </script>
           <script type="text/html" id="createdAt">
             {{ dayjs(d.createdAt).format('lll') }}
+          </script>
+          <script type="text/html" id="type">
+            {{ d.type === 0 ? '验证码' : '通知短信' }}
+          </script>
+          <script type="text/html" id="status">
+            {{ d.type === 0 ? '可用' : '失效' }}
           </script>
           <script type="text/html" id="read_time">
             {{#  if(d.read_time){ }}
@@ -41,17 +47,19 @@
     var table = layui.table, form = layui.form, $ = layui.$;
     var tableRender = table.render({
       elem: '#test-table-form',
-      url: '/admin/message/push_list',
+      url: '/admin/message/sms_list',
       method: 'post',
       cellMinWidth: 80,
       autoSort: false,
       cols: [[
-        {field:'member_id', title: '接收者', templet: "#member_id"},
-        {field:'title', title: '标题'},
-        {field:'content', title: '内容'},
-        {field:'url', title: 'url'},
-        {field:'createdAt', title: '发送时间', templet: "#createdAt", sort: true},
-        {field: 'read_time', title: '阅读时间', templet: "#read_time"},
+        {field:'area_code', title: '区号', width: 60, textAlign: 'center'},
+        {field:'mobile_num', title: '号码', width: 140},
+        {field:'check_code', title: '验证码', width: 100},
+        {field:'text', title: '内容'},
+        {field:'type', title: '短信类型', templet: "#type", width: 100},
+        {field:'status', title: '状态', templet: "#status", width: 60},
+        {field:'createdAt', title: '发送时间', templet: "#createdAt", sort: true, width: 190},
+        {field: 'ip', title: '发送IP', width: 150},
       ]],
       page: true,
       done: function(res, curr, count) {
