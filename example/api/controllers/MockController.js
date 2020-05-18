@@ -4,6 +4,7 @@
  * @description :: Server-side actions for handling incoming requests.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
+const sharp = require('sharp');
 
 module.exports = {
 
@@ -123,6 +124,20 @@ module.exports = {
             sorted_num: 2,
             path: '/admin/message/send',
             parent_id: message_auth.id
+          },
+          {
+            name: '消息发送记录',
+            res_type_code: 'resource_page',
+            sorted_num: 2,
+            path: '/admin/message/push_list',
+            parent_id: message_auth.id
+          },
+          {
+            name: '短信发送记录',
+            res_type_code: 'resource_page',
+            sorted_num: 3,
+            path: '/admin/message/sms_list',
+            parent_id: message_auth.id
           }
         ];
         for (let auth_sub_resource of auth_message_resources) {
@@ -238,7 +253,7 @@ module.exports = {
         await Xt_resource.create({
           name: '字典管理',
           res_type_code: 'resource_page',
-          sorted_num: 1,
+          sorted_num: 2,
           path: '/admin/xt_dict/index',
           parent_id: resource_system.id
         }).usingConnection(db);
@@ -266,15 +281,22 @@ module.exports = {
         await Xt_resource.create({
           name: '邮件服务器',
           res_type_code: 'resource_page',
-          sorted_num: 1,
+          sorted_num: 3,
           path: '/admin/system/email',
           parent_id: resource_system.id
         }).usingConnection(db);
         await Xt_resource.create({
           name: 'Firebase配置',
           res_type_code: 'resource_page',
-          sorted_num: 1,
+          sorted_num: 4,
           path: '/admin/system/firebase',
+          parent_id: resource_system.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'Nexmo配置',
+          res_type_code: 'resource_page',
+          sorted_num: 5,
+          path: '/admin/system/nexmo',
           parent_id: resource_system.id
         }).usingConnection(db);
 
@@ -1826,6 +1848,11 @@ module.exports = {
 
     return res.json(a);
 
+  },
+
+  resize: async function(req, res) {
+    sharp('/Users/wheeler/Desktop/16eb0e711b5e45f4.gif').resize(200).toFormat('webp').toFile('/Users/wheeler/Desktop/aaa.webp');
+    res.send('11');
   }
 
 };

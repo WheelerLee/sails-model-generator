@@ -10,26 +10,26 @@
     "@sailshq/socket.io-redis": "^5.2.0",
     "@ztree/ztree_v3": "^3.5.40",
     "async": "2.0.1",
-    "axios": "^0.19.0",
-    "firebase-admin": "^8.7.0",
+    "axios": "^0.19.2",
+    "firebase-admin": "^8.12.1",
     "fs-extra": "^8.1.0",
     "gm": "^1.23.1",
     "grunt": "1.0.1",
-    "moment": "^2.24.0",
-    "nexmo": "^2.5.1",
-    "nodemailer": "^6.3.1",
+    "moment": "^2.25.3",
+    "nexmo": "^2.6.0",
+    "nodemailer": "^6.4.6",
     "promise-queue-plus": "^1.2.2",
     "sails": "^1.0.1",
     "sails-hook-grunt": "^3.0.2",
     "sails-hook-orm": "^2.0.0-16",
     "sails-hook-sockets": "^1.4.0",
     "sails-mysql": "^1.0.1",
-    "sharp": "^0.23.2",
-    "uuid": "^3.3.3"
+    "sharp": "^0.25.3",
+    "uuid": "^3.4.0"
   },
   "devDependencies": {
     "@sailshq/eslint": "^4.19.3",
-    "ajv": "^6.10.2"
+    "ajv": "^6.12.2"
   },
   "scripts": {
     "start": "NODE_ENV=production node app.js",

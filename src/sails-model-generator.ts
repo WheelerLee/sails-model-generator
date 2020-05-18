@@ -19,7 +19,8 @@ colors.setTheme({
 
 program.version('5.1.5', '-v, --version', '输出当前的版本号')
   .helpOption('-h, --help', '帮助信息')
-  .option('-f, --folder <folder>', '指定生成的文件夹，默认是admin，当然现在也支持admin。别的文件夹会有路径上的bug')
+  .option('-f, --folder <folder>', '指定生成的文件夹，默认是admin，当然现在也只支持admin。别的文件夹会有路径上的bug')
+  .option('-m, --model <model>', '指定生成的model，不指定默认会生成所有的model以及修改config等，指定model将会只生成该model的增删改查')
   .option('--reset', '重置生成的管理系统，会将和admin相关的都会删除，请谨慎')
   .option('--skip', '忽略依赖添加');
 
@@ -40,6 +41,6 @@ if (!fs.existsSync(process.cwd() + '/views/') || !fs.existsSync(process.cwd() + 
 }
 
 let generator = new Generator(folder);
-generator.generate(reset, skip);
+generator.generate(reset, skip, program.model);
 
 // console.log('代码生成成功，运行后请访问 http://127.0.0.1:1337/mock/add 添加基础数据');

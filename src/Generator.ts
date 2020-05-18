@@ -12,7 +12,7 @@ import Worker from './Worker';
 import ora, { Ora } from 'ora';
 
 const omit_models = [
-  'Attach', 'Xt_user', 'Xt_resource', 'Xt_role', 'Xt_dict', 'Xt_role_resource', 
+  'Attach', 'Xt_user', 'Xt_resource', 'Xt_role', 'Xt_dict', 'Xt_role_resource',
   'Xt_user_resource', 'Xt_user_role', 'Xt_setting', 'Msg_send_record', 'Msg_message'
 ]; //需要忽略的模型
 
@@ -33,47 +33,88 @@ export default class Generator {
    * 生成后台代码
    * @param reset 是否覆盖已经存在的文件生成
    * @param skip 是否跳过依赖添加
+   * @param model 是否只生成单个model的增删改查
    */
-  async generate(reset: boolean, skip: boolean, s?: string) {
-    //是否需要重置
-    if (reset) this.reset();
-  
-    //检查是否创建的位置已经存在文件
-    if (fs.existsSync(`${process.cwd()}/views/${this.folderName}/`) || fs.existsSync(`${process.cwd()}/api/controllers/${this.folderName}/`)) {
-      console.log(colors.red.bold(`请检查controllers或views文件夹, ${this.folderName}文件夹已经存在`));
-      return;
-    }
+  async generate(reset: boolean, skip: boolean, model?: string) {
 
-    const spinner: Ora = ora('生成代码').start();
-
-    await this.createFolder();
-    let models = await this.getModels();
-    for (let model of models) {
+    if (model) {
+      //先检查是否存在该model
+      let models = await this.getModels();
+      if (models.indexOf(model) < 0) {
+        console.log(colors.red.bold(`无法找到Model：${model}，请检查名称是否准确`));
+        return;
+      }
+      //reset的情况先删除存在的文件
+      if (reset) {
+        const files = [
+          `${process.cwd()}/api/controllers/${this.folderName}/${model}Controller.js`,
+          `${process.cwd()}/views/${this.folderName}/${model.toLowerCase()}/`
+        ];
+        for (let file of files) {
+          fs.removeSync(file);
+        }
+      }
+      //检查是否已经存在需要生成的文件
+      if (fs.existsSync(`${process.cwd()}/views/${this.folderName}/${model.toLowerCase()}/`)
+        || fs.existsSync(`${process.cwd()}/api/controllers/${this.folderName}/${model}Controller/`)) {
+        console.log(colors.red.bold(`请检查controllers或views文件夹, 已经存在${model}的管理方法`));
+        return;
+      } //存在controllers或views文件夹，并且不生成单个的model的情况下会弹出警告，如果有model，则表示生成单个的model的方法
+      //确保一些文件夹是否存在
+      await Promise.all([
+        fs.ensureDirSync(`${process.cwd()}/views/${this.folderName}/`),
+        fs.ensureDirSync(`${process.cwd()}/api/controllers/${this.folderName}/`)
+      ]);
+      const spinner: Ora = ora('生成代码').start();
       await this.generateModel(model);
+      spinner.succeed('生成代码');
+      spinner.stopAndPersist({
+        text: '代码生成成功'
+      });
+
+    } else {
+      //是否需要重置
+      if (reset) this.reset();
+
+      //检查是否创建的位置已经存在文件
+      if (fs.existsSync(`${process.cwd()}/views/${this.folderName}/`)
+        || fs.existsSync(`${process.cwd()}/api/controllers/${this.folderName}/`)) {
+        console.log(colors.red.bold(`请检查controllers或views文件夹, ${this.folderName}文件夹已经存在`));
+        return;
+      } //存在controllers或views文件夹，并且不生成单个的model的情况下会弹出警告，如果有model，则表示生成单个的model的方法
+
+      const spinner: Ora = ora('生成代码').start();
+
+      await this.createFolder();
+      let models = await this.getModels();
+      for (let model of models) {
+        await this.generateModel(model);
+      }
+
+      await this.cpAdminModel();
+      await this.generateMockController(models);
+      await this.addPolicies(models);
+
+      await this.copyBaseFiles();
+      await this.copyAuthFiles();
+      await this.unzipStaticFiles();
+      await this.updateConfigFile();
+      spinner.succeed('生成代码');
+
+      if (!skip) { //忽略依赖添加
+        await this.exec();
+      }
+
+      spinner.stopAndPersist({
+        text: '代码生成成功，运行后请访问 http://127.0.0.1:1337/mock/add 添加基础数据'
+      });
+
     }
 
-    await this.cpAdminModel();
-    await this.generateMockController(models);
-    await this.addPolicies(models);
-
-    await this.copyBaseFiles();
-    await this.copyAuthFiles();
-    await this.unzipStaticFiles();
-    await this.updateConfigFile();
-    spinner.succeed('生成代码');
-
-    if (!skip) { //忽略依赖添加
-      await this.exec();
-    }
-
-    spinner.stopAndPersist({
-      text: '代码生成成功，运行后请访问 http://127.0.0.1:1337/mock/add 添加基础数据'
-    });
-    
     // this.core(skip).then((a) => {
     //   spinner.succeed('代码生成成功，运行后请访问 http://127.0.0.1:1337/mock/add 添加基础数据\n');
     // });
-    
+
   }
 
   /**
@@ -211,7 +252,7 @@ export default class Generator {
     });
     let path = `${process.cwd()}/api/controllers/`;
     await fs.ensureDir(path);
-    await fs.writeFile(`${path}MockController.js`, Buffer.from(controllerStr), {flag: 'w', encoding: 'utf8'});
+    await fs.writeFile(`${path}MockController.js`, Buffer.from(controllerStr), { flag: 'w', encoding: 'utf8' });
     // console.log(colors.info('创建MockController'));
   }
 
@@ -226,7 +267,7 @@ export default class Generator {
       models: models
     });
     let file_path = process.cwd() + '/config/policies.js';
-    await fs.writeFile(file_path, Buffer.from(policiesStr), {flag: 'w', encoding: 'utf8'});
+    await fs.writeFile(file_path, Buffer.from(policiesStr), { flag: 'w', encoding: 'utf8' });
     // console.log(colors.info('插入policies成功'));
   }
 
@@ -315,7 +356,7 @@ export default class Generator {
    */
   private async updateConfigFile() {
     // console.log(colors.progress('正在替换配置文件...'));
-    let proRootPath = __dirname + '/..'; 
+    let proRootPath = __dirname + '/..';
     let pp = proRootPath + '/templates/configs/';
     let op = process.cwd() + '/config/';
     let files = await fs.readdir(pp);
@@ -344,9 +385,9 @@ export default class Generator {
   }
 
   private execPromise(command: Command) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       let process = require('child_process');
-      process.exec(command.exec, function() {
+      process.exec(command.exec, function () {
         resolve(true);
       });
     });

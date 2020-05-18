@@ -1,5 +1,3 @@
-var uuid = require("uuid");
-
 module.exports = {
 
   attributes: {
