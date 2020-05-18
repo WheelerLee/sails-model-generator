@@ -17,7 +17,7 @@ colors.setTheme({
   progress: ['blue']
 });
 
-program.version('5.1.5', '-v, --version', '输出当前的版本号')
+program.version('5.2.0', '-v, --version', '输出当前的版本号')
   .helpOption('-h, --help', '帮助信息')
   .option('-f, --folder <folder>', '指定生成的文件夹，默认是admin，当然现在也只支持admin。别的文件夹会有路径上的bug')
   .option('-m, --model <model>', '指定生成的model，不指定默认会生成所有的model以及修改config等，指定model将会只生成该model的增删改查')
