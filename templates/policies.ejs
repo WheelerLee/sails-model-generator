@@ -40,6 +40,9 @@ module.exports.policies = {
   '<%- folderName %>/Xt_roleController': {
     '*': ['adminSessionAuth', 'permissionsAuth']
   },
+  '<%- folderName %>/Xt_app_versionController': {
+    '*': ['adminSessionAuth', 'permissionsAuth']
+  },
   '<%- folderName %>/MessageController': {
     '*': ['adminSessionAuth', 'permissionsAuth']
   },

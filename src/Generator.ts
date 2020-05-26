@@ -13,7 +13,8 @@ import ora, { Ora } from 'ora';
 
 const omit_models = [
   'Attach', 'Xt_user', 'Xt_resource', 'Xt_role', 'Xt_dict', 'Xt_role_resource',
-  'Xt_user_resource', 'Xt_user_role', 'Xt_setting', 'Msg_send_record', 'Msg_message'
+  'Xt_user_resource', 'Xt_user_role', 'Xt_setting', 'Msg_send_record', 'Msg_message',
+  'Xt_app_version'
 ]; //需要忽略的模型
 
 interface Command {

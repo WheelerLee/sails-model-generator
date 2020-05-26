@@ -299,6 +299,29 @@ module.exports = {
           parent_id: resource_system.id
         }).usingConnection(db);
 
+        await Xt_resource.create({
+          name: 'App版本管理',
+          res_type_code: 'resource_page',
+          icon_path: '&#xe678;',
+          sorted_num: 6,
+          path: '/<%- folderName %>/xt_app_version/index',
+          parent_id: resource_system.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'App版本添加编辑',
+          res_type_code: 'resource_btn',
+          sorted_num: 1,
+          path: '/<%- folderName %>/xt_app_version/modify',
+          parent_id: resource_system.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'App版本删除',
+          res_type_code: 'resource_btn',
+          sorted_num: 1,
+          path: '/<%- folderName %>/xt_app_version/delete',
+          parent_id: resource_system.id
+        }).usingConnection(db);
+
         let settings = [
           {
             id: 'system_settings',
