@@ -20,7 +20,6 @@ export default class FeatureUtils {
    * @param name 功能模块的名称
    */
   static addFeature(name: string) {
-    console.log(FeatureUtils.features);
     if (FeatureUtils.features[name]) {
       let feature: FeatureAdapter = FeatureUtils.features[name];
       feature.generate();

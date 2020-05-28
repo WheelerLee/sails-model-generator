@@ -3,28 +3,21 @@
  * @Author: Wheeler
  * @Date: 2020-05-26 17:00:43
  * @FilePath: /sails-model-generator/src/features/AppVersion.ts
- */ 
-import FeatureAdapter from "./FeatureAdapter";
-import fs from 'fs-extra';
-import path from 'path';
+ */
+import FileCopyFeature from "./FileCopyFeature";
 
-export default class AppVersion extends FeatureAdapter {
+export default class AppVersion extends FileCopyFeature {
 
   name() {
     return 'app_version';
   }
 
-  generate() {
-    fs.copySync(path.join(__dirname, `../../templates/features/${this.name()}`), 
-      process.cwd(), {
-        overwrite: false
-      });
+  resources() {
+    return [
+      '/admin/xt_app_version/index APP版本管理 page',
+      '/admin/xt_app_version/modify 版本修改 button',
+      '/admin/xt_app_version/delete 版本删除 button'
+    ];
   }
 
 }
-
-// module.exports = {
-//   add: () => {
-//     console.log('add');
-//   }
-// };
