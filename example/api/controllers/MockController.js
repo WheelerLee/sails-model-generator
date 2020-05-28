@@ -4,7 +4,6 @@
  * @description :: Server-side actions for handling incoming requests.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-const sharp = require('sharp');
 
 module.exports = {
 
@@ -299,6 +298,29 @@ module.exports = {
           path: '/admin/system/nexmo',
           parent_id: resource_system.id
         }).usingConnection(db);
+
+        // await Xt_resource.create({
+        //   name: 'App版本管理',
+        //   res_type_code: 'resource_page',
+        //   icon_path: '&#xe678;',
+        //   sorted_num: 6,
+        //   path: '/admin/xt_app_version/index',
+        //   parent_id: resource_system.id
+        // }).usingConnection(db);
+        // await Xt_resource.create({
+        //   name: 'App版本添加编辑',
+        //   res_type_code: 'resource_btn',
+        //   sorted_num: 1,
+        //   path: '/admin/xt_app_version/modify',
+        //   parent_id: resource_system.id
+        // }).usingConnection(db);
+        // await Xt_resource.create({
+        //   name: 'App版本删除',
+        //   res_type_code: 'resource_btn',
+        //   sorted_num: 1,
+        //   path: '/admin/xt_app_version/delete',
+        //   parent_id: resource_system.id
+        // }).usingConnection(db);
 
         let settings = [
           {
@@ -1848,11 +1870,6 @@ module.exports = {
 
     return res.json(a);
 
-  },
-
-  resize: async function(req, res) {
-    sharp('/Users/wheeler/Desktop/16eb0e711b5e45f4.gif').resize(200).toFormat('webp').toFile('/Users/wheeler/Desktop/aaa.webp');
-    res.send('11');
   }
 
 };
