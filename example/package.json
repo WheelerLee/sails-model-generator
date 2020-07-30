@@ -5,6 +5,7 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
     "@sailshq/connect-redis": "^3.2.1",
     "@sailshq/lodash": "^3.10.3",
     "@sailshq/socket.io-redis": "^5.2.0",
@@ -29,14 +30,18 @@
   },
   "devDependencies": {
     "@sailshq/eslint": "^4.19.3",
-    "ajv": "^6.12.2"
+    "ajv": "^6.12.2",
+    "mocha": "^8.0.1",
+    "supertest": "^4.0.2"
   },
   "scripts": {
     "start": "NODE_ENV=production node app.js",
     "test": "npm run lint && npm run custom-tests && echo 'Done.'",
     "lint": "eslint . --max-warnings=0 --report-unused-disable-directives && echo '✔  Your .js files look good.'",
     "custom-tests": "echo \"(No other custom tests yet.)\" && echo",
-    "smg": "node ../lib/sails-model-generator.js --reset --skip"
+    "unittest": "node ./node_modules/mocha/bin/mocha test/lifecycle.test.js test/integration/**/*.test.js",
+    "smg": "node ../lib/sails-model-generator.js --reset --skip",
+    "docs": "apidoc -i api/controllers/API -o assets/docs"
   },
   "main": "app.js",
   "repository": {

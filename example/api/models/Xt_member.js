@@ -34,15 +34,15 @@ module.exports = {
     },
     email: {  // email 
       type: 'string',
-      maxLength: 32,
+      maxLength: 100,
       allowNull: true,
-      columnType: 'varchar(32)'
+      columnType: 'varchar(100)'
     },
     login_name: {  // login_name 
       type: 'string',
-      maxLength: 50,
+      maxLength: 100,
       allowNull: true,
-      columnType: 'varchar(50)'
+      columnType: 'varchar(100)'
     },
     password: {  // password 
       type: 'string',
@@ -51,10 +51,7 @@ module.exports = {
       columnType: 'varchar(256)'
     },
     invite_member: {  // invite_member 
-      type: 'string',
-      maxLength: 32,
-      allowNull: true,
-      columnType: 'varchar(32)'
+      model: "Xt_member"
     },
     invite_code: {  // invite_code 
       type: 'string',
@@ -64,15 +61,15 @@ module.exports = {
     },
     languages: {  // languages 
       type: 'string',
-      maxLength: 256,
+      maxLength: 191,
       allowNull: true,
-      columnType: 'varchar(256)'
+      columnType: 'varchar(191)'
     },
     sex: {  // sex  1，男 2.女
       type: 'number',
       allowNull: true,
-      columnType: 'int(11)',
-      defaultsTo:1
+      columnType: 'tinyint unsigned',
+      defaultsTo: 1
     },
     apptoken: {  // apptoken 
       type: 'string',
@@ -93,6 +90,12 @@ module.exports = {
       columnType: 'varchar(32)'
     },
     last_login_device: {  // last_login_device 
+      type: 'string',
+      maxLength: 256,
+      allowNull: true,
+      columnType: 'varchar(256)'
+    },
+    fcm_token: {  // fcm_token 
       type: 'string',
       maxLength: 256,
       allowNull: true,

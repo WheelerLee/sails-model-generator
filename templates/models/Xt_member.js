@@ -34,21 +34,21 @@ module.exports = {
     },
     email: {  // email 
       type: 'string',
-      maxLength: 32,
+      maxLength: 100,
       allowNull: true,
-      columnType: 'varchar(32)'
+      columnType: 'varchar(100)'
     },
     login_name: {  // login_name 
       type: 'string',
-      maxLength: 50,
+      maxLength: 100,
       allowNull: true,
-      columnType: 'varchar(50)'
+      columnType: 'varchar(100)'
     },
     password: {  // password 
       type: 'string',
-      maxLength: 256,
+      maxLength: 255,
       allowNull: true,
-      columnType: 'varchar(256)'
+      columnType: 'varchar(255)'
     },
     invite_member: {  // invite_member 
       type: 'string',
@@ -64,27 +64,27 @@ module.exports = {
     },
     languages: {  // languages 
       type: 'string',
-      maxLength: 256,
+      maxLength: 191,
       allowNull: true,
-      columnType: 'varchar(256)'
+      columnType: 'varchar(191)'
     },
     sex: {  // sex  1，男 2.女
       type: 'number',
       allowNull: true,
-      columnType: 'int(11)',
-      defaultsTo:1
+      columnType: 'tinyint unsigned',
+      defaultsTo: 1
     },
     apptoken: {  // apptoken 
       type: 'string',
-      maxLength: 256,
+      maxLength: 255,
       allowNull: true,
-      columnType: 'varchar(256)'
+      columnType: 'varchar(255)'
     },
     descriptions: {  // descriptions 
       type: 'string',
-      maxLength: 256,
+      maxLength: 255,
       allowNull: true,
-      columnType: 'varchar(256)'
+      columnType: 'varchar(255)'
     },
     registry_way: {  // registry_way android | ios
       type: 'string',
@@ -94,15 +94,15 @@ module.exports = {
     },
     last_login_device: {  // last_login_device 
       type: 'string',
-      maxLength: 256,
+      maxLength: 191,
       allowNull: true,
-      columnType: 'varchar(256)'
+      columnType: 'varchar(191)'
     },
     fcm_token: {  // fcm_token 
       type: 'string',
-      maxLength: 256,
+      maxLength: 255,
       allowNull: true,
-      columnType: 'varchar(256)'
+      columnType: 'varchar(255)'
     }
   }
 

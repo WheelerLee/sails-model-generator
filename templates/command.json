@@ -43,6 +43,10 @@
     {
       "name": "nexmo",
       "exec": "npm i nexmo -S"
+    },
+    {
+      "name": "@hapi/joi",
+      "exec": "npm i @hapi/joi -S"
     }
   ]
 }

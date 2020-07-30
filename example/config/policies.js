@@ -199,9 +199,6 @@ module.exports.policies = {
   'admin/Web_valuesController': {
     '*': ['adminSessionAuth', 'permissionsAuth']
   },
-  'admin/Xt_memberController': {
-    '*': ['adminSessionAuth', 'permissionsAuth']
-  },
   'admin/Xt_translationController': {
     '*': ['adminSessionAuth', 'permissionsAuth']
   },

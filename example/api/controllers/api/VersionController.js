@@ -8,7 +8,6 @@
 module.exports = {
 
   check_update: async function(req, res) {
-    console.log('111');
     let version_code = parseInt(req.param('version_code', '1'));
     let platform = req.param('platform');
     let versions = await Xt_app_version.find({

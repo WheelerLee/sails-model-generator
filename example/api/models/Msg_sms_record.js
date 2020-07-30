@@ -5,6 +5,9 @@
  * @author WheelerLee https://github.com/WheelerLee
  * @copyright 2019 
  */
+
+const SMS_AVAILABLE_TIME = 5; //验证码的有效期，单位分钟
+
 module.exports = {
 
   attributes: {
@@ -20,7 +23,7 @@ module.exports = {
       allowNull: true,
       columnType: 'varchar(32)'
     },
-    check_code: {  // 验证码类的信息，此次保存验证码
+    check_code: {  // 验证码类的信息，此处保存验证码
       type: 'string',
       maxLength: 32,
       allowNull: true,
@@ -28,9 +31,9 @@ module.exports = {
     },
     text: {  // 短信的具体内容
       type: 'string',
-      maxLength: 32,
+      maxLength: 500,
       allowNull: true,
-      columnType: 'varchar(32)'
+      columnType: 'varchar(500)'
     },
     type: {  // type  0：验证码短信 1：通知短信
       type: 'number',
@@ -49,6 +52,36 @@ module.exports = {
       maxLength: 255,
       allowNull: true,
       columnType: 'varchar(255)'
+    }
+  },
+
+  /**
+   * 检查验证码是否正确，并且标记为已用
+   * @param {string} area_code 区号
+   * @param {string} mobile_num 手机号
+   * @param {string} check_code 验证码
+   */
+  checkCode: async function(area_code, mobile_num, check_code) {
+    let records = await Msg_sms_record.find({
+      where: {
+        area_code: area_code,
+        mobile_num: mobile_num,
+        type: 0,
+        deleted: 0,
+        createdAt: { '>=': new Date().getTime() - SMS_AVAILABLE_TIME * 60 * 1000 }
+      },
+      limit: 1,
+      sort: 'createdAt desc'
+    }); //查找最新的一条短信
+    if (records.length > 0 && records[0]['check_code'] === check_code && records[0]['status'] === 0) {
+      await Msg_sms_record.update({
+        id: records[0]['id']
+      }, {
+        status: 1
+      });
+      return true;
+    } else {
+      return false;
     }
   }
 

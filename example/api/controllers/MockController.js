@@ -1801,34 +1801,6 @@ module.exports = {
         }).usingConnection(db);
 
 
-        let xt_member = await Xt_resource.create({
-          name: 'Xt_member管理',
-          res_type_code: 'resource_page',
-          sorted_num: 1
-        }).fetch().usingConnection(db);
-        await Xt_resource.create({
-          name: 'Xt_member列表',
-          res_type_code: 'resource_page',
-          sorted_num: 1,
-          path: '/admin/xt_member/index',
-          parent_id: xt_member.id
-        }).usingConnection(db);
-        await Xt_resource.create({
-          name: 'Xt_member添加编辑',
-          res_type_code: 'resource_btn',
-          sorted_num: 1,
-          path: '/admin/xt_member/modify',
-          parent_id: xt_member.id
-        }).usingConnection(db);
-        await Xt_resource.create({
-          name: 'Xt_member删除',
-          res_type_code: 'resource_btn',
-          sorted_num: 1,
-          path: '/admin/xt_member/delete',
-          parent_id: xt_member.id
-        }).usingConnection(db);
-
-
         let xt_translation = await Xt_resource.create({
           name: 'Xt_translation管理',
           res_type_code: 'resource_page',

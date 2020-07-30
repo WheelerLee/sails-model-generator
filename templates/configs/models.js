@@ -84,10 +84,10 @@ module.exports.models = {
     deleted: {   //逻辑删除 0 正常  其他是已删除(当前项目作为锁定账户判断)
       type: 'number',
       defaultsTo: 0,
-      columnType: 'integer'
+      columnType: 'tinyint unsigned'
     },
     create_user: {    //创建人
-     model:"xt_user"
+     model: "xt_user"
     },
     sorted_num: {   //排序号
       type: 'number',
