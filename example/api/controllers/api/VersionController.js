@@ -7,6 +7,18 @@
 
 module.exports = {
 
+  /**
+   * @api {POST} /api/version/check_update 检查APP是否有更新
+   * @apiGroup version
+   * @apiVersion 1.0.0
+   * 
+   * @apiParam {number} version_code app当前的版本号
+   * @apiParam {string} platform APP运行的系统，android或者ios
+   *
+   * @apiSuccess {number} errCode 0: 有新版本，1: 没有新版本
+   * @apiSuccess {string} msg 返回消息
+   * @apiSuccess {json} data 返回数据
+   */
   check_update: async function(req, res) {
     let version_code = parseInt(req.param('version_code', '1'));
     let platform = req.param('platform');
