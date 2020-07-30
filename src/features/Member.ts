@@ -11,6 +11,10 @@ export default class Member extends FileCopyFeature {
     return 'member';
   }
 
+  desc() {
+    return '生成会员的注册登录，找回密码等接口';
+  }
+
   resources() {
     return [
       

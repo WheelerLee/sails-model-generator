@@ -70,6 +70,13 @@ export default abstract class FeatureAdapter {
   abstract name(): void;
 
   /**
+   * 该模块的详细介绍
+   */
+  desc(): string {
+    return '';
+  }
+
+  /**
    * 生成的方法
    */
   abstract generate(): void;

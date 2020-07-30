@@ -23,6 +23,7 @@ program.version('6.0.1', '-v, --version', '输出当前的版本号')
   .option('-f, --folder <folder>', '指定生成的文件夹，默认是admin，当然现在也只支持admin。别的文件夹会有路径上的bug')
   .option('-m, --model <model>', '指定生成的model，不指定默认会生成所有的model以及修改config等，指定model将会只生成该model的增删改查')
   .option('--feature <feature>', '添加功能模块')
+  .option('--fc', '查询已经集成的功能模块')
   .option('--reset', '重置生成的管理系统，会将和admin相关的都会删除，请谨慎')
   .option('--skip', '忽略依赖添加');
 
@@ -37,8 +38,16 @@ let folder = 'admin';
 if (program.folder) {
   folder = program.folder;
 }
+let fc = program.fc;
 let reset = program.reset;
 let skip = program.skip;
+
+if (fc) { //查询模块
+  //第一步先将所有的模块注册到系统中
+  FeatureUtils.autoLink();
+  FeatureUtils.printFeatures();
+  process.exit();
+}
 
 if (!fs.existsSync(process.cwd() + '/views/') || !fs.existsSync(process.cwd() + '/api/')
   || !fs.existsSync(process.cwd() + '/api/controllers/') || !fs.existsSync(process.cwd() + '/api/models/')
@@ -46,7 +55,6 @@ if (!fs.existsSync(process.cwd() + '/views/') || !fs.existsSync(process.cwd() + 
   console.log(colors.error('请在项目根目录下运行'));
   process.exit();
 }
-
 if (feature) { //添加模块
   //第一步先将所有的模块注册到系统中
   FeatureUtils.autoLink();

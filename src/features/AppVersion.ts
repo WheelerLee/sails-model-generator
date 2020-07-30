@@ -12,6 +12,10 @@ export default class AppVersion extends FileCopyFeature {
     return 'app_version';
   }
 
+  desc() {
+    return '生成APP的版本管理功能，包含后端以及接口';
+  }
+
   resources() {
     return [
       '/admin/xt_app_version/index APP版本管理 page',

@@ -14,6 +14,7 @@ import FeatureAdapter from 'features/FeatureAdapter';
 export default class FeatureUtils {
 
   static features: any = {};
+  static feature_desc: any[] = [];
 
   /**
    * 添加功能模块
@@ -29,6 +30,13 @@ export default class FeatureUtils {
   }
 
   /**
+   * 打印所有的功能模块
+   */
+  static printFeatures() {
+    console.table(this.feature_desc);
+  }
+
+  /**
    * 自动将feature注册到系统中
    */
   static autoLink() {
@@ -41,6 +49,10 @@ export default class FeatureUtils {
       let feature = new Feature();
       if (feature.name && feature.name()) {
         FeatureUtils.features[feature.name()] = feature;
+        FeatureUtils.feature_desc.push({
+          name: feature.name(),
+          desc: feature.desc()
+        });
       }
     }
   }
