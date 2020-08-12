@@ -74,6 +74,11 @@ module.exports = {
       columnType: 'tinyint unsigned',
       defaultsTo: 1
     },
+    balance: {  // 余额
+      type: 'number',
+      columnType: 'integer(11)',
+      defaultsTo: 0
+    },
     apptoken: {  // apptoken 
       type: 'string',
       maxLength: 255,

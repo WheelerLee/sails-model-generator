@@ -14,7 +14,7 @@ module.exports = {
    * @apiGroup Member
    * @apiVersion 1.0.0
    * 
-   * @description 
+   * @apiDescription 
    * 
    * Created at 2020年06月19日15:47:33 by Wheeler
    *
@@ -113,7 +113,7 @@ module.exports = {
    * @apiGroup Member
    * @apiVersion 1.0.0
    *
-   * @description 
+   * @apiDescription 
    * 
    * Created at 2020年06月19日15:47:33 by Wheeler
    * 
@@ -188,7 +188,7 @@ module.exports = {
    * @apiGroup Member
    * @apiVersion 1.0.0
    *
-   * @description 
+   * @apiDescription 
    * 
    * Created at 2020年06月19日15:47:33 by Wheeler
    * 
@@ -261,7 +261,7 @@ module.exports = {
    * @apiGroup Member
    * @apiVersion 1.0.0
    * 
-   * @description 
+   * @apiDescription 
    * 
    * Created at 2020年06月19日15:47:33 by Wheeler
    *
