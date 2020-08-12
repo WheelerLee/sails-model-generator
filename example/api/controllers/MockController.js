@@ -653,6 +653,62 @@ module.exports = {
         }).usingConnection(db);
 
 
+        let pay_inoutdetail = await Xt_resource.create({
+          name: 'Pay_inoutdetail管理',
+          res_type_code: 'resource_page',
+          sorted_num: 1
+        }).fetch().usingConnection(db);
+        await Xt_resource.create({
+          name: 'Pay_inoutdetail列表',
+          res_type_code: 'resource_page',
+          sorted_num: 1,
+          path: '/admin/pay_inoutdetail/index',
+          parent_id: pay_inoutdetail.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'Pay_inoutdetail添加编辑',
+          res_type_code: 'resource_btn',
+          sorted_num: 1,
+          path: '/admin/pay_inoutdetail/modify',
+          parent_id: pay_inoutdetail.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'Pay_inoutdetail删除',
+          res_type_code: 'resource_btn',
+          sorted_num: 1,
+          path: '/admin/pay_inoutdetail/delete',
+          parent_id: pay_inoutdetail.id
+        }).usingConnection(db);
+
+
+        let pay_recharge = await Xt_resource.create({
+          name: 'Pay_recharge管理',
+          res_type_code: 'resource_page',
+          sorted_num: 1
+        }).fetch().usingConnection(db);
+        await Xt_resource.create({
+          name: 'Pay_recharge列表',
+          res_type_code: 'resource_page',
+          sorted_num: 1,
+          path: '/admin/pay_recharge/index',
+          parent_id: pay_recharge.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'Pay_recharge添加编辑',
+          res_type_code: 'resource_btn',
+          sorted_num: 1,
+          path: '/admin/pay_recharge/modify',
+          parent_id: pay_recharge.id
+        }).usingConnection(db);
+        await Xt_resource.create({
+          name: 'Pay_recharge删除',
+          res_type_code: 'resource_btn',
+          sorted_num: 1,
+          path: '/admin/pay_recharge/delete',
+          parent_id: pay_recharge.id
+        }).usingConnection(db);
+
+
         let province = await Xt_resource.create({
           name: 'Province管理',
           res_type_code: 'resource_page',

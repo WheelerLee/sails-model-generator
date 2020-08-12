@@ -84,6 +84,13 @@
           </div>
         </div>
         <div class="layui-form-item">
+          <label class="layui-form-label">balance</label>
+          <div class="layui-input-block">
+            <input type="text" name="balance" lay-verify="balance"
+                   value="<%= xt_member.balance ? xt_member.balance : '0' %>" placeholder="请输入balance" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
           <label class="layui-form-label">apptoken</label>
           <div class="layui-input-block">
             <input type="text" name="apptoken" lay-verify="apptoken"
@@ -195,6 +202,19 @@
         var reg = /^(\-|\+)?\d+(\.\d+)?$/;
         if(!reg.test(value.trim())) {
           return 'sex必须是数字';
+        }
+      },
+      balance: function (value, item) {
+        if (!value.trim()) {
+          return 'balance不能为空';
+        }
+        var reg = /^(\-|\+)?\d+(\.\d+)?$/;
+        if(!reg.test(value.trim())) {
+          return 'balance必须是数字';
+        }
+        var reg = /^[0-9]+$/;
+        if(!reg.test(value.trim())) {
+          return 'balance必须是整数';
         }
       },
       apptoken: function (value, item) {

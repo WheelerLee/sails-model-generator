@@ -8,52 +8,19 @@
         <div class="layui-card-body">
           <form class="layui-form" id="searchForm" style="margin-bottom: 20px;">
             <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="nick_name" value="" placeholder="nick_name" class="layui-input search_input">
+              <input type="text" name="type" value="" placeholder="type" class="layui-input search_input">
             </div>
             <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="head_icon" value="" placeholder="head_icon" class="layui-input search_input">
+              <input type="text" name="amount" value="" placeholder="amount" class="layui-input search_input">
             </div>
             <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="area_code" value="" placeholder="area_code" class="layui-input search_input">
+              <input type="text" name="status" value="" placeholder="status" class="layui-input search_input">
             </div>
             <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="mobile_num" value="" placeholder="mobile_num" class="layui-input search_input">
+              <input type="text" name="mch_order_no" value="" placeholder="mch_order_no" class="layui-input search_input">
             </div>
             <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="email" value="" placeholder="email" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="login_name" value="" placeholder="login_name" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="password" value="" placeholder="password" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="invite_code" value="" placeholder="invite_code" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="languages" value="" placeholder="languages" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="sex" value="" placeholder="sex" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="balance" value="" placeholder="balance" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="apptoken" value="" placeholder="apptoken" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="descriptions" value="" placeholder="descriptions" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="registry_way" value="" placeholder="registry_way" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="last_login_device" value="" placeholder="last_login_device" class="layui-input search_input">
-            </div>
-            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
-              <input type="text" name="fcm_token" value="" placeholder="fcm_token" class="layui-input search_input">
+              <input type="text" name="pay_order_no" value="" placeholder="pay_order_no" class="layui-input search_input">
             </div>
             <a class="layui-btn layui-btn-normal" style="margin: 8px 0 0 0" id="search_btn">
               <i class="layui-icon larry-icon">&#xe615;</i>查询
@@ -96,27 +63,16 @@
     var table = layui.table, form = layui.form, $ = layui.$;
     var tableRender = table.render({
       elem: '#test-table-form',
-      url: '/admin/xt_member/index',
+      url: '/admin/pay_recharge/index',
       method: 'post',
       cellMinWidth: 80,
       cols: [[
-        {field:'nick_name', title: 'nick_name'},
-        {field:'head_icon', title: 'head_icon'},
-        {field:'area_code', title: 'area_code'},
-        {field:'mobile_num', title: 'mobile_num'},
-        {field:'email', title: 'email'},
-        {field:'login_name', title: 'login_name'},
-        {field:'password', title: 'password'},
-        {field:'invite_member', title: 'invite_member'},
-        {field:'invite_code', title: 'invite_code'},
-        {field:'languages', title: 'languages'},
-        {field:'sex', title: 'sex'},
-        {field:'balance', title: 'balance'},
-        {field:'apptoken', title: 'apptoken'},
-        {field:'descriptions', title: 'descriptions'},
-        {field:'registry_way', title: 'registry_way'},
-        {field:'last_login_device', title: 'last_login_device'},
-        {field:'fcm_token', title: 'fcm_token'},
+        {field:'member', title: 'member'},
+        {field:'type', title: 'type'},
+        {field:'amount', title: 'amount'},
+        {field:'status', title: 'status'},
+        {field:'mch_order_no', title: 'mch_order_no'},
+        {field:'pay_order_no', title: 'pay_order_no'},
         {field: 'deleted', title: '是否删除', templet: "#deleted"},
         {fixed: 'right', title: '操作', align: 'center', toolbar: '#operation'}
       ]],
@@ -142,8 +98,8 @@
 
     $('#add_btn').on('click', function () {
       parent.window.addTab({
-        title: '添加Xt_member',
-        href: '/admin/xt_member/modify'
+        title: '添加Pay_recharge',
+        href: '/admin/pay_recharge/modify'
       });
     });
 
@@ -167,14 +123,14 @@
       if (obj.event === 'edit') {
         //标签页打开编辑页面
         parent.window.addTab({
-          title: '编辑Xt_member',
-          href: '/admin/xt_member/modify?id=' + obj.data.id
+          title: '编辑Pay_recharge',
+          href: '/admin/pay_recharge/modify?id=' + obj.data.id
         });
       } else if (obj.event === 'delete') {
         layer.confirm('是否确定删除？', {icon: 3, title: '提示'}, function (index) {
           layer.close(index);
           var loading = layer.load(1);
-          $.post('/admin/xt_member/delete', obj.data, function (data) {
+          $.post('/admin/pay_recharge/delete', obj.data, function (data) {
             layer.close(loading);
             if (data.errCode === 0) {
               layer.msg(data.msg, {

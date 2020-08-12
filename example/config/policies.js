@@ -76,6 +76,12 @@ module.exports.policies = {
   'admin/NewsController': {
     '*': ['adminSessionAuth', 'permissionsAuth']
   },
+  'admin/Pay_inoutdetailController': {
+    '*': ['adminSessionAuth', 'permissionsAuth']
+  },
+  'admin/Pay_rechargeController': {
+    '*': ['adminSessionAuth', 'permissionsAuth']
+  },
   'admin/ProvinceController': {
     '*': ['adminSessionAuth', 'permissionsAuth']
   },

@@ -46,6 +46,9 @@ module.exports = {
         if (req.param('sex') && req.param('sex').trim() !== '') {
           obj['sex'] = req.param('sex').trim();
         }
+        if (req.param('balance') && req.param('balance').trim() !== '') {
+          obj['balance'] = req.param('balance').trim();
+        }
         if (req.param('apptoken') && req.param('apptoken').trim() !== '') {
           obj['apptoken'] = {contains: req.param('apptoken').trim()};
         }
