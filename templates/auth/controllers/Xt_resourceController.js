@@ -43,8 +43,8 @@ module.exports = {
 
   modify: async function (req, res) {
 
+    var id = req.param('id');
     if (req.method.toLowerCase() === 'get') {
-      var id = req.param('id');
       var parent_id = req.param('parent_id');
       let xt_resource = {};
       let parent = {};
@@ -63,7 +63,6 @@ module.exports = {
       });
       return res.view({layout: 'admin/layout', xt_resource: xt_resource, types: types, resources: resources, parent: parent});
     } else {
-      var id = req.param('id');
       var obj = req.body || {};
 
       try {

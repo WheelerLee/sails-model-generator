@@ -65,15 +65,14 @@ module.exports = {
 
   modify: async function (req, res) {
 
+    var id = req.param('id');
     if (req.method.toLowerCase() === 'get') {
-      var id = req.param('id');
       let msg_message = {};
       if (id) {
         msg_message = await Msg_message.findOne({id: id});
       }
       return res.view({layout: 'admin/layout', msg_message: msg_message});
     } else {
-      var id = req.param('id');
       var obj = req.body || {};
 
       try {

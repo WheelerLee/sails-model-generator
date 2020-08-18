@@ -18,7 +18,7 @@ module.exports = {
           where: {
             deleted: 0
           },
-          sort: "sorted_num asc"
+          sort: 'sorted_num asc'
         });
         for (let r of data) {
           if (!r.parent_id) r.parent_id = 0;
@@ -29,46 +29,6 @@ module.exports = {
           msg: '',
           data: data
         });
-
-        let action = req.param('action');
-        if (action === 'menu') {
-          let data = await Xt_dict.find({
-            where: {
-              parent_id: null,
-              deleted: 0
-            },
-            sort: 'sorted_num desc'
-          }).populate('children', {
-            where: {
-              deleted: 0
-            }
-          });
-          res.json({
-            code: 0,
-            msg: '',
-            data: data
-          });
-
-        } else {
-          let id = req.param('id');
-          if (id) {
-            let data = await Xt_dict.find({
-              parent_id: id,
-              deleted: 0
-            });
-            res.json({
-              code: 0,
-              msg: '',
-              data: data
-            });
-          } else {
-            res.json({
-              code: 0,
-              msg: '',
-              data: []
-            });
-          }
-        }
 
       } catch (e) {
         res.json({
@@ -81,8 +41,8 @@ module.exports = {
 
   modify: async function (req, res) {
 
+    var id = req.param('id');
     if (req.method.toLowerCase() === 'get') {
-      var id = req.param('id');
       let action = req.param('action');
       let parent_id = req.param('parent_id');
       let dict = req.param('dict');
@@ -92,7 +52,6 @@ module.exports = {
       }
       return res.view({layout: 'admin/layout', xt_dict: xt_dict, action: action, parent_id: parent_id, dict: dict});
     } else {
-      var id = req.param('id');
       var obj = req.body || {};
       if (obj.name_en) {
         obj.name = obj.name_en;

@@ -77,8 +77,8 @@ module.exports = {
 
   modify: async function (req, res) {
 
+    var id = req.param('id');
     if (req.method.toLowerCase() === 'get') {
-      var id = req.param('id');
       let xt_user = {};
       if (id) {
         xt_user = await Xt_user.findOne({id: id});
@@ -102,7 +102,6 @@ module.exports = {
       });
       return res.view({layout: 'admin/layout', xt_user: xt_user, sex: sex, roles: roles});
     } else {
-      var id = req.param('id');
       var role = req.param('role');
       var obj = req.body || {};
 

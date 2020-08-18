@@ -66,8 +66,8 @@ module.exports = {
 
   modify: async function (req, res) {
 
+    var id = req.param('id');
     if (req.method.toLowerCase() === 'get') {
-      var id = req.param('id');
       let xt_role = {};
       if (id) {
         xt_role = await Xt_role.findOne({
@@ -79,7 +79,6 @@ module.exports = {
         xt_role: xt_role
       });
     } else {
-      var id = req.param('id');
       var obj = req.body || {};
 
       try {
@@ -154,7 +153,7 @@ module.exports = {
               xx(r.children);
             }
           }
-        }
+        };
         let resources = await Xt_resource.getAllResources();
         xx(resources);
 
@@ -192,16 +191,16 @@ module.exports = {
                 xx(r.children);
               }
             }
-          }
+          };
           await xx(resources);
 
-          proceed(null, {
+          return proceed(null, {
             errCode: 0,
             msg: '保存成功!'
           });
 
         } catch (e) {
-          proceed(e);
+          return proceed(e);
         }
       });
 

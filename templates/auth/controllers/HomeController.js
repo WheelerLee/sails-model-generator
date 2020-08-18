@@ -19,7 +19,7 @@ module.exports = {
       } else {
         return `<a lay-href="${r.path}">${r.icon_path ? '<i class="layui-icon">' + r.icon_path + '</i>' : ''}${r.name}</a>`;
       }
-    }
+    };
 
     const xx = function(sub_resources) {
       if (sub_resources && sub_resources.length > 0) {
@@ -36,7 +36,7 @@ module.exports = {
       } else {
         return '';
       }
-    }
+    };
 
     let nav = '';
     for (let r of resources) {
