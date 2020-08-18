@@ -87,7 +87,7 @@ module.exports.models = {
       columnType: 'tinyint unsigned'
     },
     create_user: {    //创建人
-     model: "xt_user"
+     model: 'xt_user'
     },
     sorted_num: {   //排序号
       type: 'number',

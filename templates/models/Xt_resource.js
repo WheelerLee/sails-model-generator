@@ -74,7 +74,7 @@ module.exports = {
       }
 
       return resources;
-    }
+    };
 
     return (await xx());
 

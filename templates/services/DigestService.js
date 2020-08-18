@@ -38,7 +38,7 @@ module.exports = {
    * @returns {string}
    */
   aes_encryption: function (data, key) {
-    var iv = "";
+    var iv = '';
     var clearEncoding = 'utf8';
     var cipherEncoding = 'base64';
     var cipherChunks = [];
@@ -58,7 +58,7 @@ module.exports = {
    * @returns {string}
    */
   aes_decryption: function (data, key) {
-    var iv = "";
+    var iv = '';
     var clearEncoding = 'utf8';
     var cipherEncoding = 'base64';
     var cipherChunks = [];
