@@ -7,10 +7,10 @@ const Nexmo = require('nexmo');
 
 //Realize a queue with a maximum concurrency of 1
 const queue = Queue(10, {
-  "retry": 0,               //Number of retries
-  "retryIsJump": false,     //retry now? 
-  "timeout": 0,            //The timeout period
-  "autoRun": true    
+  'retry': 0,               //Number of retries
+  'retryIsJump': false,     //retry now?
+  'timeout': 0,            //The timeout period
+  'autoRun': true
 });
 
 module.exports = {
@@ -49,10 +49,10 @@ module.exports = {
    * @param {Object} data 发送的数据
    */
   push_by_firebase: async function(member_id, title, content, data) {
-    if (!sails.settings.firebase_settings || !sails.settings.firebase_settings.databaseURL 
+    if (!sails.settings.firebase_settings || !sails.settings.firebase_settings.databaseURL
       || !sails.settings.firebase_settings.cert) {
-        sails.log.error('请先设置firebase的相关参数，才能正常使用firebase的推送服务');
-        return false;
+      sails.log.error('请先设置firebase的相关参数，才能正常使用firebase的推送服务');
+      return false;
     }
     if (!global.initializeApp) {
       admin.initializeApp({
@@ -60,7 +60,7 @@ module.exports = {
         databaseURL: sails.settings.firebase_settings.databaseURL
       });
       global.initializeApp = true;
-    }    
+    }
     let member = await Xt_member.findOne({id: member_id, deleted: 0});
     if (!member || !member.fcm_token) {
       return false;
@@ -119,11 +119,11 @@ module.exports = {
    * @param {string} text 短信内容
    */
   sms_by_nexmo: function (to, text) {
-    return new Promise(function(resolve, reject) {
-      if (!sails.settings.nexmo_setting || !sails.settings.nexmo_setting.nexmo_api_key 
+    return new Promise(function(resolve) {
+      if (!sails.settings.nexmo_setting || !sails.settings.nexmo_setting.nexmo_api_key
         || !sails.settings.nexmo_setting.nexmo_api_secret || !sails.settings.nexmo_setting.nexmo_from) {
-          sails.log.error('请先设置nexmo的相关参数，才能正常使用nexmo的服务');
-          return resolve(false);
+        sails.log.error('请先设置nexmo的相关参数，才能正常使用nexmo的服务');
+        return resolve(false);
       }
       const nexmo = new Nexmo({
         apiKey: sails.settings.nexmo_setting.nexmo_api_key,

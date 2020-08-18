@@ -3,7 +3,7 @@
  * 2019-09-10 16:14.
  *
  * @author WheelerLee https://github.com/WheelerLee
- * @copyright 2019 
+ * @copyright 2019
  */
 module.exports = {
 

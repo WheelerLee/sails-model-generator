@@ -92,7 +92,7 @@ module.exports = {
       let foldName = moment().utc().utcOffset(480).format('YYYYMMDD');
       upStream.upload({
         maxBytes: parseInt(sails.settings.system_settings.maximum_upload_size) * 1024,
-        dirname: "../../upload/" + foldName,
+        dirname: '../../upload/' + foldName,
         saveAs: function (__newFileStream, next) {
           return next(undefined, uuid.v4());
         }
@@ -144,11 +144,11 @@ module.exports = {
           }
         }
         let foldName = moment().utc().utcOffset(480).format('YYYYMMDD');
-        let path = process.cwd() + "/upload/" + foldName + '/';
+        let path = process.cwd() + '/upload/' + foldName + '/';
         fs.ensureDirSync(path);
 
         let save_name = uuid.v4();
-        return new Promise(function(resolve, reject) {
+        return new Promise(function(resolve) {
           let stream = response.data.pipe(fs.createWriteStream(path + save_name));
           stream.on('finish', function() {
             resolve([{

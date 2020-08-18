@@ -8,7 +8,7 @@
  */
 module.exports = function(req, res, next) {
   if (req.session.admin) {
-    next();
+    return next();
   } else {
     if (req.xhr) {
       return res.json({errCode: 3, msg: '请先登录！'});

@@ -2,8 +2,7 @@
  * Created by liwei on 2017/8/11.
  */
 
-var crypto = require("crypto");
-var fs = require('fs');
+var crypto = require('crypto');
 
 module.exports = {
 

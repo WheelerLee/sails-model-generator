@@ -1,7 +1,7 @@
 /**
  * 此代码由生成器生成，如有问题，请联系作者 https://github.com/wheelerlee
  */
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
 
 module.exports = {
 

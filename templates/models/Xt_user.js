@@ -49,12 +49,11 @@ module.exports = {
       model: 'Xt_dict'
     },
     user_state: {     //用户状态  0 正常 1 禁用
-      type: 'number'
-     ,
+      type: 'number',
       allowNull: true,
       defaultsTo: 0
     }
-  },
+  }
 
 };
 
