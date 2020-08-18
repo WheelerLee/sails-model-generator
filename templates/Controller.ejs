@@ -54,15 +54,14 @@ module.exports = {
 
   modify: async function (req, res) {
 
+    var <%- primaryKey %> = req.param('<%- primaryKey %>');
     if (req.method.toLowerCase() === 'get') {
-      var <%- primaryKey %> = req.param('<%- primaryKey %>');
       let <%- modelName.toLowerCase() %> = {};
       if (<%- primaryKey %>) {
         <%- modelName.toLowerCase() %> = await <%- modelName %>.findOne({<%- primaryKey %>: <%- primaryKey %>});
       }
       return res.view({layout: '<%- folderName %>/layout', <%- modelName.toLowerCase() %>: <%- modelName.toLowerCase() %>});
     } else {
-      var <%- primaryKey %> = req.param('<%- primaryKey %>');
       var obj = req.body || {};
 
       try {
