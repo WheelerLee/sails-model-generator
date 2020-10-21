@@ -18,16 +18,23 @@ colors.setTheme({
   progress: ['blue']
 });
 
-program.version('6.1.4', '-v, --version', '输出当前的版本号')
+program.version('7.0.0', '-v, --version', '输出当前的版本号')
   .helpOption('-h, --help', '帮助信息')
   .option('-f, --folder <folder>', '指定生成的文件夹，默认是admin，当然现在也只支持admin。别的文件夹会有路径上的bug')
   .option('-m, --model <model>', '指定生成的model，不指定默认会生成所有的model以及修改config等，指定model将会只生成该model的增删改查')
   .option('--feature <feature>', '添加功能模块')
   .option('--fc', '查询已经集成的功能模块')
   .option('--reset', '重置生成的管理系统，会将和admin相关的都会删除，请谨慎')
-  .option('--skip', '忽略依赖添加');
+  .option('--skip', '忽略依赖添加')
+  .option('--to', '生成基于TypeOrm以及TypeScript的后台，该版本将直接取消admin层级的文件夹');
 
 program.parse(process.argv);
+
+let to = program.to;
+if (to) {
+  console.log(colors.warn('请使用tmg命令，获取帮助请使用tmg -h'));
+  process.exit();
+}
 
 let feature = program.feature;
 if (feature && program.folder) {

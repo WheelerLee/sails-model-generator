@@ -113,6 +113,8 @@ module.exports = {
    * @returns {Promise.<void>}
    */
   login: async function (req, res) {
+    console.log(sails);
+
     if (req.method.toLowerCase() === 'get') {
       res.view({layout: 'admin/layout'});
     } else {

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= '管理系统' %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/admin/css/admin.css" media="all">
+    <script src="/layui/layui.js"></script>
+    <!-- 统一引用时间格式化的插件 -->
+    <script src="/dayjs/dayjs.min.js"></script>
+    <script src="/dayjs/plugin/localizedFormat.js"></script>
+    <!-- 动态根据后台的情况引用国际化文件 -->
+    <script src="/dayjs/locale/zh-cn.js"></script>
+    <script type="text/javascript">
+        dayjs.locale('zh-cn');
+    </script>
+</head>
+<body>
+<%- body %>
+</body>
+</html>

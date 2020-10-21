@@ -1,0 +1,30 @@
+import {
+  Column, Entity
+} from 'typeorm';
+import BaseModel from '../BaseModel';
+
+@Entity('<%- tableName %>')
+export default class <%- modelName %> extends BaseModel {
+  <%_ for (let i = 0; i < columns.length; i++) { _%>
+  <%_ let column = columns[i] _%>
+  <%_ if (column.comment) { _%>
+  /**
+   * <%- column.comment %>,
+   */
+  <%_ } _%>
+  @Column({
+    type: '<%- column.dataType %>',
+    <%_ if (column.width || column.length) { _%>
+    <%- column.width ? 'width: ' + column.width : 'length: ' + column.length %>,
+    <%_ } _%>
+    nullable: <%- column.nullable %>,
+    <%_ if (Object.prototype.hasOwnProperty.call(column, 'default')) { _%>
+    <%- 'default: ' + (column.varType === 'string' ? '\'' : '') + column.default + (column.varType === 'string' ? '\'' : '') %>,
+    <%_ } _%>
+  })
+  <%- column.entityName %><%- column.nullable ? '?' : '!' %>: <%- column.varType || 'any' %>;
+<%_ if (i < columns.length - 1) { _%>
+<%- '' %>
+<%_ } _%>
+  <%_ } _%>
+}

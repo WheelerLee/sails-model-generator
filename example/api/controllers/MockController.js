@@ -4,6 +4,7 @@
  * @description :: Server-side actions for handling incoming requests.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
+const sharp = require('sharp');
 
 module.exports = {
 
@@ -1926,6 +1927,14 @@ module.exports = {
 
     return res.json(a);
 
+  },
+
+  x: async function (req, res) {
+    sharp('/Users/wheeler/Desktop/16eb0e711b5e45f4.gif', { animated: true })
+      .resize(100).toFile('/Users/wheeler/Desktop/xxx.gif');
+    // sharp('/Users/wheeler/Desktop/e4faf86688ea96260a8d8b474ff3c586.jpg')
+    //   .resize(100).toFile('/Users/wheeler/Desktop/xxx.jpg');
+    res.send('xxx');
   }
 
 };

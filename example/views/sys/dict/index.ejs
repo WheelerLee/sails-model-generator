@@ -1,0 +1,226 @@
+<div class="layui-card layadmin-header">
+</div>
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-card">
+      <div class="layui-card-body" id="LAY_menu">
+        <form class="layui-form" id="searchForm" style="margin-bottom: 20px;">
+          <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+            <input id="search-text" type="text" name="name" value="" placeholder="名称" class="layui-input search_input">
+          </div>
+          <a class="layui-btn layui-btn-normal" style="margin: 8px 0 0 0" id="search_btn">
+            <i class="layui-icon larry-icon">&#xe615;</i>查询
+          </a>
+          <% // if (modify_permission) { %>
+          <a class="layui-btn layui-btn-primary" id="add_btn" style="margin: 8px 0 0 0">
+            <i class="layui-icon larry-icon">&#xe654;</i>添加
+          </a>
+          <% //} %>
+        </form>
+        <table id="table1" class="layui-table" lay-filter="table1"></table>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/html" id="operation">
+    <% // if (modify_permission) { %>
+    <a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="add">添加</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <% //} %>
+    <% //if (delete_permission) { %>
+    {{#  if(d.deleted === 0){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+    {{#  } else { }}
+    {{#  } }}
+    <% //} %>
+</script>
+<script type="text/javascript">
+
+  layui.config({
+    base: '/layui/module/'
+  }).use(['treeTable', 'table', 'jquery'], function () {
+
+    var treeTable = layui.treeTable;
+    var $ = layui.jquery;
+    var re;
+
+    // TODO: 修改treetable为新版
+    var renderTable = function () {
+      layer.load(2);
+      re = treeTable.render({
+        elem: '#table1',
+        method: 'POST',
+        url: '/sys/dict/index?x=y',
+        top_value: null,
+        icon_key: 'code',
+        primary_key: 'code',
+        parent_key: 'parent',
+        hide_class: 'layui-hide',
+        cols: [
+          {
+            key: 'code',
+            title: 'CODE',
+          },
+          {
+            key: 'name',
+            title: '名称'
+          },
+          {
+            key: 'vals',
+            title: '值',
+            width: 280,
+            template: function (item) {
+              return item.vals || '';
+            }
+          },
+          {
+            key: 'remarks',
+            title: '备注',
+            template: function (item) {
+              return item.remarks || '';
+            }
+          },
+          {
+            fixed: 'right',
+            title: '操作',
+            width: 170,
+            align: 'center',
+            template: function (item) {
+              var str = '';
+              str += '<a class="layui-btn layui-btn-xs layui-btn-primary" lay-filter="add">添加</a>';
+              str += '<a class="layui-btn layui-btn-xs" lay-filter="edit">修改</a>';
+              str += '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-filter="delete">删除</a>';
+              return str;
+            }
+          }
+        ],
+        end: function () {
+          layer.closeAll('loading');
+        }
+      });
+    }
+    renderTable();
+
+    $('#search_btn').click(function () {
+      var keyword = $('#search-text').val();
+      var searchCount = 0;
+      $('#table1').find('tbody tr td').each(function () {
+        $(this).css('background-color', 'transparent');
+        var text = $(this).text();
+        if (keyword != '' && text.indexOf(keyword) >= 0) {
+          $(this).css('background-color', 'rgba(250,230,160,0.5)');
+          if (searchCount == 0) {
+            // treetable.expandAll('#table1');
+            // treeTable.openAll(re);
+            $('html,body').stop(true);
+            $('html,body').animate({
+              scrollTop: $(this).offset().top - 150
+            }, 500);
+          }
+          searchCount++;
+        }
+      });
+      if (!keyword) {
+        layer.msg("请输入搜索内容", {
+          icon: 5
+        });
+      } else if (searchCount === 0) {
+        layer.msg("没有匹配结果", {
+          icon: 5
+        });
+      }
+    });
+
+    // table.on('tool(table1)', function (obj) {
+    //   if (obj.event === 'edit') {
+    //     layer.open({
+    //       type: 2,
+    //       title: '编辑字典',
+    //       maxmin: true,
+    //       resize: false,
+    //       area: ['70%', '80%'],
+    //       content: '/admin/xt_dict/modify?id=' + obj.data.id,
+    //       zIndex: layer.zIndex, //重点1
+    //     });
+    //   } else if (obj.event === 'add') {
+    //     layer.open({
+    //       type: 2,
+    //       title: '添加字典',
+    //       maxmin: true,
+    //       resize: false,
+    //       area: ['70%', '80%'],
+    //       content: '/admin/xt_dict/modify?parent_id=' + obj.data.id,
+    //       zIndex: layer.zIndex, //重点1
+    //     });
+    //   } else if (obj.event === 'delete') {
+    //     layer.confirm('是否确定删除？', {
+    //       icon: 3,
+    //       title: '提示'
+    //     }, function (index) {
+    //       layer.close(index);
+    //       var loading = layer.load(1);
+    //       $.post('/admin/xt_dict/delete', {
+    //         id: obj.data.id
+    //       }, function (data) {
+    //         layer.close(loading);
+    //         if (data.errCode === 0) {
+    //           layer.msg(data.msg, {
+    //             icon: 6,
+    //             time: 1000
+    //           }, function () {
+    //             renderTable();
+    //           });
+    //         } else {
+    //           layer.msg(data.msg, {
+    //             icon: 5
+    //           });
+    //         }
+    //       });
+    //     });
+    //   }
+    // });
+
+    // $('#search_btn').click(function () {
+    //   var keyword = $('#search-text').val();
+    //   var searchCount = 0;
+    //   $('#table1').next('.treeTable').find('.layui-table-body tbody tr td').each(function () {
+    //     $(this).css('background-color', 'transparent');
+    //     var text = $(this).text();
+    //     if (keyword != '' && text.indexOf(keyword) >= 0) {
+    //       $(this).css('background-color', 'rgba(250,230,160,0.5)');
+    //       if (searchCount == 0) {
+    //         treetable.expandAll('#auth-table');
+    //         $('html,body').stop(true);
+    //         $('html,body').animate({
+    //           scrollTop: $(this).offset().top - 150
+    //         }, 500);
+    //       }
+    //       searchCount++;
+    //     }
+    //   });
+    //   if (keyword == '') {
+    //     layer.msg("请输入搜索内容", {
+    //       icon: 5
+    //     });
+    //   } else if (searchCount == 0) {
+    //     layer.msg("没有匹配结果", {
+    //       icon: 5
+    //     });
+    //   }
+    // });
+
+    // $('#add_btn').on('click', function () {
+    //   layer.open({
+    //     type: 2,
+    //     title: '添加字典',
+    //     maxmin: true,
+    //     resize: false,
+    //     area: ['70%', '80%'],
+    //     content: '/admin/xt_dict/modify',
+    //     zIndex: layer.zIndex, //重点1
+    //   });
+    // });
+
+  });
+
+</script>
