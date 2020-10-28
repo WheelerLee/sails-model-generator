@@ -103,22 +103,26 @@
       form.on('submit(component-form-submit)', function (data) {
         var loading = layer.load(1);
         var fields = data.field;
-        for (var i in fields) {
-          if (!fields[i]) {
-            delete fields[i];
-          }
-        }
-        $.post('/sys/resource/modify', data.field, function (data) {
-          layer.close(loading);
-          if (data.code === 0) {
-            layer.msg(data.msg, {
-              icon: 6,
-              time: 2000
-            }, function() {
-              window.location.reload();
-            });
-          } else {
-            layer.msg(data.msg, {icon: 5});
+        $.ajax({
+          url: '/sys/resource/modify',
+          data: JSON.stringify(fields),
+          type: "POST",
+          contentType: "application/json",
+          success: function(data) {
+            layer.close(loading);
+            if (data.code === 0) {
+              layer.msg(data.msg, {
+                icon: 6,
+                time: 2000
+              }, function() {
+                window.location.reload();
+              });
+            } else {
+              layer.msg(data.msg, {icon: 5});
+            }
+          },
+          error: function() {
+            layer.close(loading);
           }
         });
         return false;

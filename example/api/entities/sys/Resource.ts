@@ -42,8 +42,12 @@ export default class Resource extends BaseModel {
 
   // TODO: 权限不使用关联关系
   // @ManyToOne(() => Resource)
-  @Column('int')
-  parentId?: number;
+  @Column({
+    type: 'varchar',
+    length: 36,
+    nullable: true,
+  })
+  parentId?: string;
 
   // @OneToMany(() => Resource, (resource) => resource.parent)
   // resources?: Resource[];

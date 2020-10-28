@@ -17,6 +17,7 @@
     "fs-extra": "^8.1.0",
     "gm": "^1.23.1",
     "grunt": "1.0.1",
+    "lodash": "^4.17.20",
     "moment": "^2.25.3",
     "mysql": "^2.18.1",
     "nexmo": "^2.6.0",
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "@sailshq/eslint": "^4.19.3",
+    "@types/lodash": "^4.14.162",
     "@typescript-eslint/eslint-plugin": "^4.4.1",
     "@typescript-eslint/parser": "^4.4.1",
     "ajv": "^6.12.2",

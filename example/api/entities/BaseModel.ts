@@ -1,10 +1,10 @@
 import {
-  BeforeInsert, BeforeUpdate, Column, PrimaryGeneratedColumn
+  BeforeInsert, BeforeUpdate, Column, CreateDateColumn, PrimaryGeneratedColumn
 } from 'typeorm';
 
 export default class BaseModel {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column('tinyint', { default: 0 })
   deleted!: number;

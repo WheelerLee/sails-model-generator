@@ -20,14 +20,14 @@ export async function index(req: Sails.Request, res: Sails.Response) {
 
 export async function modify(req: Sails.Request, res: Sails.Response) {
   const id = req.param('id');
-  let parentId = parseInt(req.param('parentId', '0'));
+  let parentId = req.param('parentId');
 
   if (req.method.toLowerCase() === 'get') {
     let resource: Resource | undefined;
     const resourceTypes = await getRepository(Dict).find({
       where: {
         deleted: 0,
-        parent: 'SYS_RESOURCE'
+        parent: 'SYS_RESOURCE_TYPE'
       }
     });
     let parent: Resource | undefined;
@@ -50,10 +50,33 @@ export async function modify(req: Sails.Request, res: Sails.Response) {
   }
 
   const resource: Resource = Resource.parse(req.body);
-  resource.parentId = parentId;
+  if (parentId) {
+    resource.parentId = parentId;
+  }
   await getRepository(Resource).save(resource);
   return res.json({
     code: 0,
-    msg: '添加成功'
+    msg: '保存成功'
+  });
+}
+
+export async function remove(req: Sails.Request, res: Sails.Response) {
+  const id = req.param('id');
+  const subCount = await getRepository(Resource).count({
+    where: {
+      deleted: 0,
+      parentId: id
+    }
+  });
+  if (subCount) {
+    return res.json({
+      code: 1,
+      msg: '该资源还存在下级资源，请先删除下级资源后再试'
+    });
+  }
+  await getRepository(Resource).update(id, { deleted: 1 });
+  return res.json({
+    code: 0,
+    msg: '删除成功'
   });
 }

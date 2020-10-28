@@ -170,36 +170,31 @@
      */
     treeTable.on('tree(delete)', function (obj) {
       layer.confirm('删除后将无法恢复，是否继续？', { icon: 3, btn: ["确认", "取消"], title: '删除'}, function (index) {
-        console.log(index);
         layer.close(index);
         var loading = layer.load(1);
         $.ajax({
-          url: "/sys/resource/delete/" + obj.item.id,
+          url: '/sys/resource/remove',
+          data: JSON.stringify({id: obj.item.id}),
           type: "POST",
-          success: function (data) {
+          contentType: "application/json",
+          success: function(data) {
             layer.close(loading);
             if (data.code === 0) {
               layer.msg(data.msg, {
                 icon: 6,
-                time: 500
-              }, function () {
-                // window.location.href = '/admin/home/index';
+                time: 2000
+              }, function() {
                 window.location.reload();
               });
             } else {
               layer.msg(data.msg, {icon: 5});
             }
           },
-          error: function (xhr, status, error) {
+          error: function() {
             layer.close(loading);
           }
         });
       });
-      // console.log(obj);
-      // parent.window.addTab({
-      //   title: '添加资源',
-      //   href: '/sys/resource/modify?parentId=' + obj.item.id
-      // });
     });
 
   });

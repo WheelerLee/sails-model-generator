@@ -38,7 +38,19 @@
           <span><%= '管理系统' %></span>
         </div>
         <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
-          
+          <% _.each(resources, function(resource) { %>
+            <li class="layui-nav-item">
+              <a href="javascript:;">
+                <% if (resource.icon) { %>
+                <i class="layui-icon"><%- resource.icon %></i>
+                <% } %>
+                <cite><%= resource.name %></cite>
+              </a>
+              <%- partial('./resource_item.ejs', {
+                resources: resource.subResources || []
+              }) %>
+            </li>
+          <% }) %>
         </ul>
       </div>
     </div>
