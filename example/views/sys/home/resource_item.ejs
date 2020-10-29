@@ -10,7 +10,7 @@
     <cite><%= resource.name %></cite>
   </a>
   <%- partial('./resource_item.ejs', {
-    resources: resource.subResources || []
+    resources: resource.children || []
   }) %>
   </dd>
   <% }) %>

@@ -4,8 +4,10 @@ import colors from 'colors';
 import program from 'commander';
 import getDBInfo from './getDBInfo';
 import SqlUtils from './SqlUtils';
-import { table } from 'console';
 import FSUtils from './FSUtils';
+import { getConnectionOptions } from 'typeorm';
+import path from 'path';
+import generateModel from './generateModel';
 
 require('reflect-metadata');
 
@@ -27,11 +29,11 @@ program.version('7.0.0', '-v, --version', '输出当前的版本号')
   // .option('-m, --model <model>', '指定生成的model，不指定默认会生成所有的model以及修改config等，指定model将会只生成该model的增删改查')
   // .option('--feature <feature>', '添加功能模块')
   // .option('--fc', '查询已经集成的功能模块')
-  .option('-h, --host <host>', '主机，一般为IP地址')
-  .option('--port <port>', '端口，默认为3306')
-  .option('-u, --user <user>', '登录数据库的用户名')
-  .option('-p, --password <password>', '登录数据库的密码')
-  .option('-d, --database <database>', '需要连接的数据库')
+  // .option('-h, --host <host>', '主机，一般为IP地址')
+  // .option('--port <port>', '端口，默认为3306')
+  // .option('-u, --user <user>', '登录数据库的用户名')
+  // .option('-p, --password <password>', '登录数据库的密码')
+  // .option('-d, --database <database>', '需要连接的数据库')
   .option('-t, --table <table>', '如果不指定table将会生成基本的管理系统以及实体类')
   .option('--reset', '重置生成的管理系统，会将和admin相关的都会删除，请谨慎')
   .option('--skip', '忽略依赖添加')
@@ -50,16 +52,26 @@ if (!fs.existsSync(process.cwd() + '/views/') || !fs.existsSync(process.cwd() + 
 }
 
 // let {host, port, user, password, database, table} = program;
+let table: string = program.table;
 
 async function main() {
-  const dbInfo = await getDBInfo(program);
+  // const dbInfo = await getDBInfo(program);
+  let dbInfo = require(path.resolve(process.cwd(), 'ormconfig.json'));
+  // 覆盖数据库的重写配置，防止数据库发生问题
+  dbInfo.dropSchema = false;
+  dbInfo.synchronize = false;
   const connection = await SqlUtils.connect(dbInfo);
   let entities = await SqlUtils.getEntities(connection, dbInfo.database);
-  await SqlUtils.genaterEntities(entities);
+
+  console.log(entities);
+  // 生成单表的增删改查
+  if (table) {
+    generateModel(entities, table);
+  } else {
+    await SqlUtils.genaterEntities(entities);
+    FSUtils.copyTypes();
+  }
   connection.close();
-
-  FSUtils.copyTypes();
-
 }
 
 main();

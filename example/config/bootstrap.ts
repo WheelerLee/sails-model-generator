@@ -21,7 +21,7 @@
  */
 // const Sequelize = require('sequelize');
 import {
-  createConnection,
+  createConnection, getConnectionOptions,
   // DefaultNamingStrategy,
 } from 'typeorm';
 // import { snakeCase } from 'change-case';

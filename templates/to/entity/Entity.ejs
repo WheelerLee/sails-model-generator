@@ -4,7 +4,7 @@ import {
 import BaseModel from '../BaseModel';
 
 @Entity('<%- tableName %>')
-export default class <%- modelName %> extends BaseModel {
+export default class <%- name %> extends BaseModel {
   <%_ for (let i = 0; i < columns.length; i++) { _%>
   <%_ let column = columns[i] _%>
   <%_ if (column.comment) { _%>
@@ -23,8 +23,10 @@ export default class <%- modelName %> extends BaseModel {
     <%_ } _%>
   })
   <%- column.entityName %><%- column.nullable ? '?' : '!' %>: <%- column.varType || 'any' %>;
-<%_ if (i < columns.length - 1) { _%>
-<%- '' %>
-<%_ } _%>
+
+  static parse(...entityLikes: DeepPartial<<%- name %>>[]): <%- name %> {
+    const <%- varName %> = new <%- name %>();
+    return getManager().merge(<%- name %>, <%- varName %>, ...entityLikes);
+  }
   <%_ } _%>
 }

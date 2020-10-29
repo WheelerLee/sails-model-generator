@@ -7,7 +7,7 @@
  *
  */
 
-import { Connection, createConnection } from "typeorm";
+import { Connection, ConnectionOptions, createConnection } from "typeorm";
 import { DBInfo } from "./getDBInfo";
 import { pascalCase, camelCase } from 'change-case';
 import { Column, Enteity } from "./concats";
@@ -39,18 +39,8 @@ export default class SqlUtils {
    * 连接数据库，返回连接实例
    * @param info 数据库连接信息
    */
-  static async connect(info: DBInfo): Promise<Connection> {
-    let connection = createConnection({
-      type: 'mysql',
-      host: info.host,
-      port: info.port,
-      username: info.user,
-      password: info.password,
-      database: info.database,
-      dropSchema: false,
-      synchronize: false,
-      logging: 'all',
-    });
+  static async connect(info: ConnectionOptions): Promise<Connection> {
+    let connection = createConnection(info);
     return connection;
   }
 
@@ -121,7 +111,8 @@ export default class SqlUtils {
       name: modelName,
       tableName: tableName,
       columns: columns,
-      moduleName: moduleName
+      moduleName: moduleName,
+      varName: camelCase(modelName)
     };
   }
 
@@ -148,11 +139,7 @@ export default class SqlUtils {
     }
     await fs.ensureDir(entityPath);
     const template = await fs.readFile(path.resolve(__dirname, '../../templates/to/entity/Entity.ejs'));
-    const model = ejs.render(template.toString(), {
-      tableName: entity.tableName,
-      modelName: entity.name,
-      columns: entity.columns
-    });
+    const model = ejs.render(template.toString(), entity);
     await fs.writeFile(`${entityPath}/${entity.name}.ts`, Buffer.from(model), { flag: 'w', encoding: 'utf8' });
   }
 

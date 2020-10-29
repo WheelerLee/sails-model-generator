@@ -5,6 +5,13 @@ layui.define(['jquery'], function(exports) {
   var MOD_NAME = 'adminUtils';
   var $ = layui.jquery;
   var layer = layui.layer;
+
+  function interceptCallback(callback, args) {
+    return function() {
+      return callback.apply(null, args);
+    }
+  }
+
   var obj = {
     /**
      * 搜索功能，自动刷新表格
@@ -61,6 +68,12 @@ layui.define(['jquery'], function(exports) {
         });
       }
       $.ajax(params);
+    },
+    /**
+     * 绑定点击事件
+     */
+    bindClick: function(selector, cb, params) {
+      $(selector).on('click', interceptCallback(cb, params));
     }
   };
   exports(MOD_NAME, obj);

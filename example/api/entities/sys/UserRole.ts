@@ -1,21 +1,15 @@
 import {
-  Column, Entity
+  Entity, ManyToOne
 } from 'typeorm';
 import BaseModel from '../BaseModel';
+import Role from './Role';
+import User from './User';
 
 @Entity('sys_user_role')
 export default class UserRole extends BaseModel {
-  @Column({
-    type: 'int',
-    width: 11,
-    nullable: true,
-  })
-  roleId?: number;
+  @ManyToOne(() => Role)
+  role?: Role;
 
-  @Column({
-    type: 'int',
-    width: 11,
-    nullable: true,
-  })
-  userId?: number;
+  @ManyToOne(() => User)
+  user?: User;
 }

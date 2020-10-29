@@ -1,0 +1,52 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" method="post" id="dis_form">
+        <input type="hidden" value="<%= roleId %>" name="roleId">
+        <div id="tree-resource"></div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <a class="layui-btn" id="btn-save">保存</a>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  var resources = null;
+  layui.config({
+    base: '/admin/js/'
+  }).use(['tree', 'form', 'adminUtils'], function () {
+
+    var tree = layui.tree;
+    var $ = layui.jquery;
+    var form = layui.form;
+    var adminUtils = layui.adminUtils;
+
+    resources = JSON.parse('<%- JSON.stringify(resources) %>');
+
+    tree.render({
+      elem: '#tree-resource',
+      data: resources,
+      showCheckbox: true,
+      id: 'tree-resource',
+      accordion: false,
+      showLine: true
+    });
+
+    $('#btn-save').click(function() {
+      var checkData = tree.getChecked('tree-resource');
+      adminUtils.fetch({
+        url: '/sys/role/distribute',
+        data: {
+          resources: checkData,
+          roleId: '<%= roleId %>'
+        }
+      });
+    });
+  });
+</script>

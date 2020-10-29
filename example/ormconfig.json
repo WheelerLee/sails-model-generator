@@ -1,0 +1,11 @@
+{
+  "type": "mysql",
+  "host": "192.168.1.121",
+  "port": 3306,
+  "username": "root",
+  "password": "root",
+  "database": "typeorm",
+  "dropSchema": false,
+  "synchronize": false,
+  "logging": "all"
+}

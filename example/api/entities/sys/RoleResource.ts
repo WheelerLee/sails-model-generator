@@ -1,21 +1,13 @@
-import {
-  Column, Entity
-} from 'typeorm';
+import { Entity, ManyToOne } from 'typeorm';
 import BaseModel from '../BaseModel';
+import Resource from './Resource';
+import Role from './Role';
 
 @Entity('sys_role_resource')
 export default class RoleResource extends BaseModel {
-  @Column({
-    type: 'int',
-    width: 11,
-    nullable: true,
-  })
-  roleId?: number;
+  @ManyToOne(() => Role)
+  role?: Role | string;
 
-  @Column({
-    type: 'int',
-    width: 11,
-    nullable: true,
-  })
-  resourceId?: number;
+  @ManyToOne(() => Resource)
+  resource?: Resource | string;
 }

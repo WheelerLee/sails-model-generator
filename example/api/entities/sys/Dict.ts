@@ -1,5 +1,5 @@
 import {
-  Column, DeepPartial, Entity, EntityTarget, getManager
+  Column, DeepPartial, Entity, getManager
 } from 'typeorm';
 import BaseModel from '../BaseModel';
 

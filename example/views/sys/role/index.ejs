@@ -21,7 +21,7 @@
             </a>
             <% } %>
           </form>
-          <table style="margin-top: 20px;" class="layui-hide" id="test-table-form" lay-filter="table"></table>
+          <table style="margin-top: 20px;" class="layui-hide" id="table" lay-filter="table"></table>
           <script type="text/html" id="operation">
             <% if (distribution_resource_permission) { %>
             <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="distribution_resource">分配资源</a>
@@ -56,14 +56,15 @@
     var form = layui.form;
     var $ = layui.$;
     var adminUtils = layui.adminUtils;
+
     var tableRender = table.render({
-      elem: '#test-table-form',
+      elem: '#table',
       url: '/sys/role/index',
       method: 'post',
       cellMinWidth: 80,
       cols: [[
         {field:'name', title: '名称'},
-        {field: 'deleted', title: '是否删除', templet: "#deleted"},
+        // {field: 'deleted', title: '是否删除', templet: "#deleted"},
         {fixed: 'right', title: '操作', align: 'center', toolbar: '#operation'}
       ]],
       page: true,
@@ -74,17 +75,11 @@
       }
     });
 
-    $('#add_btn').on('click', function () {
-      parent.window.addTab({
-        title: '添加角色',
-        href: '/sys/role/modify'
-      });
-    });
-    
-    $('#search_btn').on('click', function () {
-       //重新从第 1 页开始
-       adminUtils.search(tableRender, 1);
-    });
+    adminUtils.bindClick('#add_btn', parent.window.addTab, [{
+      title: '添加角色',
+      href: '/sys/role/modify'
+    }]);
+    adminUtils.bindClick('#search_btn', adminUtils.search, [tableRender, 1]);
 
     table.on('tool(table)', function(obj) {
       if (obj.event === 'edit') {
@@ -107,7 +102,7 @@
       } else if (obj.event === 'distribution_resource') {
         parent.window.addTab({
           title: '分配资源',
-          href: '/admin/role/distribution_resource?role_id=' + obj.data.id
+          href: '/sys/role/distribute?roleId=' + obj.data.id
         });
       }
     });

@@ -18,8 +18,8 @@ export async function login(req: Sails.Request, res: Sails.Response) {
   if (req.method.toLowerCase() === 'get') {
     return res.view({ layout: 'layout' });
   }
-  const username: string = req.param('username') as string;
-  const password: string = req.param('password') as string;
+  const username: string = req.param('username');
+  const password: string = req.param('password');
   const user = await getRepository(User).findOne({ loginName: username, password: password });
   if (user) {
     req.session.admin = user;

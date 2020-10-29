@@ -49,9 +49,6 @@ export default class Resource extends BaseModel {
   })
   parentId?: string;
 
-  // @OneToMany(() => Resource, (resource) => resource.parent)
-  // resources?: Resource[];
-
   // TODO: 生成器
   static parse(...entityLikes: DeepPartial<Resource>[]): Resource {
     const resource = new Resource();

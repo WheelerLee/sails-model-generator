@@ -37,4 +37,8 @@ export interface Enteity {
    * 模块的名称，一般为表的前缀
    */
   moduleName?: string;
+  /**
+   * 变量名，一般是name按照camelCase方式生成
+   */
+  varName?: string;
 }
