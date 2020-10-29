@@ -34,6 +34,7 @@ program.version('7.0.0', '-v, --version', '输出当前的版本号')
   // .option('-u, --user <user>', '登录数据库的用户名')
   // .option('-p, --password <password>', '登录数据库的密码')
   // .option('-d, --database <database>', '需要连接的数据库')
+  .option('-e, --entity', '生成数据库的所有实体类')
   .option('-t, --table <table>', '如果不指定table将会生成基本的管理系统以及实体类')
   .option('--reset', '重置生成的管理系统，会将和admin相关的都会删除，请谨慎')
   .option('--skip', '忽略依赖添加')
@@ -43,6 +44,7 @@ program.parse(process.argv);
 
 let reset = program.reset;
 let skip = program.skip;
+let entity = program.entity;
 
 if (!fs.existsSync(process.cwd() + '/views/') || !fs.existsSync(process.cwd() + '/api/')
   || !fs.existsSync(process.cwd() + '/api/controllers/') || !fs.existsSync(process.cwd() + '/api/models/')
@@ -64,11 +66,13 @@ async function main() {
   let entities = await SqlUtils.getEntities(connection, dbInfo.database);
 
   console.log(entities);
-  // 生成单表的增删改查
-  if (table) {
-    generateModel(entities, table);
-  } else {
+  if (entity) {
+    // 生成所有的数据库实体类
     await SqlUtils.genaterEntities(entities);
+  } else if (table) { 
+    // 生成单表的增删改查
+    await generateModel(entities, table);
+  } else {
     FSUtils.copyTypes();
   }
   connection.close();

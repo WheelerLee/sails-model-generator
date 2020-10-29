@@ -1,5 +1,5 @@
 /**
- * 首页的控制权
+ * 首页的控制器
  * Created at 2020-10-15 20:03
  *
  * @author Wheeler https://github.com/WheelerLee

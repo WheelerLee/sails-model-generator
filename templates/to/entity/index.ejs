@@ -15,26 +15,23 @@
             <button type="reset" id="reset_btn" class="layui-btn" style="margin: 8px 0 0 0"><i class="layui-icon larry-icon">&#xe666;</i>
               重置
             </button>
-            <% if (modifyPermission) { %>
+            <%- '\<\% if (modifyPermission) { \%\>' %>
             <a class="layui-btn layui-btn-primary" id="add_btn" style="margin: 8px 0 0 0">
               <i class="layui-icon larry-icon">&#xe654;</i>添加
             </a>
-            <% } %>
+            <%- '\<\% } \%\>' %>
           </form>
           <table style="margin-top: 20px;" class="layui-hide" id="table" lay-filter="table"></table>
           <script type="text/html" id="operation">
-            <% if (distributePermission) { %>
-            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="distribution_resource">分配资源</a>
-            <% } %>
-            <% if (modifyPermission) { %>
+            <%- '\<\% if (modifyPermission) { \%\>' %>
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-            <% } %>
-            <% if (removePermission) { %>
+            <%- '\<\% } \%\>' %>
+            <%- '\<\% if (removePermission) { \%\>' %>
             {{#  if(d.deleted === 0){ }}
             <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
             {{#  } else { }}
             {{#  } }}
-            <% } %>
+            <%- '\<\% } \%\>' %>
           </script>
           <script type="text/html" id="deleted">
             {{#  if(d.deleted === 0){ }}
@@ -59,11 +56,13 @@
 
     var tableRender = table.render({
       elem: '#table',
-      url: '/sys/role/index',
+      url: '/<%- moduleName %>/<%- varName.toLowerCase() %>/index',
       method: 'post',
       cellMinWidth: 80,
       cols: [[
-        {field:'name', title: '名称'},
+        <%_ for (var column of columns) { _%>
+        {field:'<%- column.entityName %>', title: '<%- column.entityName %>'},
+        <%_ } _%>
         // {field: 'deleted', title: '是否删除', templet: "#deleted"},
         {fixed: 'right', title: '操作', align: 'center', toolbar: '#operation'}
       ]],
@@ -76,8 +75,8 @@
     });
 
     adminUtils.bindClick('#add_btn', parent.window.addTab, [{
-      title: '添加角色',
-      href: '/sys/role/modify'
+      title: '添加<%- name %>',
+      href: '/<%- moduleName %>/<%- varName.toLowerCase() %>/modify'
     }]);
     adminUtils.bindClick('#search_btn', adminUtils.search, [tableRender, 1]);
 
@@ -85,24 +84,19 @@
       if (obj.event === 'edit') {
         //标签页打开编辑页面
         parent.window.addTab({
-          title: '编辑角色',
-          href: '/sys/role/modify?id=' + obj.data.id
+          title: '编辑<%- name %>',
+          href: '/<%- moduleName %>/<%- varName.toLowerCase() %>/modify?id=' + obj.data.id
         });
       } else if (obj.event === 'delete') {
         layer.confirm('是否确定删除？', {icon: 3, title: '提示'}, function (index) {
           layer.close(index);
           adminUtils.fetch({
-            url: '/sys/role/remove',
+            url: '/<%- moduleName %>/<%- varName.toLowerCase() %>/remove',
             data: { id: obj.data.id },
             success: function(data) {
               adminUtils.search(tableRender);
             }
           })
-        });
-      } else if (obj.event === 'distribution_resource') {
-        parent.window.addTab({
-          title: '分配资源',
-          href: '/sys/role/distribute?roleId=' + obj.data.id
         });
       }
     });

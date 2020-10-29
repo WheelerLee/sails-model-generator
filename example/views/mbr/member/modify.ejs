@@ -1,0 +1,63 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (member) { %>
+        <input type="hidden" value="<%= member.id %>" name="id">
+        <% } %>
+        <div class="layui-form-item">
+          <label class="layui-form-label">loginName</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name="loginName"
+              lay-verify="loginName"
+              value="<%= member ? member.loginName : '' %>"
+              placeholder="请输入loginName"
+              autocomplete="off"
+              class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  // FIXME: 统一修改为用adminUtils方法访问网络等
+  layui.config({
+    base: '/admin/js/'
+  }).use(['form', 'laydate', 'adminUtils'], function () {
+    var form = layui.form;
+    var adminUtils = layui.adminUtils;
+
+    /* 自定义验证规则 */
+    form.verify({
+      loginName: function (value, item) {
+        if (value.trim().length > 255) {
+          return 'loginName的长度必须小于255';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var fields = data.field;
+      adminUtils.fetch({
+        url: '/mbr/member/modify',
+        data: fields,
+        success: function(data) {
+          window.location.reload();
+        }
+      });
+      return false;
+    });
+  });
+</script>

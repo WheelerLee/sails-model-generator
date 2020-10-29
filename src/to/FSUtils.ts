@@ -9,6 +9,7 @@
 import path from 'path';
 import fs from "fs-extra";
 import colors from 'colors';
+import ejs from 'ejs';
 
 export default class FSUtils {
   /**
@@ -23,5 +24,17 @@ export default class FSUtils {
       await fs.copy(path.resolve(__dirname, '../../templates/to/tsconfig.json'),
         path.resolve(process.cwd(), 'tsconfig.json'));
     }
+  }
+  
+  /**
+   * 将源文件翻译成目标代码文件
+   * @param source 源文件
+   * @param target 目标代码文件(可执行的代码)
+   * @param data 额外数据
+   */
+  static async translate(source: string, target: string, data: any) {
+    const template = await fs.readFile(source);
+    const model = ejs.render(template.toString(), data);
+    await fs.writeFile(target, Buffer.from(model), { flag: 'w', encoding: 'utf8' });
   }
 }

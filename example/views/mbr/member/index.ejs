@@ -23,9 +23,6 @@
           </form>
           <table style="margin-top: 20px;" class="layui-hide" id="table" lay-filter="table"></table>
           <script type="text/html" id="operation">
-            <% if (distributePermission) { %>
-            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="distribution_resource">分配资源</a>
-            <% } %>
             <% if (modifyPermission) { %>
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
             <% } %>
@@ -59,11 +56,11 @@
 
     var tableRender = table.render({
       elem: '#table',
-      url: '/sys/role/index',
+      url: '/mbr/member/index',
       method: 'post',
       cellMinWidth: 80,
       cols: [[
-        {field:'name', title: '名称'},
+        {field:'loginName', title: 'loginName'},
         // {field: 'deleted', title: '是否删除', templet: "#deleted"},
         {fixed: 'right', title: '操作', align: 'center', toolbar: '#operation'}
       ]],
@@ -76,8 +73,8 @@
     });
 
     adminUtils.bindClick('#add_btn', parent.window.addTab, [{
-      title: '添加角色',
-      href: '/sys/role/modify'
+      title: '添加Member',
+      href: '/mbr/member/modify'
     }]);
     adminUtils.bindClick('#search_btn', adminUtils.search, [tableRender, 1]);
 
@@ -85,24 +82,19 @@
       if (obj.event === 'edit') {
         //标签页打开编辑页面
         parent.window.addTab({
-          title: '编辑角色',
-          href: '/sys/role/modify?id=' + obj.data.id
+          title: '编辑Member',
+          href: '/mbr/member/modify?id=' + obj.data.id
         });
       } else if (obj.event === 'delete') {
         layer.confirm('是否确定删除？', {icon: 3, title: '提示'}, function (index) {
           layer.close(index);
           adminUtils.fetch({
-            url: '/sys/role/remove',
+            url: '/mbr/member/remove',
             data: { id: obj.data.id },
             success: function(data) {
               adminUtils.search(tableRender);
             }
           })
-        });
-      } else if (obj.event === 'distribution_resource') {
-        parent.window.addTab({
-          title: '分配资源',
-          href: '/sys/role/distribute?roleId=' + obj.data.id
         });
       }
     });

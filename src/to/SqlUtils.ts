@@ -14,6 +14,7 @@ import { Column, Enteity } from "./concats";
 import path from 'path';
 import fs from "fs-extra";
 import ejs from 'ejs';
+import FSUtils from "./FSUtils";
 
 /**
  * 类型的映射关系，主要是mysql数据类型和typescript的映射关系
@@ -138,9 +139,11 @@ export default class SqlUtils {
       entityPath = path.resolve(entitiesPath, entity.moduleName);
     }
     await fs.ensureDir(entityPath);
-    const template = await fs.readFile(path.resolve(__dirname, '../../templates/to/entity/Entity.ejs'));
-    const model = ejs.render(template.toString(), entity);
-    await fs.writeFile(`${entityPath}/${entity.name}.ts`, Buffer.from(model), { flag: 'w', encoding: 'utf8' });
+    FSUtils.translate(path.resolve(__dirname, '../../templates/to/entity/Entity.ejs'),
+      `${entityPath}/${entity.name}.ts`, entity);
+    // const template = await fs.readFile(path.resolve(__dirname, '../../templates/to/entity/Entity.ejs'));
+    // const model = ejs.render(template.toString(), entity);
+    // await fs.writeFile(`${entityPath}/${entity.name}.ts`, Buffer.from(model), { flag: 'w', encoding: 'utf8' });
   }
 
   /**
@@ -148,7 +151,7 @@ export default class SqlUtils {
    * @param entities 所有的实体集合
    */
   static async genaterEntities(entities: Enteity[]) {
-    let entitiesPath = path.resolve(process.cwd(), 'api/entities');
+    let entitiesPath = path.resolve(process.cwd(), 'api/entities_bak');
     await fs.ensureDir(entitiesPath);
     for (const entity of entities) {
       await this.genaterEntity(entitiesPath, entity);

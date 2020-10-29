@@ -1,3 +1,11 @@
+/**
+ * 权限控制器
+ * Created at 2020年10月29日14:03:38
+ *
+ * @author Wheeler https://github.com/WheelerLee
+ * @copyright 2020 Activatortube, INC.
+ *
+ */
 import { FindConditions, getRepository, Like } from 'typeorm';
 import Sails from '../../../@types/sails';
 import PageResource from '../../dto/sys/PageResource';
@@ -7,11 +15,13 @@ import PermissionService from '../../services/PermissionService';
 
 export async function index(req: Sails.Request, res: Sails.Response) {
   if (req.method.toLowerCase() === 'get') {
-    // FIXME: 这里要修改
+    const modifyPermission = await PermissionService.valid(req.session.admin.id, '/sys/role/modify');
+    const removePermission = await PermissionService.valid(req.session.admin.id, '/sys/role/remove');
+    const distributePermission = await PermissionService.valid(req.session.admin.id, '/sys/role/distribute');
     return res.view({
-      modify_permission: true,
-      distribution_resource_permission: true,
-      delete_permission: true,
+      modifyPermission: modifyPermission,
+      distributePermission: distributePermission,
+      removePermission: removePermission,
     });
   }
   const page = parseInt(req.param('page', '1'));
@@ -69,8 +79,7 @@ export async function distribute(req: Sails.Request, res: Sails.Response) {
   if (req.method.toLowerCase() === 'get') {
     const resources: Array<Resource> = await getRepository(Resource).find({
       where: {
-        deleted: 0,
-        resourceType: 'SYS_RESOURCE_TYPE_PAGE'
+        deleted: 0
       },
       order: {
         parentId: 'ASC',

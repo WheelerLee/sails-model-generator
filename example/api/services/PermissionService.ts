@@ -79,9 +79,6 @@ export default class PermissionService {
       if (res.id === parentId) {
         return res;
       }
-      if (res.children) {
-        return this.getParent(res.children, parentId);
-      }
     }
     return undefined;
   }
@@ -91,27 +88,45 @@ export default class PermissionService {
    * @param resources 资源列表
    */
   static process(resources: Array<Resource>,
-    pageResources: Array<PageResource> = []): Array<PageResource> {
-    const tmp: Array<Resource> = [];
+    pageResources: Array<PageResource> = [], tmp: Array<Resource> = []): Array<PageResource> {
+    const tmp2: Array<Resource> = [];
     for (const resource of resources) {
       if (resource.parentId) {
-        const parent = this.getParent(pageResources, resource.parentId);
+        const parent = this.getParent(tmp, resource.parentId);
         if (parent) {
           if (!parent.children) {
             parent.children = [];
           }
           parent.children.push(resource);
-          tmp.push(resource);
+          tmp2.push(resource);
         }
       } else {
         pageResources.push(resource);
-        tmp.push(resource);
+        tmp2.push(resource);
       }
     }
-    const x = _.difference(resources, tmp);
+    const x = _.difference(resources, tmp2); // 删除已经用掉的
     if (x.length > 0) {
-      return this.process(x, pageResources);
+      this.process(x, pageResources, tmp2);
     }
     return pageResources;
+  }
+
+  /**
+   * 验证用户是否拥有资源
+   * @param userId 用户
+   * @param resource 资源
+   */
+  static async valid(userId: string, resource: string): Promise<boolean> {
+    const sql = `select sys_resource.* from sys_resource LEFT JOIN sys_role_resource 
+      on sys_resource.id=sys_role_resource.resourceId LEFT JOIN sys_user_role on 
+      sys_role_resource.roleId=sys_user_role.roleId where sys_user_role.userId=? 
+      and sys_resource.deleted=0 and sys_role_resource.deleted=0 and sys_user_role.deleted=0 
+      and sys_resource.path=?`;
+    const ps = await getRepository(Resource).query(sql, [userId, resource]);
+    if (ps && ps.length > 0) {
+      return true;
+    }
+    return false;
   }
 }
