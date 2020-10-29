@@ -1,16 +1,15 @@
 import {
-  Column, DeepPartial, Entity, getManager, Unique
+  Column, DeepPartial, Entity, getManager
 } from 'typeorm';
 import BaseModel from '../BaseModel';
 
 @Entity('sys_dict')
-@Unique(['code', 'name'])
 export default class Dict extends BaseModel {
   @Column({
     type: 'varchar',
     length: 191,
     nullable: false,
-    unique: true
+    unique: true,
   })
   code!: string;
 
@@ -32,7 +31,6 @@ export default class Dict extends BaseModel {
     type: 'varchar',
     length: 191,
     nullable: true,
-    unique: true,
   })
   vals?: string;
 

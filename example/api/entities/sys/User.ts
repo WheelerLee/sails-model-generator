@@ -1,5 +1,5 @@
 import {
-  Column, Entity
+  Column, DeepPartial, Entity, getManager
 } from 'typeorm';
 import BaseModel from '../BaseModel';
 
@@ -54,4 +54,9 @@ export default class User extends BaseModel {
     default: 0,
   })
   sex?: number;
+
+  static parse(...entityLikes: DeepPartial<User>[]): User {
+    const user = new User();
+    return getManager().merge(User, user, ...entityLikes);
+  }
 }

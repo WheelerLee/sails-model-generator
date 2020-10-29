@@ -4,7 +4,7 @@ import {
 import BaseModel from '../BaseModel';
 <%_ for (const column of columns) { _%>
 <%_ if (column.foreignKey && column.foreignKey.tableName != tableName) { _%>
-import <%- column.foreignKey.name %> from '../../entities/<%- column.foreignKey.moduleName %>/<%- column.foreignKey.name %>';
+import <%- column.foreignKey.name %> from '.<%- column.foreignKey.moduleName === moduleName ? '' : '/' + column.foreignKey.moduleName %>/<%- column.foreignKey.name %>';
 <%_ } _%>
 <%_ } _%>
 

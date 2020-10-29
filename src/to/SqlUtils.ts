@@ -211,7 +211,7 @@ export default class SqlUtils {
    * @param entities 所有的实体集合
    */
   static async genaterEntities(entities: Enteity[]) {
-    let entitiesPath = path.resolve(process.cwd(), 'api/entities_bak');
+    let entitiesPath = path.resolve(process.cwd(), 'api/entities');
     await fs.ensureDir(entitiesPath);
     for (const entity of entities) {
       await this.genaterEntity(entitiesPath, entity);
