@@ -65,7 +65,7 @@ async function main() {
   const connection = await SqlUtils.connect(dbInfo);
   let entities = await SqlUtils.getEntities(connection, dbInfo.database);
 
-  console.log(entities);
+  // console.log(entities);
   if (entity) {
     // 生成所有的数据库实体类
     await SqlUtils.genaterEntities(entities);

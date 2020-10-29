@@ -1,9 +1,17 @@
 import {
-  Column, Entity
+  <%- hasColumn ? 'Column, ' : '' %>DeepPartial, Entity, getManager<%- compositeUnique.length > 0 ? ', Unique' : '' %><%- hasManyToOne ? ', ManyToOne' : '' %>
 } from 'typeorm';
 import BaseModel from '../BaseModel';
+<%_ for (const column of columns) { _%>
+<%_ if (column.foreignKey && column.foreignKey.tableName != tableName) { _%>
+import <%- column.foreignKey.name %> from '../../entities/<%- column.foreignKey.moduleName %>/<%- column.foreignKey.name %>';
+<%_ } _%>
+<%_ } _%>
 
 @Entity('<%- tableName %>')
+<%_ for (const index of compositeUnique) { _%>
+@Unique([<%- index %>])
+<%_ } _%>
 export default class <%- name %> extends BaseModel {
   <%_ for (let i = 0; i < columns.length; i++) { _%>
   <%_ let column = columns[i] _%>
@@ -12,6 +20,9 @@ export default class <%- name %> extends BaseModel {
    * <%- column.comment %>,
    */
   <%_ } _%>
+  <%_ if (column.foreignKey) { _%>
+  @ManyToOne(() => <%- column.foreignKey.name %>)
+  <%_ } else { _%>
   @Column({
     type: '<%- column.dataType %>',
     <%_ if (column.width || column.length) { _%>
@@ -21,12 +32,16 @@ export default class <%- name %> extends BaseModel {
     <%_ if (Object.prototype.hasOwnProperty.call(column, 'default')) { _%>
     <%- 'default: ' + (column.varType === 'string' ? '\'' : '') + column.default + (column.varType === 'string' ? '\'' : '') %>,
     <%_ } _%>
+    <%_ if (column.unique) { _%>
+    unique: true,
+    <%_ } _%>
   })
-  <%- column.entityName %><%- column.nullable ? '?' : '!' %>: <%- column.varType || 'any' %>;
+  <%_ } _%>
+  <%- column.entityName %><%- column.nullable ? '?' : '!' %>: <%- column.foreignKey ? column.foreignKey.name + ' | ' : '' %><%- column.varType || 'any' %>;
 
+  <%_ } _%>
   static parse(...entityLikes: DeepPartial<<%- name %>>[]): <%- name %> {
     const <%- varName %> = new <%- name %>();
     return getManager().merge(<%- name %>, <%- varName %>, ...entityLikes);
   }
-  <%_ } _%>
 }

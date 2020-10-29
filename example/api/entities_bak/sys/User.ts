@@ -3,8 +3,8 @@ import {
 } from 'typeorm';
 import BaseModel from '../BaseModel';
 
-@Entity('sys_resource')
-export default class Resource extends BaseModel {
+@Entity('sys_user')
+export default class User extends BaseModel {
   @Column({
     type: 'varchar',
     length: 255,
@@ -17,14 +17,28 @@ export default class Resource extends BaseModel {
     length: 255,
     nullable: true,
   })
-  icon?: string;
+  loginName?: string;
 
   @Column({
     type: 'varchar',
     length: 255,
     nullable: true,
   })
-  path?: string;
+  password?: string;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  headIcon?: string;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  language?: string;
 
   @Column({
     type: 'varchar',
@@ -34,21 +48,15 @@ export default class Resource extends BaseModel {
   description?: string;
 
   @Column({
-    type: 'varchar',
-    length: 100,
+    type: 'tinyint',
+    width: 1,
     nullable: true,
+    default: 0,
   })
-  resourceType?: string;
+  sex?: number;
 
-  @Column({
-    type: 'varchar',
-    length: 36,
-    nullable: true,
-  })
-  parentId?: string;
-
-  static parse(...entityLikes: DeepPartial<Resource>[]): Resource {
-    const resource = new Resource();
-    return getManager().merge(Resource, resource, ...entityLikes);
+  static parse(...entityLikes: DeepPartial<User>[]): User {
+    const user = new User();
+    return getManager().merge(User, user, ...entityLikes);
   }
 }

@@ -50,7 +50,7 @@ export async function bootstrap() {
     database: 'typeorm',
     entities: [`${process.cwd()}/api/entities/**/*.ts`],
     dropSchema: false,
-    synchronize: false,
+    synchronize: true,
     logging: 'all',
     // namingStrategy: new MyNamingStrategy(),
   })

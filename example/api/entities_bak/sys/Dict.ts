@@ -10,7 +10,6 @@ export default class Dict extends BaseModel {
     type: 'varchar',
     length: 191,
     nullable: false,
-    unique: true
   })
   code!: string;
 

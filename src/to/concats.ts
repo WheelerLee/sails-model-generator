@@ -21,6 +21,14 @@ export interface Column {
   length?: number;
   width?: number;
   default?: any;
+  /**
+   * 是否是唯一约束
+   */
+  unique?: boolean;
+  /**
+   * 外键
+   */
+  foreignKey?: Enteity;
 }
 
 export interface Enteity {
@@ -41,4 +49,16 @@ export interface Enteity {
    * 变量名，一般是name按照camelCase方式生成
    */
   varName?: string;
+  /**
+   * 联合约束
+   */
+  compositeUnique?: Array<string>;
+  /**
+   * 是否包含外键字段，主要影响import的生成
+   */
+  hasManyToOne?: boolean;
+  /**
+   * 是否包含非外键字段，主要影响import的生成
+   */
+  hasColumn?: boolean;
 }

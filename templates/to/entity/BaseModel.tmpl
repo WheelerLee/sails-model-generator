@@ -2,9 +2,9 @@ import {
   BeforeInsert, BeforeUpdate, Column, PrimaryGeneratedColumn
 } from 'typeorm';
 
-export default abstract class BaseModel {
-  @PrimaryGeneratedColumn()
-  id!: number;
+export default class BaseModel {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column('tinyint', { default: 0 })
   deleted!: number;
@@ -18,11 +18,12 @@ export default abstract class BaseModel {
   @Column('int', { default: 1 })
   sortedNum!: number;
 
-  @Column('int', {
-    width: 11,
+  @Column({
+    type: 'varchar',
+    length: 36,
     nullable: true,
   })
-  creater?: number;
+  creater?: string;
 
   @BeforeInsert()
   updateDateCreation() {
