@@ -8,6 +8,7 @@ import FSUtils from './FSUtils';
 import { getConnectionOptions } from 'typeorm';
 import path from 'path';
 import generateModel from './generateModel';
+import { init } from './init';
 
 require('reflect-metadata');
 
@@ -34,6 +35,7 @@ program.version('7.0.0', '-v, --version', '输出当前的版本号')
   // .option('-u, --user <user>', '登录数据库的用户名')
   // .option('-p, --password <password>', '登录数据库的密码')
   // .option('-d, --database <database>', '需要连接的数据库')
+  .option('--init <init>', '初始化一个项目')
   .option('-e, --entity', '生成数据库的所有实体类')
   .option('-t, --table <table>', '如果不指定table将会生成基本的管理系统以及实体类')
   .option('--reset', '重置生成的管理系统，会将和admin相关的都会删除，请谨慎')
@@ -46,36 +48,40 @@ let reset = program.reset;
 let skip = program.skip;
 let entity = program.entity;
 
-if (!fs.existsSync(process.cwd() + '/views/') || !fs.existsSync(process.cwd() + '/api/')
-  || !fs.existsSync(process.cwd() + '/api/controllers/') || !fs.existsSync(process.cwd() + '/api/models/')
-  || !fs.existsSync(process.cwd() + '/assets/') || !fs.existsSync(process.cwd() + '/config/')) {
-  console.log(colors.error('请在项目根目录下运行'));
-  process.exit();
-}
-
 // let {host, port, user, password, database, table} = program;
 let table: string = program.table;
+let proName: string = program.init;
 
 async function main() {
-  // const dbInfo = await getDBInfo(program);
-  let dbInfo = require(path.resolve(process.cwd(), 'ormconfig.json'));
-  // 覆盖数据库的重写配置，防止数据库发生问题
-  dbInfo.dropSchema = false;
-  dbInfo.synchronize = false;
-  const connection = await SqlUtils.connect(dbInfo);
-  let entities = await SqlUtils.getEntities(connection, dbInfo.database);
-
-  // console.log(entities);
-  if (entity) {
-    // 生成所有的数据库实体类
-    await SqlUtils.genaterEntities(entities);
-  } else if (table) { 
-    // 生成单表的增删改查
-    await generateModel(entities, table);
+  if (proName) {
+    await init(proName);
   } else {
-    FSUtils.copyTypes();
+    if (!fs.existsSync(process.cwd() + '/views/') || !fs.existsSync(process.cwd() + '/api/')
+      || !fs.existsSync(process.cwd() + '/api/controllers/') || !fs.existsSync(process.cwd() + '/api/models/')
+      || !fs.existsSync(process.cwd() + '/assets/') || !fs.existsSync(process.cwd() + '/config/')) {
+      console.log(colors.error('请在项目根目录下运行'));
+      return;
+    }
+    // const dbInfo = await getDBInfo(program);
+    let dbInfo = require(path.resolve(process.cwd(), 'ormconfig.json'));
+    // 覆盖数据库的重写配置，防止数据库发生问题
+    dbInfo.dropSchema = false;
+    dbInfo.synchronize = false;
+    const connection = await SqlUtils.connect(dbInfo);
+    let entities = await SqlUtils.getEntities(connection, dbInfo.database);
+
+    // console.log(entities);
+    if (entity) {
+      // 生成所有的数据库实体类
+      await SqlUtils.genaterEntities(entities);
+    } else if (table) { 
+      // 生成单表的增删改查
+      await generateModel(entities, table);
+    } else {
+      FSUtils.copyTypes();
+    }
+    connection.close();
   }
-  connection.close();
 }
 
 main();

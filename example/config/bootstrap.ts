@@ -41,19 +41,7 @@ import {
 // }
 
 export async function bootstrap() {
-  createConnection({
-    type: 'mysql',
-    host: '192.168.1.121',
-    port: 3306,
-    username: 'root',
-    password: 'root',
-    database: 'typeorm',
-    entities: [`${process.cwd()}/api/entities/**/*.ts`],
-    dropSchema: false,
-    synchronize: true,
-    logging: 'all',
-    // namingStrategy: new MyNamingStrategy(),
-  })
+  createConnection()
     .then(() => {
       sails.log.debug('数据库连接成功');
     })
