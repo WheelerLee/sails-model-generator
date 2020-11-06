@@ -27,3 +27,7 @@ export async function index(req: Sails.Request, res: Sails.Response) {
     resources: homeResources
   });
 }
+
+export async function splash(req: Sails.Request, res: Sails.Response) {
+  res.send('首页');
+}

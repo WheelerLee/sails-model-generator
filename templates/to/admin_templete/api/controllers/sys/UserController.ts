@@ -39,7 +39,7 @@ export async function login(req: Sails.Request, res: Sails.Response) {
 export async function index(req: Sails.Request, res: Sails.Response) {
   if (req.method.toLowerCase() === 'get') {
     const modifyPermission = await PermissionService.valid(req.session.admin.id, '/sys/user/modify');
-    const removePermission = await PermissionService.valid(req.session.admin.id, '/sys//user/remove');
+    const removePermission = await PermissionService.valid(req.session.admin.id, '/sys/user/remove');
     return res.view({
       modifyPermission: modifyPermission,
       removePermission: removePermission,
@@ -92,6 +92,9 @@ export async function modify(req: Sails.Request, res: Sails.Response) {
     });
   }
   const user: User = User.parse(req.body);
+  if (!user.password) {
+    delete user.password;
+  }
   const roleId: string = req.param('roleId');
   await PermissionService.distributeRole(roleId, user);
   return res.json({
