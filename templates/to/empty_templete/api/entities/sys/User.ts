@@ -1,7 +1,8 @@
 import {
-  Column, DeepPartial, Entity, getManager
+  Column, DeepPartial, Entity, getManager, OneToMany
 } from 'typeorm';
 import BaseModel from '../BaseModel';
+import UserRole from './UserRole';
 
 @Entity('sys_user')
 export default class User extends BaseModel {
@@ -54,6 +55,9 @@ export default class User extends BaseModel {
     default: 0,
   })
   sex?: number;
+
+  @OneToMany(() => UserRole, (userRole) => userRole.user)
+  userRoles?: UserRole[];
 
   static parse(...entityLikes: DeepPartial<User>[]): User {
     const user = new User();
