@@ -11,6 +11,7 @@ import { FindConditions, getRepository } from 'typeorm';
 import Sails from '../../../@types/sails';
 import Role from '../../entities/sys/Role';
 import User from '../../entities/sys/User';
+import PasswordService from '../../services/PasswordService';
 import PermissionService from '../../services/PermissionService';
 
 /**
@@ -22,7 +23,10 @@ export async function login(req: Sails.Request, res: Sails.Response) {
   }
   const username: string = req.param('username');
   const password: string = req.param('password');
-  const user = await getRepository(User).findOne({ loginName: username, password: password });
+  const user = await getRepository(User).findOne({
+    loginName: username,
+    password: PasswordService.pwd(password)
+  });
   if (user) {
     req.session.admin = user;
     return res.json({
@@ -94,6 +98,8 @@ export async function modify(req: Sails.Request, res: Sails.Response) {
   const user: User = User.parse(req.body);
   if (!user.password) {
     delete user.password;
+  } else {
+    user.password = PasswordService.pwd(user.password);
   }
   const roleId: string = req.param('roleId');
   await PermissionService.distributeRole(roleId, user);
@@ -111,4 +117,57 @@ export async function remove(req: Sails.Request, res: Sails.Response) {
     code: 0,
     msg: '删除成功'
   });
+}
+
+export async function info(req: Sails.Request, res: Sails.Response) {
+  const id = req.session.admin.id;
+  if (req.method.toLowerCase() === 'get') {
+    const user = await getRepository(User).findOne(id);
+    return res.view({
+      user: user
+    });
+  }
+  const user = User.parse(req.body);
+  user.id = id;
+  await getRepository(User).save(user);
+  return res.json({
+    code: 0,
+    msg: '保存成功'
+  });
+}
+
+export async function changePwd(req: Sails.Request, res: Sails.Response) {
+  const id = req.session.admin.id;
+  if (req.method.toLowerCase() === 'get') {
+    return res.view();
+  }
+  // const user = User.parse(req.body);
+  // user.id = id;
+  const oldPassword = req.param('oldPassword');
+  const newPassword = req.param('newPassword');
+  const confirmPassword = req.param('confirmPassword');
+  if (newPassword !== confirmPassword) {
+    return res.json({
+      code: 1,
+      msg: '新密码和重复密码不一致'
+    });
+  }
+  const user = await getRepository(User).findOne(id);
+  if (user?.password === PasswordService.pwd(oldPassword)) {
+    user.password = PasswordService.pwd(newPassword);
+    await getRepository(User).save(user);
+    return res.json({
+      code: 0,
+      msg: '保存成功'
+    });
+  }
+  return res.json({
+    code: 1,
+    msg: '旧密码错误'
+  });
+}
+
+export function logout(req: Sails.Request, res: Sails.Response) {
+  req.session.admin = null;
+  return res.redirect('/sys/user/login');
 }

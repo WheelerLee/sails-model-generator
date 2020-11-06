@@ -165,7 +165,7 @@ layui.use(['element', 'layer'], function () {
   });
   $('#btn_change_pwd').on('click', function () {
     addTab({
-      href: '../user/change_pwd',
+      href: '../user/changePwd',
       title: '修改密码'
     });
   });
