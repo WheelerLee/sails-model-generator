@@ -63,7 +63,9 @@
     "@typescript-eslint/comma-dangle": ["off"],
     "import/prefer-default-export": "off",
     "import/extensions": "off",
-    "prefer-destructuring": "off"
+    "prefer-destructuring": "off",
+    "no-param-reassign": "off",
+    "import/no-cycle": "off"
   }
 
 }

@@ -1,0 +1,201 @@
+<div class="layui-card layadmin-header">
+  
+</div>
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-body">
+          <form class="layui-form" id="searchForm" style="margin-bottom: 20px;">
+            <div class="layui-input-inline" style="width:145px; margin: 8px 0 0 0;">
+              <input id="search-text" type="text" name="name" value="" placeholder="名称"
+                class="layui-input search_input">
+            </div>
+            <a class="layui-btn layui-btn-normal" style="margin: 8px 0 0 0" id="search_btn">
+              <i class="layui-icon larry-icon">&#xe615;</i>查询
+            </a>
+            <a class="layui-btn layui-btn-primary" id="add_btn" style="margin: 8px 0 0 0">
+              <i class="layui-icon larry-icon">&#xe654;</i>添加
+            </a>
+          </form>
+          <table id="table1" class="layui-table" lay-filter="table1"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.config({
+    base: '/layui/module/'
+  }).use(['treeTable', 'table', 'jquery'], function() {
+    var treeTable = layui.treeTable;
+    var $ = layui.jquery;
+    var re;
+    // TODO: 修改treetable为新版
+    var renderTable = function () {
+      layer.load(2);
+      re = treeTable.render({
+        elem: '#table1',
+        method: 'POST',
+        url: '/sys/resource/index?x=y',
+        top_value: null,
+        icon_key: 'name',
+        primary_key: 'id',
+        parent_key: 'parentId',
+        hide_class: 'layui-hide',
+        cols: [
+          {
+            key: 'name',
+            title: '名称'
+          },
+          {
+            key: 'icon',
+            title: '图标',
+            width: 80,
+            align: 'center',
+            template: function (item) {
+              return item.icon ? '<i class="layui-icon">' + item.icon + '</i>' : '';
+            }
+          },
+          {
+            key: 'path',
+            title: '路径',
+            template: function (item) {
+              return item.path || '';
+            }
+          },
+          {
+            key: 'resourceType',
+            title: '类型',
+            width: 80,
+            align: 'center',
+            template: function (item) {
+              if (item.resourceType === 'SYS_RESOURCE_TYPE_PAGE') {
+                return '<span class="layui-badge-rim ">页面</span>';
+              } else {
+                return '<span class="layui-badge layui-bg-gray">按钮</span>';
+              }
+            }
+          },
+          {
+            key: 'sortedNum',
+            title: '排序号',
+            width: 10,
+            align: 'center',
+          },
+          {
+            fixed: 'right',
+            title: '操作',
+            width: 170,
+            align: 'center',
+            template: function (item) {
+              var str = '';
+              str += '<a class="layui-btn layui-btn-xs layui-btn-primary" lay-filter="add">添加</a>';
+              str += '<a class="layui-btn layui-btn-xs" lay-filter="edit">修改</a>';
+              str += '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-filter="delete">删除</a>';
+              return str;
+            }
+          }
+        ],
+        end: function () {
+          layer.closeAll('loading');
+        }
+      });
+    }
+    renderTable();
+
+    /**
+     * 添加资源（顶级资源）
+     */
+    $('#add_btn').on('click', function () {
+      parent.window.addTab({
+        title: '添加资源',
+        href: '/sys/resource/modify'
+      });
+    });
+
+    $('#search_btn').click(function () {
+      var keyword = $('#search-text').val();
+      var searchCount = 0;
+      $('#table1').find('tbody tr td').each(function () {
+        $(this).css('background-color', 'transparent');
+        var text = $(this).text();
+        if (keyword != '' && text.indexOf(keyword) >= 0) {
+          $(this).css('background-color', 'rgba(250,230,160,0.5)');
+          if (searchCount == 0) {
+            // treetable.expandAll('#table1');
+            // treeTable.openAll(re);
+            $('html,body').stop(true);
+            $('html,body').animate({
+              scrollTop: $(this).offset().top - 150
+            }, 500);
+          }
+          searchCount++;
+        }
+      });
+      if (!keyword) {
+        layer.msg("请输入搜索内容", {
+          icon: 5
+        });
+      } else if (searchCount === 0) {
+        layer.msg("没有匹配结果", {
+          icon: 5
+        });
+      }
+    });
+
+    /**
+     * 表格单行的添加按钮
+     */
+    treeTable.on('tree(add)', function (obj) {
+      console.log(obj);
+      parent.window.addTab({
+        title: '添加资源',
+        href: '/sys/resource/modify?parentId=' + obj.item.id
+      });
+    });
+    /**
+     * 表格单行的编辑按钮
+     */
+    treeTable.on('tree(edit)', function (obj) {
+      console.log(obj);
+      parent.window.addTab({
+        title: '编辑资源',
+        href: '/sys/resource/modify?id=' + obj.item.id
+      });
+    });
+    /**
+     * 表格单行的删除按钮
+     */
+    treeTable.on('tree(delete)', function (obj) {
+      layer.confirm('删除后将无法恢复，是否继续？', { icon: 3, btn: ["确认", "取消"], title: '删除'}, function (index) {
+        layer.close(index);
+        var loading = layer.load(1);
+        $.ajax({
+          url: '/sys/resource/remove',
+          data: JSON.stringify({id: obj.item.id}),
+          type: "POST",
+          contentType: "application/json",
+          success: function(data) {
+            layer.close(loading);
+            if (data.code === 0) {
+              layer.msg(data.msg, {
+                icon: 6,
+                time: 2000
+              }, function() {
+                window.location.reload();
+              });
+            } else {
+              layer.msg(data.msg, {icon: 5});
+            }
+          },
+          error: function() {
+            layer.close(loading);
+          }
+        });
+      });
+    });
+
+  });
+</script>

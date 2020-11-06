@@ -14,10 +14,11 @@ import PageResource from '../dto/sys/PageResource';
 import Resource from '../entities/sys/Resource';
 import RoleResource from '../entities/sys/RoleResource';
 import UserRole from '../entities/sys/UserRole';
+import User from '../entities/sys/User';
 
 export default class PermissionService {
   /**
-   * 根据角色id查找拥有的所有权限
+   * 根据用户id查找拥有的所有权限
    * @param userId 用户id
    */
   static async getAllResources(userId: string, resourceType?: string): Promise<Array<Resource>> {
@@ -35,28 +36,44 @@ export default class PermissionService {
   }
 
   /**
-   * 给用户分配权限
-   * @param userId 用户id
+   * 根据角色id查找拥有的所有权限
+   * @param roleId 角色id
+   */
+  static async getResources(roleId: string, resourceType?: string): Promise<Array<Resource>> {
+    const sql = `SELECT sys_resource.* FROM sys_resource LEFT JOIN 
+      sys_role_resource ON sys_role_resource.resourceId=sys_resource.id 
+      WHERE sys_role_resource.roleId=? AND sys_resource.deleted=0 
+      ${resourceType ? 'AND resourceType=?' : ''} AND 
+      sys_role_resource.deleted=0 ORDER BY sys_resource.parentId ASC, 
+      sys_resource.sortedNum ASC`;
+    const resources: Array<Resource> = await getRepository(Resource)
+      .query(sql, [roleId, resourceType]);
+    return resources;
+  }
+
+  /**
+   * 给角色分配权限
+   * @param roleId 角色id
    * @param resources 权限
    */
   @Transaction()
-  static async distribute(userId: string, resources: Array<PageResource>,
+  static async distribute(roleId: string, resources: Array<PageResource>,
     @TransactionManager() manager?: EntityManager): Promise<boolean> {
-    const userRole = await manager?.getRepository(UserRole).findOne({
-      where: {
-        user: userId
-      },
-      relations: ['role']
-    });
-    if (userRole) {
+    // const userRole = await manager?.getRepository(UserRole).findOne({
+    //   where: {
+    //     role: roleId
+    //   },
+    //   relations: ['role']
+    // });
+    if (roleId) {
       // 先删除所有的权限
       await manager?.getRepository(RoleResource).delete({
-        role: userRole.role
+        role: roleId
       });
       const save = async function (rs: Array<PageResource>) {
         for (const resource of rs) {
           const roleResource = new RoleResource();
-          roleResource.role = userRole.role;
+          roleResource.role = roleId;
           roleResource.resource = resource.id;
           await manager?.getRepository(RoleResource).save(roleResource);
           if (resource.children) {
@@ -128,5 +145,29 @@ export default class PermissionService {
       return true;
     }
     return false;
+  }
+
+  /**
+   * 保存用户并分配角色
+   * @param roleId 角色id
+   * @param user 用户信息
+   */
+  @Transaction()
+  static async distributeRole(roleId: string, user: User,
+    @TransactionManager() manager?: EntityManager) {
+    const savedUser = await manager?.getRepository(User).save(user);
+    let userRole = await manager?.getRepository(UserRole).findOne({
+      where: {
+        user: savedUser?.id
+      }
+    });
+    if (userRole) {
+      userRole.role = roleId;
+    } else {
+      userRole = new UserRole();
+      userRole.user = savedUser;
+      userRole.role = roleId;
+    }
+    await manager?.getRepository(UserRole).save(userRole);
   }
 }

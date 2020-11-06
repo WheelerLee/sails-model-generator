@@ -1,0 +1,18 @@
+<% console.log(resources) %>
+<% if (resources && resources.length > 0) { %>
+<dl class="layui-nav-child">
+  <% _.each(resources, function(resource) { %>
+  <dd>
+  <a lay-href="<%= resource.path %>">
+    <% if (resource.icon) { %>
+    <i class="layui-icon"><%- resource.icon %></i>
+    <% } %>
+    <cite><%= resource.name %></cite>
+  </a>
+  <%- partial('./resource_item.ejs', {
+    resources: resource.children || []
+  }) %>
+  </dd>
+  <% }) %>
+</dl>
+<% } %>

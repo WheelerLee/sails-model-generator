@@ -17,6 +17,8 @@ export const policies = {
    *                                                                          *
    ************************************************************************** */
 
-  // '*': true,
+  '*': 'adminSession',
+  'sys/user/*': true,
+  'static/*': true,
 
 };
