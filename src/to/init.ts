@@ -33,5 +33,10 @@ export async function init(name: string) {
     ],
   });
 
-  await fs.copy(path.resolve(__dirname, '../../templates/to/empty_templete'), proPath);
+  // 生成含后台的项目
+  if (answer.templete === 'admin') {
+    await fs.copy(path.resolve(__dirname, '../../templates/to/admin_templete'), proPath);
+  } else {
+    await fs.copy(path.resolve(__dirname, '../../templates/to/empty_templete'), proPath);
+  }
 }
