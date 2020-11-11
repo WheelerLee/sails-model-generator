@@ -15,8 +15,6 @@ import fs from 'fs-extra';
 import contentDisposition from 'content-disposition';
 import Attachment from '../entities/sys/Attachment';
 
-const uploadPath = '/Users/wheeler/Desktop/upload';
-
 export enum AttachmentType {
   Small = 'smallName',
   Middle = 'middleName',
@@ -24,6 +22,11 @@ export enum AttachmentType {
 }
 
 export default class AttachmentService {
+  static getUploadPath(): string {
+    return (sails.config.attachment && sails.config.attachment.path)
+      ? sails.config.attachment.path : path.resolve(process.cwd(), 'upload');
+  }
+
   /**
    * 压缩图片
    * @param file 上传后的文件对象
@@ -44,7 +47,7 @@ export default class AttachmentService {
   static save(upStream: any): Promise<any> {
     return new Promise((resolve, reject) => {
       const foldName = moment().utc().utcOffset(480).format('YYYYMMDD');
-      const folder = path.resolve(uploadPath, foldName);
+      const folder = path.resolve(AttachmentService.getUploadPath(), foldName);
       upStream.upload({
         dirname: folder
       }, (err: Error, files: any) => {
@@ -114,7 +117,7 @@ export default class AttachmentService {
     if (type && attachment[type]) {
       fileName = attachment[type];
     }
-    const filePath = `${uploadPath}/${attachment.savePath}/${fileName}`;
+    const filePath = path.resolve(AttachmentService.getUploadPath(), `${attachment.savePath}/${fileName}`);
     if (!fs.existsSync(filePath)) {
       return [undefined, undefined];
     }

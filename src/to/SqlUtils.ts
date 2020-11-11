@@ -152,7 +152,6 @@ export default class SqlUtils {
           :
           undefined
       };
-      console.log(column);
       if (length) {
         if (varType === 'string') {
           column.length = length;

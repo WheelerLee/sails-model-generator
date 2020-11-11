@@ -52,12 +52,16 @@ let entity = program.entity;
 let table: string = program.table;
 let proName: string = program.init;
 
+console.log(entity);
+console.log(table);
+console.log(proName);
+
 async function main() {
   if (proName) {
     await init(proName);
   } else {
     if (!fs.existsSync(process.cwd() + '/views/') || !fs.existsSync(process.cwd() + '/api/')
-      || !fs.existsSync(process.cwd() + '/api/controllers/') || !fs.existsSync(process.cwd() + '/api/models/')
+      || !fs.existsSync(process.cwd() + '/api/controllers/')
       || !fs.existsSync(process.cwd() + '/assets/') || !fs.existsSync(process.cwd() + '/config/')) {
       console.log(colors.error('请在项目根目录下运行'));
       return;
@@ -67,9 +71,9 @@ async function main() {
     // 覆盖数据库的重写配置，防止数据库发生问题
     dbInfo.dropSchema = false;
     dbInfo.synchronize = false;
+    dbInfo.entities = undefined;
     const connection = await SqlUtils.connect(dbInfo);
     let entities = await SqlUtils.getEntities(connection, dbInfo.database);
-
     // console.log(entities);
     if (entity) {
       // 生成所有的数据库实体类

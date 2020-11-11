@@ -1,0 +1,105 @@
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="component-form-group">
+        <% if (message) { %>
+        <input type="hidden" value="<%= message.id %>" name="id">
+        <% } %>
+        <div class="layui-form-item">
+          <label class="layui-form-label">title</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name="title"
+              lay-verify="title"
+              value="<%= message ? message.title : '' %>"
+              placeholder="请输入title"
+              autocomplete="off"
+              class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">content</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name="content"
+              lay-verify="content"
+              value="<%= message ? message.content : '' %>"
+              placeholder="请输入content"
+              autocomplete="off"
+              class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">link</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name="link"
+              lay-verify="link"
+              value="<%= message ? message.link : '' %>"
+              placeholder="请输入link"
+              autocomplete="off"
+              class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item layui-layout-admin">
+          <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;">
+              <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">立即提交</button>
+              <button id="reset" type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  // FIXME: 统一修改为用adminUtils方法访问网络等
+  layui.config({
+    base: '/admin/js/'
+  }).use(['form', 'laydate', 'adminUtils'], function () {
+    var form = layui.form;
+    var adminUtils = layui.adminUtils;
+
+    /* 自定义验证规则 */
+    form.verify({
+      title: function (value, item) {
+        if (!value.trim()) {
+          return 'title不能为空';
+        }
+        if (value.trim().length > 191) {
+          return 'title的长度必须小于191';
+        }
+      },
+      content: function (value, item) {
+        if (!value.trim()) {
+          return 'content不能为空';
+        }
+        if (value.trim().length > 2000) {
+          return 'content的长度必须小于2000';
+        }
+      },
+      link: function (value, item) {
+        if (value.trim().length > 500) {
+          return 'link的长度必须小于500';
+        }
+      },
+    });
+
+    /* 监听提交 */
+    form.on('submit(component-form-submit)', function (data) {
+      var fields = data.field;
+      adminUtils.fetch({
+        url: '/msg/message/modify',
+        data: fields,
+        success: function(data) {
+          window.location.reload();
+        }
+      });
+      return false;
+    });
+  });
+</script>

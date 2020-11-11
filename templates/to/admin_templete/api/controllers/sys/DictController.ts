@@ -7,7 +7,7 @@ import Dict from '../../entities/sys/Dict';
  */
 export async function index(req: Sails.Request, res: Sails.Response) {
   const x = req.param('x');
-  // 因为前段组件的bug，暂时传递一个x参数等于y来判断加载数据
+  // 因为前端组件的bug，暂时传递一个x参数等于y来判断加载数据
   if (x === 'y') {
     const dicts = await getRepository(Dict).find({
       order: {

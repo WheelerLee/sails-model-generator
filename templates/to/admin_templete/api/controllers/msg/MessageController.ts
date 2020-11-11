@@ -1,5 +1,5 @@
 /**
- * FIXME: <%- moduleName %>/<%- name %> 该代码由生成器生成，请修改该注释
+ * FIXME: msg/Message 该代码由生成器生成，请修改该注释
  * Created at 2020年10月29日14:03:38
  *
  * @author Wheeler https://github.com/WheelerLee
@@ -8,13 +8,13 @@
  */
 import { FindConditions, getRepository } from 'typeorm';
 import Sails from '../../../@types/sails';
-import <%- name %> from '../../entities/<%- moduleName %>/<%- name %>';
+import Message from '../../entities/msg/Message';
 import PermissionService from '../../services/PermissionService';
 
 export async function index(req: Sails.Request, res: Sails.Response) {
   if (req.method.toLowerCase() === 'get') {
-    const modifyPermission = await PermissionService.valid(req.session.admin.id, '/<%- moduleName %>/<%- varName.toLowerCase() %>/modify');
-    const removePermission = await PermissionService.valid(req.session.admin.id, '/<%- moduleName %>/<%- varName.toLowerCase() %>/remove');
+    const modifyPermission = await PermissionService.valid(req.session.admin.id, '/msg/message/modify');
+    const removePermission = await PermissionService.valid(req.session.admin.id, '/msg/message/remove');
     return res.view({
       modifyPermission: modifyPermission,
       removePermission: removePermission,
@@ -24,13 +24,13 @@ export async function index(req: Sails.Request, res: Sails.Response) {
   const limit = parseInt(req.param('limit', '10'));
   // TODO: 默认不生成所有字段的查询条件，需要请自行添加
   // const name = req.param('name', '').trim();
-  const params: FindConditions<<%- name %>> = {
+  const params: FindConditions<Message> = {
     deleted: 0,
   };
   // if (name) {
   //   params.name = Like(`%${name}%`);
   // }
-  const [<%- varName %>s, count] = await getRepository(<%- name %>).findAndCount({
+  const [messages, count] = await getRepository(Message).findAndCount({
     where: params,
     skip: (page - 1) * limit,
     take: limit,
@@ -38,23 +38,23 @@ export async function index(req: Sails.Request, res: Sails.Response) {
   res.json({
     code: 0,
     count: count,
-    data: <%- varName %>s
+    data: messages
   });
 }
 
 export async function modify(req: Sails.Request, res: Sails.Response) {
   const id = req.param('id');
   if (req.method.toLowerCase() === 'get') {
-    let <%- varName %>: <%- name %> | undefined;
+    let message: Message | undefined;
     if (id) {
-      <%- varName %> = await getRepository(<%- name %>).findOne(id);
+      message = await getRepository(Message).findOne(id);
     }
     return res.view({
-      <%- varName %>: <%- varName %>
+      message: message
     });
   }
-  const <%- varName %>: <%- name %> = <%- name %>.parse(req.body);
-  await getRepository(<%- name %>).save(<%- varName %>);
+  const message: Message = Message.parse(req.body);
+  await getRepository(Message).save(message);
   return res.json({
     code: 0,
     msg: '保存成功'
@@ -64,7 +64,7 @@ export async function modify(req: Sails.Request, res: Sails.Response) {
 export async function remove(req: Sails.Request, res: Sails.Response) {
   const id = req.param('id');
   // TODO: 一般情况下删除之前需要检查关联的外键是否存在数据
-  await getRepository(<%- name %>).update(id, { deleted: 1 });
+  await getRepository(Message).update(id, { deleted: 1 });
   return res.json({
     code: 0,
     msg: '删除成功'
