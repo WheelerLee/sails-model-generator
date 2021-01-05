@@ -11,7 +11,7 @@
     "@sailshq/socket.io-redis": "^5.2.0",
     "@ztree/ztree_v3": "^3.5.40",
     "async": "2.0.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "change-case": "^4.1.1",
     "content-disposition": "^0.5.3",
     "firebase-admin": "^8.12.1",
